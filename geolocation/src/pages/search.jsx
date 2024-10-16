@@ -11,7 +11,7 @@ const Search = () => {
 
     const fetchSuggestions = async (query) => {
         try {
-            const response = await fetch(`http://localhost:3000/v1/result?queries=${query}`);
+            const response = await fetch(`http://localhost:3000/v1/location?queries=${query}`);
             const data = await response.json();
             setSuggestions(data);
         } catch (error) {

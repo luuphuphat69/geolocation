@@ -28,7 +28,7 @@ const Result = () => {
             return;
         }
         setLoading(true);
-        axios.get(`http://localhost:3000/v1/result?queries=${query}`)
+        axios.get(`http://localhost:3000/v1/location?queries=${query}`)
             .then(response => {
                 const transformedData = response.data.map(record => createData(record));
                 setData(transformedData);
