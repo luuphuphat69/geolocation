@@ -39,7 +39,7 @@ const Search = () => {
     const handleSearch = (e) => {
         e.preventDefault();
         if (searchTerm && searchTerm.trim()) {
-            navigate("/result", { state: { query: searchTerm } });
+            navigate(`/result?city=${encodeURIComponent(searchTerm)}`);
         } else {
             alert('Please enter a valid search term.');
         }

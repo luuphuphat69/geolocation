@@ -1,12 +1,13 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const path = require('path')
+require('dotenv').config();
 const morgan = require('morgan');
-const mongoURI = "mongodb+srv://luuphuphat:adolph29122003@cluster0.nipyiqe.mongodb.net/GeolocationDB";
+const mongoURI = process.env.MONGODB_CONNECTION;
 const port = 3000;
 const router = require('./router/router');
 const cors = require('cors');
-
 const corsOptions = {
   origin: ["http://localhost:5173"],
   credentials: true,
@@ -24,7 +25,6 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use(morgan("common"));
-
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 });
