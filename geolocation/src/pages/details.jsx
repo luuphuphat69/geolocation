@@ -3,7 +3,8 @@ import { MapPin, Droplets, Wind, Thermometer, CloudRain } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useLocation } from 'react-router-dom'
 import { Progress } from "@/components/ui/progress"
-import Map from 'react-map-gl'
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import L from 'leaflet';
 
 export default function CityWeatherDetails() {
   const [cityData, setCityData] = useState(null)
@@ -61,7 +62,6 @@ export default function CityWeatherDetails() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">{cityName} Weather Details</h1>
-      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <Card>
           <CardHeader>
@@ -153,24 +153,26 @@ export default function CityWeatherDetails() {
           <CardTitle>Weather Map</CardTitle>
         </CardHeader>
         <CardContent>
-          <div style={{ height: '400px' }}>
-            <Map
-              initialViewState={{
-                longitude: parseFloat(long),
-                latitude: parseFloat(lat),
-                zoom: 10
-              }}
-              style={{width: '100%', height: '100%'}}
-              mapStyle="mapbox://styles/mapbox/streets-v11"
-              mapboxAccessToken="your_mapbox_access_token"
-            >
-              <MapPin 
-                longitude={parseFloat(long)} 
-                latitude={parseFloat(lat)} 
-                color="red"
-              />
-            </Map>
-          </div>
+          <MapContainer
+            center={[lat, long]}
+            zoom={10}
+            style={{ height: '400px', width: '100%' }}
+          >
+            {/* Base map layer */}
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution="&copy; OpenStreetMap contributors"
+            />
+            {/* OpenWeather tile layer */}
+            <TileLayer
+              url={`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${API_KEY}`}
+              attribution="&copy; OpenWeatherMap"
+            />
+            {/* Marker at city location */}
+            <Marker position={[lat, long]}>
+              <Popup>{cityName} Weather</Popup>
+            </Marker>
+          </MapContainer>
         </CardContent>
       </Card>
     </div>
