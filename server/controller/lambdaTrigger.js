@@ -11,7 +11,7 @@ const lambdaTrigger = {
             FunctionName: 'writetodb',
             Payload: JSON.stringify({ mail })
         };
-        
+
         lambda.invoke(params, function(err, data) {
             if (err) {
                 console.log(err, err.stack);
