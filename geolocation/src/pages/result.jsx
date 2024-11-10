@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { Eye, Thermometer } from "lucide-react"
+import { Eye, Thermometer, Bell } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { Toaster } from "@/components/ui/toaster"
 import axios from "axios"
 import {
   Table,
@@ -19,10 +21,19 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Loader2, Search } from "lucide-react"
+const API_KEY = import.meta.env.VITE_OPEN_WEATHER_API_KEY;
 
 const columns = [
   { id: "name", label: "City" },
@@ -98,6 +109,7 @@ export default function Result() {
               placeholder="Search locations..."
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
+                  setSearchTerm(e.target.value);
                   handleSearch();
                 }
               }}
@@ -171,7 +183,6 @@ export default function Result() {
           )}
         </CardContent>
       </Card>
-
       <Dialog open={!!selectedRow} onOpenChange={handleCloseDialog}>
         <DialogContent>
           <DialogHeader>
@@ -180,25 +191,30 @@ export default function Result() {
           {selectedRow && <WeatherCard city={selectedRow?.name} lat={selectedRow?.latitude} long={selectedRow?.longitude} />}
         </DialogContent>
       </Dialog>
+      <Toaster/>
     </div>
   )
 }
 
 // Placeholder for WeatherCard component
-function WeatherCard({city, lat, long }) {
+function WeatherCard({ city, lat, long }) {
+
   const [weatherData, setWeatherData] = useState(null)
+  const [notifyEmail, setNotifyEmail] = useState(false)
+  const [seeDetails, setSeeDatails] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [email, setEmail] = useState("")
+  const { toast } = useToast()
 
   const navigate = useNavigate()
-
   const handleNavigate = (city, lat, long) => {
     navigate(`/details?city=${city}&lat=${lat}&long=${long}`) // Navigate programmatically
   }
 
-  let baseURL = 'https://api.openweathermap.org/data/3.0/';
   useEffect(() => {
     const fetchWeatherData = async () => {
       try {
-        const temper = await axios.get(`${baseURL}onecall?lat=${lat}&lon=${long}&exclude=hourly,daily&appid=957979da618b5afa339618f744c97c87`)
+        const temper = await axios.get(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=hourly,daily&appid=${API_KEY}`)
         setWeatherData(temper.data);
       } catch (err) {
         console.log(err);
@@ -206,17 +222,78 @@ function WeatherCard({city, lat, long }) {
     }
     fetchWeatherData();
   }, [lat, long]);
+
   if (!weatherData) {
     return <p>Loading weather data...</p>
+  }
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setNotifyEmail(true)
+    setIsDialogOpen(false)
+    
+    await axios.post(`http://localhost:3000/v1/lambda?mail=${email}`);
+    toast({
+      title: "Notification Set",
+      description: `You will receive daily weather updates for ${city} at 7:00 AM to ${email}`,
+    })
+    setEmail("")
   }
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          Current Weather
-          <Button onClick={() => handleNavigate(city, lat, long)} variant="ghost" size="icon" aria-label="See more details">
-            <Eye className="h-4 w-4" />
-          </Button>
+        <CardTitle className="flex items-center justify-between">
+          <span>Current Weather</span>
+          <div className="flex space-x-2">
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant={notifyEmail ? "secondary" : "outline"}
+                  size="icon"
+                  aria-label={notifyEmail ? "Unfollow location" : "Follow location"}
+                  className={notifyEmail ? "bg-yellow-400 text-blue-800" : "text-yellow-400"}
+                >
+                  <Bell className="h-4 w-4" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Subscribe to Weather Updates</DialogTitle>
+                  <DialogDescription>
+                    We will send you daily weather notifications for {city} at 7:00 AM - 4:00 PM - 9:00 PM.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit}>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="email" className="text-right">
+                        Email
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="col-span-3"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end">
+                    <Button type="submit">Subscribe</Button>
+                  </div>
+                </form>
+              </DialogContent>
+            </Dialog>
+            <Button
+              onClick={() => handleNavigate(city, lat, long)}
+              variant={seeDetails ? "secondary" : "outline"}
+              size="icon"
+              aria-label="See more details"
+              className={seeDetails ? "bg-yellow-400 text-blue-800" : "text-yellow-400"}
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
+          </div>
         </CardTitle>
         <CardDescription>{weatherData.current.weather[0].description}</CardDescription>
       </CardHeader>

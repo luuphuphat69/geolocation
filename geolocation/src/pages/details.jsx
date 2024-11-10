@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
-import { MapPin, Droplets, Wind, Thermometer, CloudRain } from 'lucide-react'
+import { Thermometer, Droplets, Wind, CloudRain, Shirt, Stethoscope, Shield, Sun } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useLocation } from 'react-router-dom'
 import { Progress } from "@/components/ui/progress"
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import L from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup, LayersControl } from 'react-leaflet'
 
 export default function CityWeatherDetails() {
   const [cityData, setCityData] = useState(null)
@@ -23,7 +22,7 @@ export default function CityWeatherDetails() {
     const fetchData = async () => {
       try {
         // Fetch current weather
-        const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${API_KEY}&units=metric`)
+        const weatherResponse = await fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=hourly,daily&appid=${API_KEY}`)
         const weatherData = await weatherResponse.json()
         setCityData(weatherData)
 
@@ -51,6 +50,49 @@ export default function CityWeatherDetails() {
     return descriptions[aqi - 1] || 'Unknown'
   }
 
+  const getAQIColor = (aqi) => {
+    const colors = ["bg-green-500", "bg-yellow-400", "bg-orange-400", "bg-red-500", "bg-purple-600"]
+    return colors[aqi - 1] || colors[0]
+  }
+
+  const getAQIRecommendation = (aqi) => {
+    switch (aqi) {
+      case 1:
+        return "Air quality is excellent. Enjoy outdoor activities!"
+      case 2:
+        return "Air quality is acceptable. Sensitive individuals should consider reducing prolonged outdoor exertion."
+      case 3:
+        return "Members of sensitive groups may experience health effects. The general public is less likely to be affected."
+      case 4:
+        return "Everyone may begin to experience health effects. Members of sensitive groups may experience more serious health effects."
+      case 5:
+        return "Health alert: The risk of health effects is increased for everyone. Avoid outdoor activities."
+      default:
+        return "No recommendation available."
+    }
+  }
+
+  const getRecommendedOutfit = (temp) => {
+    const celsiusTemp = temp - 273.15;
+    if (celsiusTemp < 10) {
+      return "Heavy coat, scarf, and gloves"
+    } else if (celsiusTemp < 20) {
+      return "Light jacket or sweater"
+    } else if (celsiusTemp < 30) {
+      return "T-shirt and light pants"
+    } else {
+      return "Light, breathable clothing"
+    }
+  }
+
+  const getUVIndexAdvice = (uvIndex) => {
+    if (uvIndex <= 2) return "Low risk. No protection required."
+    if (uvIndex <= 5) return "Moderate risk. Wear sunscreen and sunglasses."
+    if (uvIndex <= 7) return "High risk. Wear sunscreen, sunglasses, and a hat."
+    if (uvIndex <= 10) return "Very high risk. Take extra precautions and limit sun exposure."
+    return "Extreme risk. Avoid sun exposure and stay indoors if possible."
+  }
+
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
   }
@@ -60,87 +102,92 @@ export default function CityWeatherDetails() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">{cityName} Weather Details</h1>
+    <div className="container mx-auto px-4 py-8 bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen">
+      <h1 className="text-4xl font-bold mb-6 text-center text-blue-800">{cityName} Weather Details</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <Card>
+        <Card className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
           <CardHeader>
-            <CardTitle>Current Weather</CardTitle>
+            <CardTitle className="text-2xl">Current Weather</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-4xl font-bold">{Math.round(cityData.main.temp)}°C</p>
-                <p className="text-xl">{cityData.weather[0].description}</p>
+                <p className="text-6xl font-bold">{Math.round(cityData.current.temp - 273.15)}°C</p>
+                <p className="text-2xl">{cityData.current.weather[0].description}</p>
               </div>
-              <img 
-                src={`http://openweathermap.org/img/wn/${cityData.weather[0].icon}@2x.png`} 
-                alt={cityData.weather[0].description}
-                width={100}
-                height={100}
-              />
+              <img src={'https://openweathermap.org/img/wn/' + cityData.current.weather[0].icon + '@2x.png'} />
             </div>
-            <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="grid grid-cols-2 gap-4 mt-6">
               <div className="flex items-center">
-                <Thermometer className="mr-2" />
-                <span>Feels like: {Math.round(cityData.main.feels_like)}°C</span>
+                <Thermometer className="mr-2 text-red-300" />
+                <span>Feels like: {Math.round(cityData.current.feels_like - 273.15)}°C</span>
               </div>
               <div className="flex items-center">
-                <Droplets className="mr-2" />
-                <span>Humidity: {cityData.main.humidity}%</span>
+                <Droplets className="mr-2 text-blue-300" />
+                <span>Humidity: {cityData.current.humidity}%</span>
               </div>
               <div className="flex items-center">
-                <Wind className="mr-2" />
-                <span>Wind: {cityData.wind.speed} m/s</span>
+                <Wind className="mr-2 text-gray-300" />
+                <span>Wind: {cityData.current.wind_speed} m/s</span>
               </div>
               <div className="flex items-center">
-                <CloudRain className="mr-2" />
-                <span>Pressure: {cityData.main.pressure} hPa</span>
+                <CloudRain className="mr-2 text-indigo-300" />
+                <span>Pressure: {cityData.current.pressure} hPa</span>
               </div>
+            </div>
+            <div className="mt-4 p-4 bg-white bg-opacity-20 rounded-lg">
+              <h3 className="text-xl font-semibold mb-2 flex items-center">
+                <Shirt className="mr-2" />
+                Recommended Outfit
+              </h3>
+              <p>{getRecommendedOutfit(cityData.current.temp, cityData.current.weather[0].description)}</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-br from-green-400 to-blue-500 text-white">
           <CardHeader>
-            <CardTitle>Air Quality</CardTitle>
+            <CardTitle className="text-2xl">Air Quality</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold mb-2">
+            <p className="text-3xl font-bold mb-2">
               {getAQIDescription(airPollution.main.aqi)}
             </p>
-            <Progress value={airPollution.main.aqi * 20} className="mb-4" />
+            <Progress value={airPollution.main.aqi * 20} className="mb-4 h-3" indicatorClassName={getAQIColor(airPollution.main.aqi)} />
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p>PM2.5: {airPollution.components.pm2_5.toFixed(2)}</p>
-                <p>PM10: {airPollution.components.pm10.toFixed(2)}</p>
+                <p className="text-lg">PM2.5: <span className="font-bold">{airPollution.components.pm2_5.toFixed(2)}</span></p>
+                <p className="text-lg">PM10: <span className="font-bold">{airPollution.components.pm10.toFixed(2)}</span></p>
               </div>
               <div>
-                <p>NO2: {airPollution.components.no2.toFixed(2)}</p>
-                <p>O3: {airPollution.components.o3.toFixed(2)}</p>
+                <p className="text-lg">NO2: <span className="font-bold">{airPollution.components.no2.toFixed(2)}</span></p>
+                <p className="text-lg">O3: <span className="font-bold">{airPollution.components.o3.toFixed(2)}</span></p>
               </div>
+            </div>
+            <div className="mt-4 p-4 bg-white bg-opacity-20 rounded-lg">
+              <h3 className="text-xl font-semibold mb-2 flex items-center">
+                <Stethoscope className="mr-2" />
+                Air Quality Recommendation
+              </h3>
+              <p>{getAQIRecommendation(airPollution.main.aqi)}</p>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="mb-6">
+      <Card className="mb-6 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-white">
         <CardHeader>
-          <CardTitle>5-Day Forecast</CardTitle>
+          <CardTitle className="text-2xl">5-Day Forecast</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {forecast.map((day, index) => (
-              <div key={index} className="text-center">
-                <p className="font-bold">{formatDate(day.dt_txt)}</p>
-                <img 
-                  src={`http://openweathermap.org/img/wn/${day.weather[0].icon}.png`} 
-                  alt={day.weather[0].description}
-                  className="mx-auto"
-                  width={50}
-                  height={50}
-                />
-                <p>{Math.round(day.main.temp)}°C</p>
+              <div key={index} className="text-center bg-white bg-opacity-20 rounded-lg p-4">
+                <p className="font-bold text-lg">{formatDate(day.dt_txt)}</p>
+                <div className="flex justify-center">
+                  <img src={`https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`} alt="Weather icon" />
+                </div>
+                <p className="text-2xl font-bold mt-2">{Math.round(day.main.temp)}°C</p>
                 <p className="text-sm">{day.weather[0].description}</p>
               </div>
             ))}
@@ -148,31 +195,65 @@ export default function CityWeatherDetails() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="mb-6 bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
         <CardHeader>
-          <CardTitle>Weather Map</CardTitle>
+          <CardTitle className="text-2xl">UV Index</CardTitle>
         </CardHeader>
         <CardContent>
-          <MapContainer
-            center={[lat, long]}
-            zoom={10}
-            style={{ height: '400px', width: '100%' }}
-          >
-            {/* Base map layer */}
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution="&copy; OpenStreetMap contributors"
-            />
-            {/* OpenWeather tile layer */}
-            <TileLayer
-              url={`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${API_KEY}`}
-              attribution="&copy; OpenWeatherMap"
-            />
-            {/* Marker at city location */}
-            <Marker position={[lat, long]}>
-              <Popup>{cityName} Weather</Popup>
-            </Marker>
-          </MapContainer>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-6xl font-bold">{cityData.current.uvi}</p>
+              <p className="text-2xl">{getUVIndexAdvice(cityData.current.uvi).split('.')[0]}</p>
+            </div>
+            <Shield className="w-16 h-16" />
+          </div>
+          <Progress value={cityData.current.uvi * 10} className="mb-4 h-3" />
+          <div className="mt-4 p-4 bg-white bg-opacity-20 rounded-lg">
+            <h3 className="text-xl font-semibold mb-2 flex items-center">
+              <Sun className="mr-2" />
+              Sun Protection Advice
+            </h3>
+            <p>{getUVIndexAdvice(cityData.current.uvi)}</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
+        <CardHeader>
+          <CardTitle className="text-2xl">Weather Map</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[650px] w-full rounded-lg overflow-hidden">
+            <MapContainer center={[lat, long]} zoom={10} style={{ height: '100%', width: '100%' }}>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution="&copy; OpenStreetMap contributors"
+              />
+              <LayersControl position="topright">
+                <LayersControl.BaseLayer checked name="Temperature">
+                  <TileLayer
+                    url={`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${API_KEY}`}
+                    attribution="&copy; OpenWeatherMap"
+                  />
+                </LayersControl.BaseLayer>
+                <LayersControl.BaseLayer name="Wind">
+                  <TileLayer
+                    url={`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${API_KEY}`}
+                    attribution="&copy; OpenWeatherMap"
+                  />
+                </LayersControl.BaseLayer>
+                <LayersControl.BaseLayer name="Clouds">
+                  <TileLayer
+                    url={`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${API_KEY}`}
+                    attribution="&copy; OpenWeatherMap"
+                  />
+                </LayersControl.BaseLayer>
+              </LayersControl>
+              <Marker position={[lat, long]}>
+                <Popup>{cityName} Weather</Popup>
+              </Marker>
+            </MapContainer>
+          </div>
         </CardContent>
       </Card>
     </div>
