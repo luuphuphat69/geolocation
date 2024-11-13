@@ -6,10 +6,18 @@ const lambdaTrigger = {
     writetodb: async (req, res) => {
         const lambda = new aws.Lambda();
         const mail = req.query.mail;
+        const lat = req.query.lat;
+        const long = req.query.long
+        const city = req.query.city;
 
         const params = {
             FunctionName: 'writetodb',
-            Payload: JSON.stringify({ mail })
+            Payload: JSON.stringify({
+                mail: mail,
+                city: city,
+                lat: lat,
+                long: long  
+            })
         };
 
         lambda.invoke(params, function(err, data) {

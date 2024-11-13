@@ -208,7 +208,7 @@ function WeatherCard({ city, lat, long }) {
 
   const navigate = useNavigate()
   const handleNavigate = (city, lat, long) => {
-    navigate(`/details?city=${city}&lat=${lat}&long=${long}`) // Navigate programmatically
+    navigate(`/details?city=${city}&lat=${lat}&long=${long}`)
   }
 
   useEffect(() => {
@@ -231,7 +231,7 @@ function WeatherCard({ city, lat, long }) {
     setNotifyEmail(true)
     setIsDialogOpen(false)
     
-    await axios.post(`http://localhost:3000/v1/lambda?mail=${email}`);
+    await axios.post(`http://localhost:3000/v1/lambda?mail=${email}&city=${city}&lat=${lat}&long=${long}`);
     toast({
       title: "Notification Set",
       description: `You will receive daily weather updates for ${city} at 7:00 AM to ${email}`,
