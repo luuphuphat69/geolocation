@@ -1,69 +1,45 @@
-Geolocation 🌎
-Geolocation is a web-based application that allows users to find their current city or search for any city worldwide and check the local weather. Powered by the OpenWeather API, it provides up-to-date weather information. Users can also subscribe to receive daily weather news at 7:00 AM.
+# Geolocation 🌍
 
-<!-- Replace with an actual image showing the flow -->
+**Geolocation** is a website that allows users to find their current city or search for any city to get real-time weather information, using data from the OpenWeather API. Users can also subscribe to receive daily weather updates at 7:00 AM.
 
-Features
-City Search: Find your city or search any city worldwide.
-Current Weather: Get real-time weather updates for any city.
-Daily Weather Subscription: Subscribe to receive daily weather news at 7:00 AM via email.
-Table of Contents
-Installation
-Usage
-Configuration
-API Reference
-License
-Installation
-Clone the repository:
+## Features
 
-bash
-Copy code
-git clone https://github.com/luuphuphat69/geolocation.git
-Navigate to the project directory:
+- **City Search**: Find your location or search for a city worldwide to see the current weather.
+- **Real-Time Weather Updates**: Get up-to-date weather information with details on temperature, humidity, wind speed, and more.
+- **Daily Weather Email Subscription**: Users can subscribe to receive daily weather updates for their chosen city at 7:00 AM.
+![Untitled Diagram drawio (2)](https://github.com/user-attachments/assets/57947b73-7272-4c28-a970-15e2f717fa64)
 
-bash
-Copy code
-cd geolocation
-Install dependencies:
+*Note:* This is a flowchart showing how the system works on the first time user subcribe to it.
+## Table of Contents
 
-bash
-Copy code
-npm install
-Set up environment variables:
+- [Getting Started](#getting-started)
 
-Create a .env file in both geolocation and server folders (if not already present).
+## Getting Started
 
-Add the following variables:
+### Prerequisites
 
-plaintext
-Copy code
-REACT_APP_OPENWEATHER_API_KEY=your_openweather_api_key
-Start the project:
+- **Node.js** (v14 or higher)
+- **NPM** or **Yarn**
 
-bash
-Copy code
-npm start
-Server (optional): Start the server if using additional backend features for subscriptions.
+### Installation
 
-bash
-Copy code
-cd server
-npm start
-Usage
-Find Your City: The app detects your location or lets you search for any city to display its current weather.
-Subscribe for Daily Weather: Click the "Subscribe" button to receive daily weather updates at 7:00 AM via email.
-<!-- Example: Workflow of the subscription process -->
+1. **Clone the Repository**:
 
-Configuration
-Ensure you have the following configurations in your environment files:
+   ```bash
+   git clone https://github.com/luuphuphat69/geolocation.git
+   
+2. **Navigate to the Project Directory**:
 
-OpenWeather API Key: Sign up at OpenWeather to get an API key.
-Email Service (if needed for subscription): Configure email delivery with Mailgun, SES, or another service.
-API Reference
-Weather Information
-GET /weather: Retrieves weather information for the specified city.
-POST /subscribe: Subscribes the user to daily weather updates.
-License
-This project is licensed under the MIT License.
+   ```bash
+   cd geolocation
+   
+3. **Install Dependencies**:
 
-Feel free to add more customization based on your project specifics, such as detailed configuration settings, additional endpoints, or example requests and responses.
+   ```bash
+   npm install
+
+4. **Run the Server**:
+
+   ```bash
+   cd server
+   npm start
