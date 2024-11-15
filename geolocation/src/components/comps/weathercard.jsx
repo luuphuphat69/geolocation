@@ -13,8 +13,9 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger
-  } from "@/components/ui/dialog"
+} from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
+import { ToastAction } from "@/components/ui/toast"
 
 export default function WeatherCard({ city, lat, long }) {
 
@@ -23,6 +24,7 @@ export default function WeatherCard({ city, lat, long }) {
     const [seeDetails, setSeeDatails] = useState(false)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [email, setEmail] = useState("")
+    const [id, setId] = useState("");
     const { toast } = useToast()
     const API_KEY = import.meta.env.VITE_OPEN_WEATHER_API_KEY;
 
@@ -46,18 +48,52 @@ export default function WeatherCard({ city, lat, long }) {
     if (!weatherData) {
         return <p>Loading weather data...</p>
     }
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        setNotifyEmail(true)
-        setIsDialogOpen(false)
 
-        await axios.post(`http://localhost:3000/v1/lambda?mail=${email}&city=${city}&lat=${lat}&long=${long}`);
+    const handleUnsubcribe = async (emai, id) => {
+        await axios.get(`http://localhost:3000/v1/lambda/unsub?mail=${email}&id=${id}`);
         toast({
-            title: "Notification Set",
-            description: `You will receive daily weather updates for ${city} at 7:00 AM to ${email}`,
+            title: "Geolocation Notification",
+            description: "We sent you an email. Please check your mail box and confirm to unsubcribe our notificaion"
         })
-        setEmail("")
+        console.log(id)
     }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setNotifyEmail(true);
+        setIsDialogOpen(false);
+
+        try {
+            const response = await axios.post(`http://localhost:3000/v1/lambda/sub?mail=${email}&city=${city}&lat=${lat}&long=${long}`);
+            const description = response.status === 281
+                            ? 'This mail is USED. Use another email or unsubscribe now'
+                            : `You will receive daily weather updates for ${city} at 7:00 AM to ${email}`;
+
+            const variant = response.status === 281 ? 'destructive' : '';
+            const id = response.status === 281 ? response.data.ID : null
+            if(id){
+                setId(id);
+            }
+
+            toast({
+                title: "Geolocation Notification",
+                description: description,
+                action: <ToastAction onClick={() => handleUnsubcribe(email, id)} altText="Unsubscribe">Unsubscribe</ToastAction>,
+                variant: variant,
+            });
+
+        } catch (error) {
+            console.error("Error subscribing:", error);
+            toast({
+                title: "Error",
+                description: "There was an error setting up notifications. Please try again.",
+                variant: "destructive",
+            });
+        }
+
+        setEmail("");
+    }
+
     return (
         <Card>
             <CardHeader>
@@ -77,7 +113,7 @@ export default function WeatherCard({ city, lat, long }) {
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[425px]">
                                 <DialogHeader>
-                                    <DialogTitle>Subscribe to Weather Updates</DialogTitle>
+                                    <DialogTitle>Subscribe to Weather Updates. One mail per location</DialogTitle>
                                     <DialogDescription>
                                         We will send you daily weather notifications for {city} at 7:00 AM.
                                     </DialogDescription>
