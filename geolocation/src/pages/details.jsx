@@ -22,17 +22,17 @@ export default function CityWeatherDetails() {
     const fetchData = async () => {
       try {
         // Fetch current weather
-        const weatherResponse = await fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=hourly,daily&appid=${API_KEY}`)
+        const weatherResponse = await fetch(`http://localhost:3000/v1/weather/current?lat=${lat}&long=${long}`)
         const weatherData = await weatherResponse.json()
         setCityData(weatherData)
 
         // Fetch 5-day forecast
-        const forecastResponse = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&appid=${API_KEY}&units=metric`)
+        const forecastResponse = await fetch(`http://localhost:3000/v1/weather/forecast?lat=${lat}&long=${long}`)
         const forecastData = await forecastResponse.json()
         setForecast(forecastData.list.filter((item, index) => index % 8 === 0))
 
         // Fetch air pollution data
-        const pollutionResponse = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${long}&appid=${API_KEY}`)
+        const pollutionResponse = await fetch(`http://localhost:3000/v1/weather/airpollution?lat=${lat}&long=${long}`)
         const pollutionData = await pollutionResponse.json()
         setAirPollution(pollutionData.list[0])
       } catch (error) {

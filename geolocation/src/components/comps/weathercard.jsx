@@ -26,7 +26,6 @@ export default function WeatherCard({ city, lat, long }) {
     const [email, setEmail] = useState("")
     const [id, setId] = useState("");
     const { toast } = useToast()
-    const API_KEY = import.meta.env.VITE_OPEN_WEATHER_API_KEY;
 
     const navigate = useNavigate()
     const handleNavigate = (city, lat, long) => {
@@ -36,7 +35,7 @@ export default function WeatherCard({ city, lat, long }) {
     useEffect(() => {
         const fetchWeatherData = async () => {
             try {
-                const temper = await axios.get(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=hourly,daily&appid=${API_KEY}`)
+                const temper = await axios.get(`http://localhost:3000/v1/weather/current?lat=${lat}&long=${long}`)
                 setWeatherData(temper.data);
             } catch (err) {
                 console.log(err);

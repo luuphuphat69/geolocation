@@ -1,5 +1,5 @@
 const Cities = require('../model/cities');
-const result = {
+const location = {
     retrieveData: async (req, res) => {
         try {
             const query = req.query.queries;
@@ -23,4 +23,4 @@ const result = {
         }
     },
 }
-module.exports = result;
+module.exports = location;

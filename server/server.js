@@ -5,6 +5,7 @@ require('dotenv').config();
 const morgan = require('morgan');
 const router = require('./router/router');
 const cors = require('cors');
+const redis = require('redis');
 
 const corsOptions = {
   origin: ["http://localhost:5173"],
@@ -25,16 +26,16 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(morgan("common"));
 app.listen(3000, () => {
-    console.log(`Example app listening on port ${3000}`)
+  console.log(`Example app listening on port ${3000}`)
 });
 app.use('/v1', router);
 
 const mongoURI = process.env.MONGODB_CONNECTION;
 (async () => {
-    try {
-      await mongoose.connect(mongoURI);
-      console.log('Connected to MongoDB');
-    } catch (error) {
-      console.error('Error connecting to MongoDB:', error);
-    }
+  try {
+    await mongoose.connect(mongoURI);
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+  }
 })();
