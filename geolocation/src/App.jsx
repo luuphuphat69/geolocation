@@ -7,14 +7,14 @@ import { getMessaging } from 'firebase/messaging';
 import getFCMToken from './messaging_getToken';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyATcsVW3yFiRODjWlLaZJVQKSHRHwG2Sa8",
-  authDomain: "geolocation-72da3.firebaseapp.com",
-  projectId: "geolocation-72da3",
-  storageBucket: "geolocation-72da3.firebasestorage.app",
-  messagingSenderId: "593545686942",
-  appId: "1:593545686942:web:9b01c38c7cb239df63308f",
-  measurementId: "G-B7VQ02F6D0",
-};
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+}
 
 function requestLocation() {
   if (navigator.geolocation) {
