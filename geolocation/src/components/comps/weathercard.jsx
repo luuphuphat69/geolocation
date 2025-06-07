@@ -36,7 +36,8 @@ export default function WeatherCard({ city, lat, long }) {
         const fetchWeatherData = async () => {
             try {
                 const temper = await axios.get(`http://localhost:3000/v1/weather/current?lat=${lat}&long=${long}`)
-                setWeatherData(temper.data);
+                setWeatherData(temper.data); 
+                console.log("weather", weatherData)
             } catch (err) {
                 console.log(err);
             }
