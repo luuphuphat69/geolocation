@@ -12,12 +12,12 @@ const weather = {
 
             const cacheKey = `current_weather:${lat},${long}`;
             
-            // Check the cache
-            const cachedData = await redisClient.get(cacheKey);
-            if (cachedData) {
-                console.log('Cache hit');
-                return res.status(200).json(JSON.parse(cachedData));
-            }
+            // // Check the cache
+            // const cachedData = await redisClient.get(cacheKey);
+            // if (cachedData) {
+            //     console.log('Cache hit');
+            //     return res.status(200).json(JSON.parse(cachedData));
+            // }
 
             // Fetch data from OpenWeather API
             const response = await axios.get(
@@ -33,10 +33,10 @@ const weather = {
             );
 
             const weatherData = response.data;
-            // Cache the response
-            await redisClient.set(cacheKey, JSON.stringify(weatherData), {
-                EX: 600, // Expire after 600 seconds
-            });
+            // // Cache the response
+            // await redisClient.set(cacheKey, JSON.stringify(weatherData), {
+            //     EX: 600, // Expire after 600 seconds
+            // });
 
             res.status(200).json(weatherData);
         } catch (err) {

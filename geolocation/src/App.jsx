@@ -25,7 +25,6 @@ function requestLocation() {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
-            console.log("Latitude:", latitude, "Longitude:", longitude);
           },
           (err) => {
             console.error("Error getting location:", err.message);
