@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Eye, Thermometer, Bell } from "lucide-react"
+import { Eye, Thermometer, Bell, Droplets, Wind } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import axios from "axios"
 import { Button } from "@/components/ui/button"
@@ -36,8 +36,8 @@ export default function WeatherCard({ city, lat, long }) {
         const fetchWeatherData = async () => {
             try {
                 const temper = await axios.get(`http://localhost:3000/v1/weather/current?lat=${lat}&long=${long}`)
-                setWeatherData(temper.data); 
-                console.log("weather", weatherData)
+                setWeatherData(temper.data);
+
             } catch (err) {
                 console.log(err);
             }
@@ -66,12 +66,12 @@ export default function WeatherCard({ city, lat, long }) {
         try {
             const response = await axios.post(`http://localhost:3000/v1/lambda/sub?mail=${email}&city=${city}&lat=${lat}&long=${long}`);
             const description = response.status === 281
-                            ? 'This mail is USED. Use another email or unsubscribe now'
-                            : `You will receive daily weather updates for ${city} at 7:00 AM to ${email}`;
+                ? 'This mail is USED. Use another email or unsubscribe now'
+                : `You will receive daily weather updates for ${city} at 7:00 AM to ${email}`;
 
             const variant = response.status === 281 ? 'destructive' : '';
             const id = response.status === 281 ? response.data.ID : null
-            if(id){
+            if (id) {
                 setId(id);
             }
 
@@ -165,9 +165,15 @@ export default function WeatherCard({ city, lat, long }) {
                             <p className="text-muted-foreground">Temperature</p>
                         </div>
                     </div>
-                    <div>
-                        <p className="text-right">Humidity: {weatherData.current?.humidity}%</p>
-                        <p className="text-right">Wind: {weatherData.current?.wind_speed} mph</p>
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-end space-x-2">
+                            <Droplets className="h-4 w-4 text-blue-500" />
+                            <p className="text-right">Humidity: {weatherData.current?.humidity}%</p>
+                        </div>
+                        <div className="flex items-center justify-end space-x-2">
+                            <Wind className="h-4 w-4 text-gray-500" />
+                            <p className="text-right">Wind: {weatherData.current?.wind_speed} mph</p>
+                        </div>
                     </div>
                 </div>
             </CardContent>
