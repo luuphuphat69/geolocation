@@ -9,7 +9,13 @@
 - **Daily Weather Email Subscription**: Users can subscribe to receive daily weather updates for their chosen city at 7:00 AM.
 ![Untitled Diagram drawio (2)](https://github.com/user-attachments/assets/57947b73-7272-4c28-a970-15e2f717fa64)
 
-*Note:* This is a flowchart showing how the system works on the first time user subcribe to it.
+*Diagram 1: Workflow showing how the system handles a user's first-time subscription for daily weather updates.*
+
+![Push Notification Flow](https://github.com/user-attachments/assets/bbbd41ca-4c33-483e-b289-4f1b5a5cd597)
+
+*Diagram 2: Process flow of how the browser requests an FCM token, registers a service worker, and receives push notifications via Firebase Cloud Messaging (FCM).*
+
+
 ## Table of Contents
 
 - [Getting Started](#getting-started)
