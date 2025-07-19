@@ -24,7 +24,7 @@ const weather = {
                 `https://api.openweathermap.org/data/3.0/onecall`,
                 {
                     params: {
-                        lat,
+                        lat: lat,
                         lon: long,
                         exclude: 'hourly,daily',
                         appid: process.env.API_KEY,
@@ -44,6 +44,7 @@ const weather = {
             res.status(500).json({ error: 'Failed to fetch weather data' });
         }
     },
+    
     GetWeatherForecastData: async(req, res) => {
         try {
             const lat = req.query.lat;

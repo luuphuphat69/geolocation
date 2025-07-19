@@ -29,7 +29,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Loader2, Search } from "lucide-react"
 import WeatherCard from "../components/comps/weathercard"
-
+import WeatherCard2
+ from "../components/comps/weathercard2"
 const columns = [
   { id: "name", label: "City" },
   { id: "state_name", label: "State / Province" },
@@ -183,7 +184,7 @@ export default function Result() {
           <DialogHeader>
             <DialogTitle>Weather for {selectedRow?.name}</DialogTitle>
           </DialogHeader>
-          {selectedRow && <WeatherCard city={selectedRow?.name} lat={selectedRow?.latitude} long={selectedRow?.longitude} />}
+          {selectedRow && <WeatherCard2 city={selectedRow?.name} lat={selectedRow?.latitude} long={selectedRow?.longitude} />}
         </DialogContent>
       </Dialog>
       <Toaster/>
