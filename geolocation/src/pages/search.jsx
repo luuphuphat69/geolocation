@@ -78,7 +78,7 @@ const Search = () => {
 
   return (
     <div className="relative flex min-h-screen flex-col">
-      <SiteHeader />
+      {/* <SiteHeader /> */}
       <div className="s013 flex-1">
         <form id="form" onSubmit={handleSearch}>
           <fieldset>
