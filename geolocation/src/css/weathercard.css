@@ -221,3 +221,27 @@
      padding: 0.75rem;
      text-align: center;
  }
+
+ .weather-card__unit-toggle {
+     display: inline-flex;
+     align-items: center;
+     background-color: rgba(59, 130, 246, 0.1);
+     border-radius: 9999px;
+     padding: 2px;
+     margin-left: 8px;
+     cursor: pointer;
+     transition: all 0.3s ease;
+ }
+
+ .weather-card__unit-option {
+     padding: 2px 8px;
+     border-radius: 9999px;
+     font-size: 0.75rem;
+     font-weight: 500;
+     transition: all 0.3s ease;
+ }
+
+ .weather-card__unit-option--active {
+     background-color: #3b82f6;
+     color: white;
+ }
