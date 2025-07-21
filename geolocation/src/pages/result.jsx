@@ -29,8 +29,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Loader2, Search } from "lucide-react"
 import WeatherCard from "../components/comps/weathercard"
-import WeatherCard2
- from "../components/comps/weathercard2"
+import WeatherCard2 from "../components/comps/weathercard2"
+
 const columns = [
   { id: "name", label: "City" },
   { id: "state_name", label: "State / Province" },
@@ -180,7 +180,7 @@ export default function Result() {
         </CardContent>
       </Card>
       <Dialog open={!!selectedRow} onOpenChange={handleCloseDialog}>
-        <DialogContent>
+        <DialogContent className="max-w-[550px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Weather for {selectedRow?.name}</DialogTitle>
           </DialogHeader>
