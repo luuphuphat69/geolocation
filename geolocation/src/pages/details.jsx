@@ -140,7 +140,7 @@ export default function CityWeatherDetails() {
                 <Shirt className="mr-2" />
                 Recommended Outfit
               </h3>
-              <p>{getRecommendedOutfit(cityData.current.temp, cityData.current.weather[0].description)}</p>
+              <p>{getRecommendedOutfit(cityData.current.temp)}</p>
             </div>
           </CardContent>
         </Card>

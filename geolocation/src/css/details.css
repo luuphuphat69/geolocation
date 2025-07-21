@@ -1,0 +1,35 @@
+ .weather-card {
+     background: rgba(255, 255, 255, 0.85);
+     backdrop-filter: blur(10px);
+     border-radius: 16px;
+     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+     border: 1px solid rgba(255, 255, 255, 0.3);
+ }
+
+ .gradient-bg {
+     background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+ }
+
+ .unit-toggle {
+     cursor: pointer;
+     user-select: none;
+ }
+
+ .unit-toggle span {
+     transition: opacity 0.2s ease;
+ }
+
+ .unit-toggle span.active {
+     opacity: 1;
+     font-weight: 600;
+ }
+
+ .unit-toggle span.inactive {
+     opacity: 0.5;
+ }
+
+ .details-body {
+     font-family: 'Inter', sans-serif;
+     background-color: #f0f5ff;
+     color: #333;
+ }
