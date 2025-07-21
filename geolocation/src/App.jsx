@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Search from './pages/search';
 import Result from './pages/result';
+import WeatherDetails from './pages/details2';
 import CityWeatherDetails from './pages/details';
 import { initializeApp } from 'firebase/app';
 import { getMessaging } from 'firebase/messaging';
@@ -79,7 +80,7 @@ function App() {
         <Route path="/" element={<Navigate to="/search" />} />
         <Route path="/search" element={<Search />} />
         <Route path="/result" element={<Result />} />
-        <Route path='/details' element={<CityWeatherDetails />} />
+        <Route path='/details' element={<WeatherDetails />} />
       </Routes>
     </Router>
   );
