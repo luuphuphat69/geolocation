@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-
+import '../css/details.css'
 const WeatherDetails = () => {
     const [cityData, setCityData] = useState(null)
     const [forecast, setForecast] = useState([])
@@ -33,6 +33,7 @@ const WeatherDetails = () => {
                 const pollutionResponse = await fetch(`http://localhost:3000/v1/weather/airpollution?lat=${lat}&long=${long}`)
                 const pollutionData = await pollutionResponse.json()
                 setAirPollution(pollutionData.list[0])
+                console.log(airPollution);
             } catch (error) {
                 console.error('Error fetching data:', error)
             }
@@ -57,7 +58,7 @@ const WeatherDetails = () => {
     }
 
     const getAQIColor = (aqi) => {
-        const colors = ["bg-green-500", "bg-yellow-400", "bg-orange-400", "bg-red-500", "bg-purple-600"]
+        const colors = ["air-quality-good", "air-quality-moderate", "air-quality-unhealthy", "air-quality-danger", "air-quality-hazardous"]
         return colors[aqi - 1] || colors[0]
     }
 
@@ -129,82 +130,84 @@ const WeatherDetails = () => {
                             Current Weather
                         </h2>
 
-                        <div class="flex flex-col md:flex-row items-center">
-                            <div class="flex-1 text-center md:text-left">
-                                <div class="flex items-center justify-center md:justify-start">
-                                    <div class="text-6xl font-bold text-blue-700">
-                                        {currentUnit === 'C'
-                                            ? `${kelvinToCelsius(cityData.current.temp)}°C`
-                                            : `${kelvinToFahrenheit(cityData.current.temp)}°F`}
+                        <div className='card-content'>
+                            <div class="flex flex-col md:flex-row items-center">
+                                <div class="flex-1 text-center md:text-left">
+                                    <div class="flex items-center justify-center md:justify-start">
+                                        <div class="text-6xl font-bold text-blue-700">
+                                            {currentUnit === 'C'
+                                                ? `${kelvinToCelsius(cityData.current.temp)}°C`
+                                                : `${kelvinToFahrenheit(cityData.current.temp)}°F`}
 
-                                    </div>
-                                    <div class="ml-2">
-                                        <div class="text-sm text-gray-500 unit-toggle" id="unit-toggle">
-                                            <span id="fahrenheit" class="inactive" onClick={() => handleUnitClick('F')}>°F</span> |
-                                            <span id="celsius" class="active" onClick={() => handleUnitClick('C')}>°C</span>
                                         </div>
-                                        <div class="text-lg font-medium">{cityData.current.weather[0].description}</div>
+                                        <div class="ml-2">
+                                            <div class="text-sm text-gray-500 unit-toggle" id="unit-toggle">
+                                                <span id="fahrenheit" class="inactive" onClick={() => handleUnitClick('F')}>°F</span> |
+                                                <span id="celsius" class="active" onClick={() => handleUnitClick('C')}>°C</span>
+                                            </div>
+                                            <div class="text-lg font-medium">{cityData.current.weather[0].description}</div>
+                                        </div>
                                     </div>
+                                    <div class="mt-2 text-sm text-gray-600">{currentDate.toLocaleDateString("en-US", {
+                                        weekday: "long",
+                                        month: "long",
+                                        day: "numeric",
+                                        year: "numeric"
+                                    })}</div>
                                 </div>
-                                <div class="mt-2 text-sm text-gray-600">{currentDate.toLocaleDateString("en-US", {
-                                    weekday: "long",
-                                    month: "long",
-                                    day: "numeric",
-                                    year: "numeric"
-                                })}</div>
-                            </div>
-                            <div class="mt-4 md:mt-0">
-                                <svg class="h-24 w-24 text-yellow-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-                                    <defs>
-                                        <linearGradient id="a" x1="16.5" y1="19.67" x2="21.5" y2="28.33" gradientUnits="userSpaceOnUse">
-                                            <stop offset="0" stop-color="#fbbf24" />
-                                            <stop offset="0.45" stop-color="#fbbf24" />
-                                            <stop offset="1" stop-color="#f59e0b" />
-                                        </linearGradient>
-                                        <linearGradient id="b" x1="22.56" y1="21.96" x2="39.2" y2="50.8" gradientUnits="userSpaceOnUse">
-                                            <stop offset="0" stop-color="#f3f7fe" />
-                                            <stop offset="0.45" stop-color="#f3f7fe" />
-                                            <stop offset="1" stop-color="#deeafb" />
-                                        </linearGradient>
-                                    </defs>
-                                    <circle cx="19" cy="24" r="5" fill="url(#a)" />
-                                    <path d="M46.5,31.5l-.32,0a10.49,10.49,0,0,0-19.11-8,7,7,0,0,0-10.57,6,7.21,7.21,0,0,0,.1,1.14A7.5,7.5,0,0,0,18,45.5a4.19,4.19,0,0,0,.5,0h28a7,7,0,0,0,0-14Z" fill="url(#b)" stroke="#e6effc" stroke-miterlimit="10" stroke-width="0.5" />
-                                </svg>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                            <div class="bg-blue-50 p-3 rounded-lg">
-                                <div class="text-sm text-gray-500">Feels Like</div>
-                                <div class="text-xl font-semibold"><span id="feels-like">
-                                    {currentUnit === 'C'
-                                        ? `${kelvinToCelsius(cityData.current.feels_like)}°C`
-                                        : `${kelvinToFahrenheit(cityData.current.feels_like)}°F`}</span></div>
-                            </div>
-                            <div class="bg-blue-50 p-3 rounded-lg">
-                                <div class="text-sm text-gray-500">Humidity</div>
-                                <div class="text-xl font-semibold">{cityData.current.humidity}%</div>
-                            </div>
-                            <div class="bg-blue-50 p-3 rounded-lg">
-                                <div class="text-sm text-gray-500">Wind Speed</div>
-                                <div class="text-xl font-semibold">{cityData.current.wind_speed} m/s</div>
-                            </div>
-                            <div class="bg-blue-50 p-3 rounded-lg">
-                                <div class="text-sm text-gray-500">Pressure</div>
-                                <div class="text-xl font-semibold">{cityData.current.pressure} hPa</div>
-                            </div>
-                        </div>
-
-                        <div class="mt-6 bg-blue-100 p-4 rounded-lg">
-                            <h3 class="font-medium text-blue-800 mb-2">Outfit Recommendation</h3>
-                            <div class="flex items-center">
-                                <div class="mr-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                <div class="mt-4 md:mt-0">
+                                    <svg class="h-24 w-24 text-yellow-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+                                        <defs>
+                                            <linearGradient id="a" x1="16.5" y1="19.67" x2="21.5" y2="28.33" gradientUnits="userSpaceOnUse">
+                                                <stop offset="0" stop-color="#fbbf24" />
+                                                <stop offset="0.45" stop-color="#fbbf24" />
+                                                <stop offset="1" stop-color="#f59e0b" />
+                                            </linearGradient>
+                                            <linearGradient id="b" x1="22.56" y1="21.96" x2="39.2" y2="50.8" gradientUnits="userSpaceOnUse">
+                                                <stop offset="0" stop-color="#f3f7fe" />
+                                                <stop offset="0.45" stop-color="#f3f7fe" />
+                                                <stop offset="1" stop-color="#deeafb" />
+                                            </linearGradient>
+                                        </defs>
+                                        <circle cx="19" cy="24" r="5" fill="url(#a)" />
+                                        <path d="M46.5,31.5l-.32,0a10.49,10.49,0,0,0-19.11-8,7,7,0,0,0-10.57,6,7.21,7.21,0,0,0,.1,1.14A7.5,7.5,0,0,0,18,45.5a4.19,4.19,0,0,0,.5,0h28a7,7,0,0,0,0-14Z" fill="url(#b)" stroke="#e6effc" stroke-miterlimit="10" stroke-width="0.5" />
                                     </svg>
                                 </div>
-                                <div>
-                                    <p class="text-gray-700" id="outfit-recommendation">{getRecommendedOutfit(cityData.current.temp)}</p>
+                            </div>
+
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                                <div class="bg-blue-50 p-3 rounded-lg">
+                                    <div class="text-sm text-gray-500">Feels Like</div>
+                                    <div class="text-xl font-semibold"><span id="feels-like">
+                                        {currentUnit === 'C'
+                                            ? `${kelvinToCelsius(cityData.current.feels_like)}°C`
+                                            : `${kelvinToFahrenheit(cityData.current.feels_like)}°F`}</span></div>
+                                </div>
+                                <div class="bg-blue-50 p-3 rounded-lg">
+                                    <div class="text-sm text-gray-500">Humidity</div>
+                                    <div class="text-xl font-semibold">{cityData.current.humidity}%</div>
+                                </div>
+                                <div class="bg-blue-50 p-3 rounded-lg">
+                                    <div class="text-sm text-gray-500">Wind Speed</div>
+                                    <div class="text-xl font-semibold">{cityData.current.wind_speed} m/s</div>
+                                </div>
+                                <div class="bg-blue-50 p-3 rounded-lg">
+                                    <div class="text-sm text-gray-500">Pressure</div>
+                                    <div class="text-xl font-semibold">{cityData.current.pressure} hPa</div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 bg-blue-100 p-4 rounded-lg">
+                                <h3 class="font-medium text-blue-800 mb-2">Outfit Recommendation</h3>
+                                <div class="flex items-center">
+                                    <div class="mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-700" id="outfit-recommendation">{getRecommendedOutfit(cityData.current.temp)}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -217,48 +220,141 @@ const WeatherDetails = () => {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                             </svg>
                             Air Quality
+                            <div class="tooltip ml-2">
+                                <button class="text-blue-500 hover:text-blue-700 focus:outline-none" id="info-button" aria-label="Air Quality Information">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <div class="tooltip-content" id="tooltip-content">
+                                    <h3 class="font-semibold text-sm mb-2">Air Quality Index Levels</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="tooltip-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Quality</th>
+                                                    <th>Index</th>
+                                                    <th>SO₂</th>
+                                                    <th>NO₂</th>
+                                                    <th>PM10</th>
+                                                    <th>PM2.5</th>
+                                                    <th>O₃</th>
+                                                    <th>CO</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="quality-name">Good</td>
+                                                    <td>1</td>
+                                                    <td>0-20</td>
+                                                    <td>0-40</td>
+                                                    <td>0-20</td>
+                                                    <td>0-10</td>
+                                                    <td>0-60</td>
+                                                    <td>0-4400</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="quality-name">Fair</td>
+                                                    <td>2</td>
+                                                    <td>20-80</td>
+                                                    <td>40-70</td>
+                                                    <td>20-50</td>
+                                                    <td>10-25</td>
+                                                    <td>60-100</td>
+                                                    <td>4400-9400</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="quality-name">Moderate</td>
+                                                    <td>3</td>
+                                                    <td>80-250</td>
+                                                    <td>70-150</td>
+                                                    <td>50-100</td>
+                                                    <td>25-50</td>
+                                                    <td>100-140</td>
+                                                    <td>9400-12400</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="quality-name">Poor</td>
+                                                    <td>4</td>
+                                                    <td>250-350</td>
+                                                    <td>150-200</td>
+                                                    <td>100-200</td>
+                                                    <td>50-75</td>
+                                                    <td>140-180</td>
+                                                    <td>12400-15400</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="quality-name">Very Poor</td>
+                                                    <td>5</td>
+                                                    <td>≥350</td>
+                                                    <td>≥200</td>
+                                                    <td>≥200</td>
+                                                    <td>≥75</td>
+                                                    <td>≥180</td>
+                                                    <td>≥15400</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-2">All values in μg/m³ except CO (in μg/m³)</div>
+                                </div>
+                            </div>
                         </h2>
+                        <div class="card-content">
+                            <div className="flex items-center mb-4">
+                                <div className={`w-16 h-16 rounded-full text-white flex items-center justify-center mr-4 ${getAQIColor(airPollution.main.aqi)}`}>
+                                    <span className="text-2xl font-bold">{airPollution.main.aqi}</span>
+                                </div>
+                                <div>
+                                    <div className="text-xl font-semibold">
+                                        {getAQIDescription(airPollution.main.aqi)}
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="flex items-center mb-4">
-                            <div class="w-16 h-16 rounded-full flex items-center justify-center air-quality-moderate mr-4">
-                                <span class="text-white text-2xl font-bold">52</span>
+                            <div className="bg-gray-100 h-2 rounded-full mb-4">
+                                <div
+                                    className={`h-2 rounded-full ${getAQIColor(airPollution.main.aqi)}`}
+                                    style={{ width: `${(airPollution.main.aqi / 5) * 100}%` }}
+                                ></div>
                             </div>
-                            <div>
-                                <div class="text-xl font-semibold">Moderate</div>
-                                <div class="text-sm text-gray-600">Air quality is acceptable</div>
-                            </div>
-                        </div>
 
-                        <div class="bg-gray-100 h-2 rounded-full mb-4">
-                            <div class="h-2 rounded-full w-1/2 air-quality-moderate"></div>
-                        </div>
 
-                        <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div class="bg-white p-3 rounded-lg shadow-sm">
-                                <div class="text-sm text-gray-500">PM2.5</div>
-                                <div class="text-xl font-semibold">12 µg/m³</div>
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div class="bg-white p-3 rounded-lg shadow-sm">
+                                    <div class="text-sm text-gray-500">PM2.5</div>
+                                    <div class="text-xl font-semibold">{airPollution.components.pm2_5.toFixed(2)} µg/m³</div>
+                                </div>
+                                <div class="bg-white p-3 rounded-lg shadow-sm">
+                                    <div class="text-sm text-gray-500">PM10</div>
+                                    <div class="text-xl font-semibold">{airPollution.components.pm10.toFixed(2)} µg/m³</div>
+                                </div>
+                                <div class="bg-white p-3 rounded-lg shadow-sm">
+                                    <div class="text-sm text-gray-500">NO₂</div>
+                                    <div class="text-xl font-semibold">{airPollution.components.no2.toFixed(2)} ppb</div>
+                                </div>
+                                <div class="bg-white p-3 rounded-lg shadow-sm">
+                                    <div class="text-sm text-gray-500">O₃</div>
+                                    <div class="text-xl font-semibold">{airPollution.components.o3.toFixed(2)} ppb</div>
+                                </div>
+                                <div class="bg-white p-3 rounded-lg shadow-sm">
+                                    <div class="text-sm text-gray-500">CO</div>
+                                    <div class="text-xl font-semibold">{airPollution.components.co.toFixed(2)} ppb</div>
+                                </div>
+                                <div class="bg-white p-3 rounded-lg shadow-sm">
+                                    <div class="text-sm text-gray-500">SO2</div>
+                                    <div class="text-xl font-semibold">{airPollution.components.so2.toFixed(2)} ppb</div>
+                                </div>
                             </div>
-                            <div class="bg-white p-3 rounded-lg shadow-sm">
-                                <div class="text-sm text-gray-500">PM10</div>
-                                <div class="text-xl font-semibold">28 µg/m³</div>
-                            </div>
-                            <div class="bg-white p-3 rounded-lg shadow-sm">
-                                <div class="text-sm text-gray-500">NO₂</div>
-                                <div class="text-xl font-semibold">15 ppb</div>
-                            </div>
-                            <div class="bg-white p-3 rounded-lg shadow-sm">
-                                <div class="text-sm text-gray-500">O₃</div>
-                                <div class="text-xl font-semibold">48 ppb</div>
-                            </div>
-                        </div>
 
-                        <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                            <h3 class="font-medium text-yellow-800 mb-2">Air Quality Recommendation</h3>
-                            <div class="flex items-start">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600 mt-0.5 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                </svg>
-                                <p class="text-gray-700">Unusually sensitive individuals should consider reducing prolonged outdoor activities.</p>
+                            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                                <h3 class="font-medium text-yellow-800 mb-2">Air Quality Recommendation</h3>
+                                <div class="flex items-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600 mt-0.5 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                    </svg>
+                                    <p class="text-gray-700">{getAQIRecommendation(airPollution.main.aqi)}</p>
+                                </div>
                             </div>
                         </div>
                     </section>
