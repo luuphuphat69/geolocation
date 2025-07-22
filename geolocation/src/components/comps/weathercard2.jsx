@@ -55,8 +55,9 @@ const WeatherCard2 = ({ city, lat, long }) => {
     const iconCode = weatherData.current.weather[0].icon;
     const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 
-    const kelvinToCelsius = (k) => Math.round(k - 273.15);
-    const kelvinToFahrenheit = (k) => Math.round((k * 9) / 5 - 459.67);
+    const kelvinToCelsius = (k) => Math.round((k - 273.15) * 10) / 10;
+    const kelvinToFahrenheit = (k) => Math.round(((k * 9) / 5 - 459.67) * 10) / 10;
+
     const handleUnitClick = (unit) => {
         if (unit === currentUnit) return;
 

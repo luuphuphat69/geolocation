@@ -1,12 +1,12 @@
   .weather-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      position: relative;
-      height: 500px;
-      overflow: hidden;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            height: 500px;
+            overflow: hidden;
   }
 
   .card-content {
@@ -60,102 +60,5 @@
       .weather-card {
           height: auto;
           max-height: 500px;
-      }
-  }
-
-  .air-quality-good {
-      background-color: #4ade80;
-  }
-
-  .air-quality-moderate {
-      background-color: #facc15;
-  }
-
-  .air-quality-unhealthy {
-      background-color: #f97316;
-  }
-
-  .air-quality-danger {
-      background-color: #ef4444;
-  }
-
-  .air-quality-hazardous {
-      background-color: #7e22ce;
-  }
-
-  .tooltip {
-      position: relative;
-      display: inline-block;
-  }
-
-  .tooltip-content {
-      visibility: hidden;
-      position: absolute;
-      width: 320px;
-      max-width: 90vw;
-      background-color: white;
-      color: #333;
-      text-align: left;
-      border-radius: 8px;
-      padding: 12px;
-      z-index: 100;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      opacity: 0;
-      transition: opacity 0.3s, visibility 0.3s;
-      right: 0;
-      top: calc(100% + 10px);
-      transform: translateX(50%);
-  }
-
-  .tooltip:hover .tooltip-content {
-      visibility: visible;
-      opacity: 1;
-  }
-
-  .tooltip-content::after {
-      content: "";
-      position: absolute;
-      bottom: 100%;
-      right: 50%;
-      margin-right: -5px;
-      border-width: 5px;
-      border-style: solid;
-      border-color: transparent transparent white transparent;
-  }
-
-  .tooltip-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.75rem;
-  }
-
-  .tooltip-table th,
-  .tooltip-table td {
-      padding: 4px 6px;
-      border: 1px solid #e5e7eb;
-      text-align: center;
-  }
-
-  .tooltip-table th {
-      background-color: #f3f4f6;
-      font-weight: 600;
-  }
-
-  .tooltip-table tr:nth-child(even) {
-      background-color: #f9fafb;
-  }
-
-  .tooltip-table tr:hover {
-      background-color: #f0f9ff;
-  }
-
-  .tooltip-table .quality-name {
-      text-align: left;
-      font-weight: 500;
-  }
-
-  @media (max-width: 640px) {
-      .tooltip-content {
-          right: -100%;
       }
   }
