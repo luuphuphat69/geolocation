@@ -1,6 +1,8 @@
 import { useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import '../css/details.css'
+import { getAirPolution, getCurrentWeather, getForecast } from '../ultilities/api/api'
+
 const WeatherDetails = () => {
     const [cityData, setCityData] = useState(null)
     const [forecast, setForecast] = useState([])
@@ -20,20 +22,20 @@ const WeatherDetails = () => {
         const fetchData = async () => {
             try {
                 // Fetch current weather
-                const weatherResponse = await fetch(`http://localhost:3000/v1/weather/current?lat=${lat}&long=${long}`)
-                const weatherData = await weatherResponse.json()
+                const weatherResponse = await getCurrentWeather(lat, long)
+                const weatherData = await weatherResponse.data
                 setCityData(weatherData)
 
-                // Fetch 5-day forecast
-                const forecastResponse = await fetch(`http://localhost:3000/v1/weather/forecast?lat=${lat}&long=${long}`)
-                const forecastData = await forecastResponse.json()
+                // Fetch 5-day forecast 
+                const forecastResponse = await getForecast(lat, long)
+                const forecastData = await forecastResponse.data
                 setForecast(forecastData.list.filter((item, index) => index % 8 === 0))
 
                 // Fetch air pollution data
-                const pollutionResponse = await fetch(`http://localhost:3000/v1/weather/airpollution?lat=${lat}&long=${long}`)
-                const pollutionData = await pollutionResponse.json()
+                const pollutionResponse = await getAirPolution(lat, long)
+                const pollutionData = await pollutionResponse.data
                 setAirPollution(pollutionData.list[0])
-                console.log(airPollution);
+
             } catch (error) {
                 console.error('Error fetching data:', error)
             }
