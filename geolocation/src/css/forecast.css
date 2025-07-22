@@ -1,0 +1,62 @@
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f5ff;
+            color: #333;
+        }
+
+        .forecast-weather-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 10;
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .card-content {
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        /* 5-Day Forecast Specific CSS */
+        .forecast-day {
+            border-bottom: 1px solid #e5e7eb;
+            transition: background-color 0.2s ease;
+        }
+
+        .forecast-day:last-child {
+            border-bottom: none;
+        }
+
+        .forecast-day:hover {
+            background-color: #f8fafc;
+        }
+
+        .forecast-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #93c5fd;
+            border-radius: 100%;
+        }
+
+        .temp-bar {
+            height: 4px;
+            border-radius: 2px;
+            background-color: #e5e7eb;
+            position: relative;
+        }
+
+        .temp-range {
+            position: absolute;
+            height: 100%;
+            background: linear-gradient(to right, #93c5fd, #3b82f6);
+            border-radius: 2px;
+        }
