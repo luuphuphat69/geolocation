@@ -1,12 +1,10 @@
-"use client"
-
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import "../css/search.css"
 import "../css/button.css"
 import "../css/validation.css"
 import "../css/autocomplete-list.css"
-import { SiteHeader } from "../components/comps/site-header.jsx"
+import { getLocation } from "../ultilities/api/api"
 
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("")
@@ -17,7 +15,7 @@ const Search = () => {
 
   const fetchSuggestions = async (query) => {
     try {
-      const response = await fetch(`http://localhost:3000/v1/location?queries=${query}`)
+      const response = await getLocation(query)
       const data = await response.json()
       setSuggestions(data)
     } catch (error) {

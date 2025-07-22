@@ -49,8 +49,7 @@ const weather = {
         try {
             const lat = req.query.lat;
             const long = req.query.long;
-            console.log(lat);
-            console.log(long);
+
             if (!lat || !long) {
                 return res.status(400).json({ error: 'Latitude and longitude are required' });
             }
