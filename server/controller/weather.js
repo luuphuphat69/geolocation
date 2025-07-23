@@ -88,25 +88,25 @@ const weather = {
             res.status(500).json({ error: 'Failed to fetch weather data' });
         }
     },
-    GetHoursForecastData: async(req, res) => {
-        try{
-            const lat = req.query.lat;
-            const long = req.query.long;
-            if (!lat || !long) {
-                return res.status(400).json({ error: 'Latitude and longitude are required' });
-            }
-            const forecast = await axios.get(`http://api.weatherapi.com/v1/forecast.json`,{
-                params:{
-                    key: process.env.WEATHER_API_KEY,
-                    q: `${lat},${long}`
+        GetHoursForecastData: async(req, res) => {
+            try{
+                const lat = req.query.lat;
+                const long = req.query.long;
+                if (!lat || !long) {
+                    return res.status(400).json({ error: 'Latitude and longitude are required' });
                 }
-            });
-            res.status(200).json(forecast);
-        }catch(err){
-            console.log(err);
-            res.status(500).json({ error: 'Failed to fetch weather data' });
-        }
-    },
+                const forecast = await axios.get(`http://api.weatherapi.com/v1/forecast.json`,{
+                    params:{
+                        key: process.env.WEATHER_API_KEY,
+                        q: `${lat},${long}`
+                    }
+                });
+                res.status(200).json(forecast.data);
+            }catch(err){
+                console.log(err);
+                res.status(500).json({ error: 'Failed to fetch weather data' });
+            }
+        },
 
     GetAirPollutionData: async(req, res) => {
         try {

@@ -7,7 +7,7 @@ import '../css/weathercard.css'
 import Schedule from '../components/comps/schedule';
 import HourlyForecast from '../components/comps/hourlyforecast';
 import { kelvinToCelsius, kelvinToFahrenheit } from '../ultilities/common';
-import { getCurrentWeather, unsubLambda, subLambda } from '../ultilities/api/api';
+import { getCurrentWeather, getHourlyForecast, unsubLambda, subLambda } from '../ultilities/api/api';
 
 import {
     Dialog,
@@ -31,6 +31,7 @@ const WeatherCard2 = ({ city, lat, long }) => {
     const [email, setEmail] = useState("")
     const [id, setId] = useState("");
     const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+    const [hourlyForecastData, setHourlyForecastData] = useState(null);
     const { toast } = useToast()
 
     const navigate = useNavigate()
@@ -43,6 +44,10 @@ const WeatherCard2 = ({ city, lat, long }) => {
             try {
                 const temper = await getCurrentWeather(lat, long);
                 setWeatherData(temper.data);
+
+                const hourlyForecast = await getHourlyForecast(lat, long);
+                setHourlyForecastData(hourlyForecast.data);
+
             } catch (err) {
                 console.log(err);
             }
@@ -249,7 +254,7 @@ const WeatherCard2 = ({ city, lat, long }) => {
 
                             {/* <!-- Forecast preview --> */}
                             <div class="mt-6">
-                                <HourlyForecast/>
+                                <HourlyForecast hourlyForecastData={hourlyForecastData}/>
                             </div>
                         </div>
                     </div>
