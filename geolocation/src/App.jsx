@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Search from './pages/search';
 import Result from './pages/result';
 import WeatherDetails from './pages/details2';
-import CityWeatherDetails from './pages/details';
 import { initializeApp } from 'firebase/app';
 import { getMessaging } from 'firebase/messaging';
 import getFCMToken from './messaging_getToken';

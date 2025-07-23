@@ -1,0 +1,126 @@
+ .weather-condition {
+     color: #4b5563;
+     font-weight: 500;
+ }
+
+ .weather-stats {
+     display: grid;
+     grid-template-columns: repeat(3, 1fr);
+     gap: 16px;
+     text-align: center;
+     margin-bottom: 24px;
+ }
+
+ .stat-card {
+     background-color: #eff6ff;
+     border-radius: 8px;
+     padding: 12px;
+ }
+
+ .stat-label {
+     color: #6b7280;
+     font-size: 14px;
+ }
+
+ .stat-value {
+     color: #1f2937;
+     font-weight: 700;
+     font-size: 18px;
+ }
+
+ .forecast-title {
+     font-weight: 500;
+     color: #4b5563;
+     margin-bottom: 12px;
+ }
+
+ .full-day-forecast {
+     margin-bottom: 16px;
+ }
+
+ .forecast-scroll {
+     display: flex;
+     overflow-x: auto;
+     padding-bottom: 8px;
+     -webkit-overflow-scrolling: touch;
+     scroll-behavior: smooth;
+     scrollbar-width: thin;
+     scrollbar-color: #cbd5e1 #f1f5f9;
+ }
+
+ .forecast-scroll::-webkit-scrollbar {
+     height: 6px;
+ }
+
+ .forecast-scroll::-webkit-scrollbar-track {
+     background: #f1f5f9;
+     border-radius: 3px;
+ }
+
+ .forecast-scroll::-webkit-scrollbar-thumb {
+     background-color: #cbd5e1;
+     border-radius: 3px;
+ }
+
+ .forecast-item {
+     flex: 0 0 auto;
+     width: 64px;
+     text-align: center;
+     padding: 12px 8px;
+     border-radius: 8px;
+     margin-right: 8px;
+     transition: all 0.2s ease;
+ }
+
+ .forecast-item--current {
+     background-color: #3b82f6;
+     color: white;
+     box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.4);
+ }
+
+ .forecast-item:not(.forecast-item--current) {
+     background-color: #eff6ff;
+ }
+
+ .forecast-time {
+     font-size: 12px;
+     margin-bottom: 4px;
+ }
+
+ .forecast-item--current .forecast-time,
+ .forecast-item--current .forecast-temp {
+     color: white;
+ }
+
+ .forecast-item:not(.forecast-item--current) .forecast-time {
+     color: #6b7280;
+ }
+
+ .forecast-icon {
+     margin: 4px 0;
+ }
+
+ .forecast-item--current .forecast-icon {
+     color: white;
+ }
+
+ .forecast-item:not(.forecast-item--current) .forecast-icon {
+     color: #3b82f6;
+ }
+
+ .forecast-temp {
+     font-weight: 500;
+     font-size: 14px;
+ }
+
+ .forecast-item:not(.forecast-item--current) .forecast-temp {
+     color: #1f2937;
+ }
+
+ /* Schedule tab styles */
+ .schedule-header {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     margin-bottom: 12px;
+ }

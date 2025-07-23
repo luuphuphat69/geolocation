@@ -17,7 +17,7 @@
     border-radius: 1rem;
     overflow: hidden;
     width: 100%;
-    max-width: 28rem;
+    max-width: 29rem;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     height: 500px;
     /* Fixed height for dialog */
@@ -32,6 +32,8 @@
 
 .weather-card__icon {
     transition: all 0.5s ease;
+    background-color: #93c5fd;
+    border-radius: 100%;
 }
 
 .weather-card__icon:hover {

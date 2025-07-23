@@ -6,7 +6,7 @@ import CurrentWeather from '../components/comps/currentweather'
 import AirPollution from '../components/comps/airpollution'
 import Forecast from '../components/comps/forecast'
 import UVIndex from '../components/comps/uvindex'
-import WeatherMap from '../components/comps/weathermap';
+import WeatherMap from '../components/comps/weathermap'
 
 const WeatherDetails = () => {
     const [cityData, setCityData] = useState(null)
@@ -18,8 +18,6 @@ const WeatherDetails = () => {
     const lat = searchParams.get("lat");
     const long = searchParams.get("long");
     const cityName = searchParams.get("city")
-
-    const API_KEY = import.meta.env.VITE_OPEN_WEATHER_API_KEY;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -48,14 +46,6 @@ const WeatherDetails = () => {
             fetchData()
         }
     }, [lat, long])
-
-    const getUVIndexAdvice = (uvIndex) => {
-        if (uvIndex <= 2) return "Low risk. No protection required."
-        if (uvIndex <= 5) return "Moderate risk. Wear sunscreen and sunglasses."
-        if (uvIndex <= 7) return "High risk. Wear sunscreen, sunglasses, and a hat."
-        if (uvIndex <= 10) return "Very high risk. Take extra precautions and limit sun exposure."
-        return "Extreme risk. Avoid sun exposure and stay indoors if possible."
-    }
 
     if (!cityData || !forecast.length || !airPollution) {
         return <div className="flex justify-center items-center h-screen">Loading...</div>

@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
-
+import { kelvinToCelsius, kelvinToFahrenheit } from "../../ultilities/common";
 const CurrentWeather = ({ cityData }) => {
     
     const [currentUnit, setCurrentUnit] = useState('C');
-    const kelvinToCelsius = (k) => Math.round((k - 273.15) * 10) / 10;
-    const kelvinToFahrenheit = (k) => Math.round(((k * 9) / 5 - 459.67) * 10) / 10;
 
     const currentDate = new Date();
-
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString("en-US", {
             weekday: "long",
@@ -54,8 +51,8 @@ const CurrentWeather = ({ cityData }) => {
                             </div>
                             <div class="ml-2">
                                 <div class="text-sm text-gray-500 unit-toggle" id="unit-toggle">
-                                    <span id="fahrenheit" class="inactive" onClick={() => handleUnitClick('F')}>°F</span> |
-                                    <span id="celsius" class="active" onClick={() => handleUnitClick('C')}>°C</span>
+                                    <span id="celsius" class="active" onClick={() => handleUnitClick('C')}>°C</span> | 
+                                    <span id="fahrenheit" class="inactive" onClick={() => handleUnitClick('F')}>°F</span>
                                 </div>
                                 <div class="text-lg font-medium">{cityData.current.weather[0].description}</div>
                             </div>

@@ -11,6 +11,7 @@ router.get('/lambda/unsub', lambdaController.unsubcribe);
 
 router.get('/weather/current', weatherController.GetCurrentWeatherData);
 router.get('/weather/forecast', weatherController.GetWeatherForecastData);
+router.get('/weather/forecast/hourly', weatherController.GetHoursForecastData)
 router.get('/weather/airpollution', weatherController.GetAirPollutionData);
 
 router.post('/FCM/token', FCMController.saveToken);

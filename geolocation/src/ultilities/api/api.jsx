@@ -28,6 +28,15 @@ export const getForecast = (lat, long) => {
     });
 };
 
+export const getHourlyForecast = (lat, long) => {
+    return axios.get(`${BASE_URL}/weather/forecast/hourly`, {
+        params: {
+            lat,
+            long,
+        }
+    });
+};
+
 export const getAirPolution = (lat, long) => {
     return axios.get(`${BASE_URL}/weather/airpollution`, {
         params: {
@@ -36,3 +45,23 @@ export const getAirPolution = (lat, long) => {
         }
     });
 };
+
+export const unsubLambda = (id, mail) => {
+    return axios.get(`${BASE_URL}/lambda/unsub`, {
+        params: {
+            id: id,
+            mail: mail
+        }
+    })
+}
+
+export const subLambda = (mail, lat, long, city) => {
+    return axios.post(`${BASE_URL}/lambda/sub`, {
+        params: {
+            mail: mail,
+            lat: lat,
+            long: long,
+            city: city
+        }
+    })
+}

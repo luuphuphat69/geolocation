@@ -3,8 +3,12 @@ import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 import { Eye, Bell } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import '../../css/weathercard.css'
-import Schedule from './schedule';
+import '../css/weathercard.css'
+import Schedule from '../components/comps/schedule';
+import HourlyForecast from '../components/comps/hourlyforecast';
+import { kelvinToCelsius, kelvinToFahrenheit } from '../ultilities/common';
+import { getCurrentWeather, unsubLambda, subLambda } from '../ultilities/api/api';
+
 import {
     Dialog,
     DialogContent,
@@ -37,10 +41,8 @@ const WeatherCard2 = ({ city, lat, long }) => {
     useEffect(() => {
         const fetchWeatherData = async () => {
             try {
-                const temper = await axios.get(`http://localhost:3000/v1/weather/current?lat=${lat}&long=${long}`)
+                const temper = await getCurrentWeather(lat, long);
                 setWeatherData(temper.data);
-
-                console.log(temper.data)
             } catch (err) {
                 console.log(err);
             }
@@ -55,17 +57,14 @@ const WeatherCard2 = ({ city, lat, long }) => {
     const iconCode = weatherData.current.weather[0].icon;
     const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 
-    const kelvinToCelsius = (k) => Math.round((k - 273.15) * 10) / 10;
-    const kelvinToFahrenheit = (k) => Math.round(((k * 9) / 5 - 459.67) * 10) / 10;
-
     const handleUnitClick = (unit) => {
         if (unit === currentUnit) return;
 
         setCurrentUnit(unit);
     };
 
-    const handleUnsubcribe = async (emai, id) => {
-        await axios.get(`http://localhost:3000/v1/lambda/unsub?mail=${email}&id=${id}`);
+    const handleUnsubcribe = async (email, id) => {
+        await unsubLambda(id, email)
         toast({
             title: "Geolocation Notification",
             description: "We sent you an email. Please check your mail box and confirm to unsubcribe our notificaion"
@@ -78,7 +77,7 @@ const WeatherCard2 = ({ city, lat, long }) => {
         setIsDialogOpen(false);
 
         try {
-            const response = await axios.post(`http://localhost:3000/v1/lambda/sub?mail=${email}&city=${city}&lat=${lat}&long=${long}`);
+            const response = await subLambda(email, lat, long, city);
             const description = response.status === 281
                 ? 'This mail is USED. Use another email or unsubscribe now'
                 : `You will receive daily weather updates for ${city} at 7:00 AM to ${email}`;
@@ -250,34 +249,7 @@ const WeatherCard2 = ({ city, lat, long }) => {
 
                             {/* <!-- Forecast preview --> */}
                             <div class="mt-6">
-                                <h4 class="font-medium text-gray-700 mb-3">5-Day Forecast</h4>
-                                <div class="flex space-x-3 overflow-x-auto pb-2">
-                                    <div class="flex-shrink-0 text-center p-3 bg-blue-50 rounded-lg w-20">
-                                        <p class="text-gray-500 text-sm">Tue</p>
-                                        <div class="text-blue-500 my-1"><i class="fas fa-cloud-sun"></i></div>
-                                        <p class="text-gray-800 font-medium">23°</p>
-                                    </div>
-                                    <div class="flex-shrink-0 text-center p-3 bg-blue-50 rounded-lg w-20">
-                                        <p class="text-gray-500 text-sm">Wed</p>
-                                        <div class="text-blue-500 my-1"><i class="fas fa-sun"></i></div>
-                                        <p class="text-gray-800 font-medium">25°</p>
-                                    </div>
-                                    <div class="flex-shrink-0 text-center p-3 bg-blue-50 rounded-lg w-20">
-                                        <p class="text-gray-500 text-sm">Thu</p>
-                                        <div class="text-blue-500 my-1"><i class="fas fa-cloud"></i></div>
-                                        <p class="text-gray-800 font-medium">22°</p>
-                                    </div>
-                                    <div class="flex-shrink-0 text-center p-3 bg-blue-50 rounded-lg w-20">
-                                        <p class="text-gray-500 text-sm">Fri</p>
-                                        <div class="text-blue-500 my-1"><i class="fas fa-cloud-rain"></i></div>
-                                        <p class="text-gray-800 font-medium">20°</p>
-                                    </div>
-                                    <div class="flex-shrink-0 text-center p-3 bg-blue-50 rounded-lg w-20">
-                                        <p class="text-gray-500 text-sm">Sat</p>
-                                        <div class="text-blue-500 my-1"><i class="fas fa-cloud-sun"></i></div>
-                                        <p class="text-gray-800 font-medium">24°</p>
-                                    </div>
-                                </div>
+                                <HourlyForecast/>
                             </div>
                         </div>
                     </div>
