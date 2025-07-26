@@ -16,7 +16,7 @@ const Search = () => {
   const fetchSuggestions = async (query) => {
     try {
       const response = await getLocation(query)
-      const data = await response.json()
+      const data = await response.data
       setSuggestions(data)
     } catch (error) {
       console.error("Error fetching suggestions:", error)

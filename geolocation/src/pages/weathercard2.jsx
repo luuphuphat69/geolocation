@@ -140,7 +140,7 @@ const WeatherCard2 = ({ city, lat, long }) => {
                                         aria-label={notifyEmail ? "Unfollow location" : "Follow location"}
                                         className={notifyEmail ? "bg-yellow-400 text-blue-800" : "text-yellow-400"}
                                     >
-                                        <Bell className="h-4 w-4" />
+                                    <Bell className="h-4 w-4" />
                                     </Button>
                                 </DialogTrigger>
                                 <DialogContent className="sm:max-w-[425px]">
