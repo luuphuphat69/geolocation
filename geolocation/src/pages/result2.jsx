@@ -224,6 +224,7 @@ const Result2 = () => {
                         <DialogTitle>Weather for {selectedRow?.name}</DialogTitle>
                     </DialogHeader>
                     {selectedRow && <WeatherCard2 city={selectedRow?.name} lat={selectedRow?.latitude} long={selectedRow?.longitude} />}
+                    {console.log(selectedRow)}
                 </DialogContent>
             </Dialog>
             <Toaster />
