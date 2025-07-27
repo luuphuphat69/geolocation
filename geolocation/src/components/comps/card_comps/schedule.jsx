@@ -11,7 +11,7 @@ const ScheduleDataList = {
   sunday: [],
 };
 
-const loadScheduleFromBrowser = (callback) => {
+const loadScheduleFromBrowser = (cityName, callback) => {
   const request = indexedDB.open("schedule_db", 1);
 
   request.onsuccess = (event) => {
@@ -19,14 +19,14 @@ const loadScheduleFromBrowser = (callback) => {
     const tx = db.transaction("schedule_os", "readonly");
     const store = tx.objectStore("schedule_os");
 
-    const getRequest = store.get("main");
+    const getRequest = store.get(cityName);
 
     getRequest.onsuccess = () => {
       const result = getRequest.result;
       if (result && result.scheduleData) {
         callback(result.scheduleData);
       } else {
-        console.log("No existing schedule found in IndexedDB.");
+        console.log("No existing schedule found for city:", cityName);
       }
     };
 
@@ -42,7 +42,7 @@ const loadScheduleFromBrowser = (callback) => {
   };
 };
 
-const saveScheduleOnBrowser = (scheduleData) => {
+const saveScheduleOnBrowser = (scheduleData, cityName) => {
   const request = indexedDB.open("schedule_db", 1);
 
   request.onupgradeneeded = (event) => {
@@ -50,7 +50,7 @@ const saveScheduleOnBrowser = (scheduleData) => {
 
     if (!db.objectStoreNames.contains("schedule_os")) {
       const store = db.createObjectStore("schedule_os", {
-        keyPath: "id", // using fixed 'id'
+        keyPath: "id",
       });
 
       store.createIndex("schedule", "schedule", { unique: false });
@@ -63,14 +63,14 @@ const saveScheduleOnBrowser = (scheduleData) => {
     const store = tx.objectStore("schedule_os");
 
     const record = {
-      id: "main", // fixed ID for single-record storage
+      id: cityName,
       scheduleData: scheduleData,
     };
 
     const putRequest = store.put(record);
 
     putRequest.onsuccess = () => {
-      console.log("Schedule saved/updated in IndexedDB.");
+      console.log("Schedule saved/updated in IndexedDB for city:", cityName);
     };
 
     putRequest.onerror = (event) => {
@@ -106,7 +106,7 @@ const formatTime = (time) => {
   return `${hours}:${m} ${ampm}`;
 };
 
-const Schedule = () => {
+const Schedule = ({ cityName }) => {
   const scheduleContainerRef = useRef(null);
 
   const getTodayKey = () => {
@@ -122,7 +122,20 @@ const Schedule = () => {
   const [formTime, setFormTime] = useState('');
   const [formActivity, setFormActivity] = useState('');
 
+  const [dataLoaded, setDataLoaded] = useState(false);
+
+  // Fetch data once
   useEffect(() => {
+    loadScheduleFromBrowser(cityName, (dataFromDB) => {
+      setScheduleData(dataFromDB);
+      setCurrentDay(getTodayKey());
+      setDataLoaded(true);
+    });
+  }, [cityName]);
+
+  // Drag setup only after data is loaded
+  useEffect(() => {
+    if (!dataLoaded) return;
     const container = scheduleContainerRef.current;
     if (!container) return;
 
@@ -168,7 +181,8 @@ const Schedule = () => {
         item.removeEventListener('dragend', handleDragEnd);
       });
     };
-  }, [scheduleData, currentDay]);
+
+  }, [dataLoaded, scheduleData, currentDay]);
 
 
   const handleAddSchedule = () => {
@@ -189,7 +203,7 @@ const Schedule = () => {
     setScheduleData(updatedData);
     setShowForm(false);
     setCurrentDay(formDay);
-    saveScheduleOnBrowser(updatedData);
+    saveScheduleOnBrowser(updatedData, cityName);
   };
 
 
@@ -202,7 +216,7 @@ const Schedule = () => {
       newData[day][index].status = newStatus;
     }
     setScheduleData(newData);
-    saveScheduleOnBrowser(newData);
+    saveScheduleOnBrowser(newData, cityName);
   };
 
   const sortedSchedule = [...scheduleData[currentDay]].sort((a, b) => a.time.localeCompare(b.time));
@@ -217,7 +231,7 @@ const Schedule = () => {
 
     const updated = { ...scheduleData, [currentDay]: newOrder };
     setScheduleData(updated);
-    saveScheduleOnBrowser(updated);
+    saveScheduleOnBrowser(updated, cityName);
   };
 
   return (

@@ -27,9 +27,6 @@ const Search = () => {
     if (!input || input.trim() === "") {
       return "Please enter a city name."
     }
-    if (!/^[a-zA-Z\s]+$/.test(input)) {
-      return "Please enter a valid city name (letters and spaces only)."
-    }
     return ""
   }
 
