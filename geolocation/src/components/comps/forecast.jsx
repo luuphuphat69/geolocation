@@ -23,7 +23,7 @@ const Forecast = ({ forecast }) => {
                     5 Day Forecast
                 </h2>
                 <div class="text-sm text-gray-500 unit-toggle" id="unit-toggle">
-                    <span id="celsius" class="active" onClick={() => handleUnitClick('C')}>°C</span> | <span id="fahrenheit" class="inactive" onClick={() => handleUnitClick('F')}>°F</span>
+                    <button id="celsius" class="active" onClick={() => handleUnitClick('C')}>°C</button> | <button id="fahrenheit" class="inactive" onClick={() => handleUnitClick('F')}>°F</button>
                 </div>
             </div>
 
@@ -50,12 +50,12 @@ const Forecast = ({ forecast }) => {
                     ))}
                 </div>
 
-                <div className="mt-6 bg-blue-50 p-4 rounded-lg">
+                {/* <div className="mt-6 bg-blue-50 p-4 rounded-lg">
                     <h3 className="font-medium text-blue-800 mb-2">Weekly Weather Summary</h3>
                     <p className="text-gray-700">
                         Temperatures will gradually decrease throughout the week with rain expected on Wednesday and Thursday. Friday will be cooler with overcast skies.
                     </p>
-                </div>
+                </div> */}
             </div>
 
             <div className="fade-bottom"></div>

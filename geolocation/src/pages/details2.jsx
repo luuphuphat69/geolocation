@@ -76,7 +76,7 @@ const WeatherDetails = () => {
                 <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* <!-- 5 Day Forecast Section (Placeholder) --> */}
                     <Forecast forecast={forecast}/>
-
+                    
                     {/* <!-- UV Index Section (Placeholder) --> */}
                     <UVIndex cityData={cityData}/>
 

@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { Toaster } from "@/components/ui/toaster"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
 import { getLocation } from "../ultilities/api/api";
 import "../css/result.css";
+import WeatherCard2 from "./weathercard2";
 
 const Result2 = () => {
     const columns = [
@@ -23,6 +31,7 @@ const Result2 = () => {
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [loading, setLoading] = useState(false);
+    const [selectedRow, setSelectedRow] = useState(null)
     const [filters, setFilters] = useState({});
     const [sort, setSort] = useState(null);
     const [filterColumn, setFilterColumn] = useState("city_name");
@@ -100,6 +109,15 @@ const Result2 = () => {
         setSort({ column, direction });
     };
 
+    const handleCloseDialog = () => {
+        setSelectedRow(null)
+    }
+
+    const handleRowClick = (row) => {
+        setSelectedRow(row)
+    }
+
+
     return (
         <div className="result-container">
             <h1 className="page-title">Results with: {searchTerm}</h1>
@@ -167,10 +185,10 @@ const Result2 = () => {
                                 <th
                                     key={col.id}
                                     className={`sortable ${sort?.column === col.id
-                                            ? sort.direction === "asc"
-                                                ? "sort-asc"
-                                                : "sort-desc"
-                                            : ""
+                                        ? sort.direction === "asc"
+                                            ? "sort-asc"
+                                            : "sort-desc"
+                                        : ""
                                         }`}
                                     onClick={() => handleSort(col.id)}
                                 >
@@ -188,7 +206,7 @@ const Result2 = () => {
                             </tr>
                         ) : (
                             filteredData.map((item, idx) => (
-                                <tr key={idx}>
+                                <tr key={idx} onClick={() => handleRowClick(item)}>
                                     <td>{item.name}</td>
                                     <td>{item.state_name}</td>
                                     <td>{item.country_name}</td>
@@ -200,6 +218,15 @@ const Result2 = () => {
                     </tbody>
                 </table>
             )}
+            <Dialog open={!!selectedRow} onOpenChange={handleCloseDialog}>
+                <DialogContent className="max-w-[550px] max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Weather for {selectedRow?.name}</DialogTitle>
+                    </DialogHeader>
+                    {selectedRow && <WeatherCard2 city={selectedRow?.name} lat={selectedRow?.latitude} long={selectedRow?.longitude} />}
+                </DialogContent>
+            </Dialog>
+            <Toaster />
         </div>
     );
 };

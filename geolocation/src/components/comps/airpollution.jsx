@@ -112,7 +112,7 @@ const AirPollution = ({airPollution}) => {
                                 </tbody>
                             </table>
                         </div>
-                        <div class="text-xs text-gray-500 mt-2">All values in μg/m³ except CO (in μg/m³)</div>
+                        <div class="text-xs text-gray-500">All values in μg/m³ except CO (in μg/m³)</div>
                     </div>
                 </div>
             </h2>

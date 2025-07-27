@@ -1,14 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom"
-import axios from 'axios';
 import { Eye, Bell } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import '../css/weathercard.css'
-import Schedule from '../components/comps/schedule';
-import HourlyForecast from '../components/comps/hourlyforecast';
-import { kelvinToCelsius, kelvinToFahrenheit } from '../ultilities/common';
 import { getCurrentWeather, getHourlyForecast, unsubLambda, subLambda } from '../ultilities/api/api';
-
+import WeatherCard_Comp from '../components/comps/card_comps/weather_card';
+import Schedule from '../components/comps/card_comps/schedule';
 import {
     Dialog,
     DialogContent,
@@ -24,13 +21,12 @@ import { ToastAction } from "@/components/ui/toast"
 
 const WeatherCard2 = ({ city, lat, long }) => {
     const [weatherData, setWeatherData] = useState(null);
-    const [currentUnit, setCurrentUnit] = useState('C');
     const [notifyEmail, setNotifyEmail] = useState(false)
     const [seeDetails, setSeeDatails] = useState(false)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [email, setEmail] = useState("")
     const [id, setId] = useState("");
-    const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState("weather");
     const [hourlyForecastData, setHourlyForecastData] = useState(null);
     const { toast } = useToast()
 
@@ -61,12 +57,6 @@ const WeatherCard2 = ({ city, lat, long }) => {
 
     const iconCode = weatherData.current.weather[0].icon;
     const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-
-    const handleUnitClick = (unit) => {
-        if (unit === currentUnit) return;
-
-        setCurrentUnit(unit);
-    };
 
     const handleUnsubcribe = async (email, id) => {
         await unsubLambda(id, email)
@@ -111,27 +101,21 @@ const WeatherCard2 = ({ city, lat, long }) => {
         setEmail("");
     }
 
-    const handleAddSchedule = () => {
-        if (!formTime || !formActivity.trim()) return alert('Fill in all fields.');
-
-        const newData = { ...scheduleData };
-        newData[formDay].push({ time: formTime, activity: formActivity.trim(), status: 'pending' });
-        setScheduleData(newData);
-        setShowForm(false);
-        setCurrentDay(formDay);
+    const handleTabClick = (tabName) => {
+        setActiveTab(tabName);
     };
 
     return (
-        <div class="weather-app">
-            <div class="weather-card">
+        <div className="weather-app">
+            <div className="weather-card">
                 {/* <!-- Header with city name and local time --> */}
-                <div class="weather-card__header">
-                    <div class="flex justify-between items-center">
+                <div className="weather-card__header">
+                    <div className="flex justify-between items-center">
                         <div>
-                            <h2 class="text-3xl font-bold">{city}</h2>
-                            {/* <p class="text-blue-100" id="local-time">{weatherData.timezone}</p> */}
+                            <h2 className="text-3xl font-bold">{city}</h2>
+                            {/* <p className="text-blue-100" id="local-time">{weatherData.timezone}</p> */}
                         </div>
-                        <div class="flex space-x-3">
+                        <div className="flex space-x-3">
                             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                 <DialogTrigger asChild>
                                     <Button
@@ -140,7 +124,7 @@ const WeatherCard2 = ({ city, lat, long }) => {
                                         aria-label={notifyEmail ? "Unfollow location" : "Follow location"}
                                         className={notifyEmail ? "bg-yellow-400 text-blue-800" : "text-yellow-400"}
                                     >
-                                    <Bell className="h-4 w-4" />
+                                        <Bell className="h-4 w-4" />
                                     </Button>
                                 </DialogTrigger>
                                 <DialogContent className="sm:max-w-[425px]">
@@ -186,76 +170,42 @@ const WeatherCard2 = ({ city, lat, long }) => {
                 </div>
 
                 {/* <!-- Scrollable content wrapper --> */}
-                <div class="weather-card__content-wrapper">
+                <div className="weather-card__content-wrapper">
                     {/* <!-- Tabs for main sections --> */}
-                    <div class="weather-card__tabs" id="main-tabs">
-                        <div class="weather-card__tab weather-card__tab--active" data-tab="weather">Weather</div>
-                        <div class="weather-card__tab" data-tab="schedule">Schedule</div>
+                    <div className="weather-card__tabs" id="main-tabs">
+                        <div
+                            className={`weather-card__tab ${activeTab === "weather" ? "weather-card__tab--active" : ""}`}
+                            data-tab="weather"
+                            onClick={() => handleTabClick("weather")}
+                        >
+                            Weather
+                        </div>
+                        <div
+                            className={`weather-card__tab ${activeTab === "schedule" ? "weather-card__tab--active" : ""}`}
+                            data-tab="schedule"
+                            onClick={() => handleTabClick("schedule")}
+                        >
+                            Schedule
+                        </div>
                     </div>
 
-                    {/* <!-- Main weather info section --> */}
-                    <div class="weather-card__section weather-card__section--active" data-section="weather">
-                        <div class="weather-card__content">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center">
-                                    <div className="weather-card__icon text-6xl text-blue-500 mr-4">
-                                        <img src={iconUrl} alt={weatherData.current.weather[0].description} className="w-16 h-16" />
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center">
-                                            <h3 className="text-4xl font-bold text-gray-800">
-                                                {currentUnit === 'C'
-                                                    ? `${kelvinToCelsius(weatherData.current.temp)}°C`
-                                                    : `${kelvinToFahrenheit(weatherData.current.temp)}°F`}
-                                            </h3>
-                                            <div className="weather-card__unit-toggle ml-2">
-                                                <span
-                                                    className={`weather-card__unit-option ${currentUnit === 'C' ? 'weather-card__unit-option--active' : ''
-                                                        }`}
-                                                    onClick={() => handleUnitClick('C')}
-                                                >
-                                                    °C
-                                                </span>
-                                                <span
-                                                    className={`weather-card__unit-option ${currentUnit === 'F' ? 'weather-card__unit-option--active' : ''
-                                                        }`}
-                                                    onClick={() => handleUnitClick('F')}
-                                                >
-                                                    °F
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <p className="text-gray-600 font-medium">
-                                            {weatherData.current.weather[0].description}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* <!-- Weather details --> */}
-                            <div class="mt-6 grid grid-cols-3 gap-4 text-center">
-                                <div class="weather-card__stat">
-                                    <p class="text-gray-500 text-sm">Humidity</p>
-                                    <p class="text-gray-800 font-bold text-lg">{weatherData.current.humidity}%</p>
-                                </div>
-                                <div class="weather-card__stat">
-                                    <p class="text-gray-500 text-sm">Wind</p>
-                                    <p class="text-gray-800 font-bold text-lg">{weatherData.current.wind_speed} km/h</p>
-                                </div>
-                                <div class="weather-card__stat">
-                                    <p class="text-gray-500 text-sm">Feels like</p>
-                                    <p class="text-gray-800 font-bold text-lg" id="feels-like">
-                                        {currentUnit === 'C'
-                                            ? `${kelvinToCelsius(weatherData.current.feels_like)}°C`
-                                            : `${kelvinToFahrenheit(weatherData.current.feels_like)}°F`}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* <!-- Forecast preview --> */}
-                            <div class="mt-6">
-                                <HourlyForecast hourlyForecastData={hourlyForecastData}/>
-                            </div>
+                    {/* Sections */}
+                    <div className="weather-card__sections" >
+                        <div
+                            className={`weather-card__section ${activeTab === "weather" ? "weather-card__section--active" : ""}`}
+                            data-section="weather"
+                            style={{ display: activeTab === "weather" ? "block" : "none" }}
+                        >
+                            {/* Weather content goes here */}
+                            <WeatherCard_Comp weatherData={weatherData} hourlyForecastData={hourlyForecastData} iconUrl = {iconUrl}/>
+                        </div>
+                        <div
+                            className={`weather-card__section ${activeTab === "schedule" ? "weather-card__section--active" : ""}`}
+                            data-section="schedule"
+                            style={{ display: activeTab === "schedule" ? "block" : "none" }}
+                        >
+                            {/* Schedule content goes here */}
+                            <Schedule></Schedule>
                         </div>
                     </div>
                 </div>
