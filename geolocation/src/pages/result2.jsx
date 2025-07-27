@@ -14,12 +14,13 @@ import WeatherCard2 from "./weathercard2";
 
 const Result2 = () => {
     const columns = [
-        { id: "city_name", label: "City" },
+        { id: "name", label: "City" },
         { id: "state_name", label: "State / Province" },
         { id: "country_name", label: "Country" },
         { id: "latitude", label: "Latitude" },
         { id: "longitude", label: "Longitude" },
     ];
+
     const numericColumns = ["latitude", "longitude"];
 
 
@@ -224,7 +225,6 @@ const Result2 = () => {
                         <DialogTitle>Weather for {selectedRow?.name}</DialogTitle>
                     </DialogHeader>
                     {selectedRow && <WeatherCard2 city={selectedRow?.name} lat={selectedRow?.latitude} long={selectedRow?.longitude} />}
-                    {console.log(selectedRow)}
                 </DialogContent>
             </Dialog>
             <Toaster />
