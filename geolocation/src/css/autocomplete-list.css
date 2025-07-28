@@ -1,7 +1,7 @@
 .autocomplete-list {
     position: absolute;
     max-height: 200px;
-    width: 100%;
+    width: 60%;
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 4px;
