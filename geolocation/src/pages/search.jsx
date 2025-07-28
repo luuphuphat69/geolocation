@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import "../css/search.css"
-import "../css/button.css"
 import "../css/validation.css"
 import "../css/autocomplete-list.css"
 import { getLocation } from "../ultilities/api/api"
-import { getAllIndexDB } from "../ultilities/browser/browser"
+import { getAllIndexDB, deleteSelectedIndex} from "../ultilities/browser/browser"
 import WeatherCard2 from "./weathercard2"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("")
@@ -15,6 +20,8 @@ const Search = () => {
   const [showValidation, setShowValidation] = useState(false)
   const [showSchedule, setShowSchedule] = useState(false)
   const [scheduleData, setScheduleData] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+
   const navigate = useNavigate()
 
   const fetchSuggestions = async (query) => {
@@ -33,6 +40,21 @@ const Search = () => {
     }
     return ""
   }
+
+  const handleOpenDialog = (city) => {
+    setSelectedCity(city);
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedCity(null);
+
+    // After close dialog, there's might be some changes, retrieve data again
+    getAllIndexDB((dataFromDB) => {
+      setScheduleData(dataFromDB);
+    });
+
+  };
+
 
   const handleSearchChange = (e) => {
     const query = e.target.value
@@ -94,13 +116,23 @@ const Search = () => {
     });
   }, [showSchedule === true]);
 
+const handleDeleteSelectedSchedule = (city) => {
+  const confirmed = window.confirm(`Are you sure you want to delete the schedule for ${city}?`);
+  if (!confirmed) return;
+
+  deleteSelectedIndex(city);
+  getAllIndexDB((dataFromDB) => {
+    setScheduleData(dataFromDB);
+  });
+};
+
+
   return (
     <div class="weather-app">
       <div class="hero-background">
         <div class="container mx-auto px-4 py-16 flex flex-col items-center">
-          <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 text-center" style={{ color: '#000000' }}>Weather Forecast</h1>
+          <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 text-center" style={{ color: '#000000' }}>Geolocation 🌍</h1>
           <p class="text-xl text-blue-100 mb-8 text-center" style={{ color: "#000000ff" }}>Search for a city to check the weather</p>
-
           <div class="search-container">
             <div class="flex flex-col md:flex-row gap-4">
               <input onKeyDown={handleKeyDown} onChange={handleSearchChange} type="text" id="citySearch" placeholder="Enter city name..." class="flex-grow px-5 py-3 rounded-lg border-2 border-blue-300 focus:border-blue-500 focus:outline-none text-lg" />
@@ -135,7 +167,7 @@ const Search = () => {
             </svg>
             Show My Schedules
           </button>
-          <div id="scheduleContainer" class={showSchedule === true ? " container-white" : "hidden"}>
+          <div id="scheduleContainer" class={showSchedule === true && scheduleData.length > 0 ? " container-white" : "hidden"}>
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-2xl font-bold text-gray-800">My Weather Schedules</h2>
               <span class="bg-gray-100 text-gray-700 text-xs font-medium px-2.5 py-1 rounded-full">Scroll for more</span>
@@ -153,10 +185,10 @@ const Search = () => {
                         </svg>
                         {city.id}
                       </h3>
-                      <button class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mt-1 mr-1">Delete</button>
+                      <button onClick={() => handleDeleteSelectedSchedule(city.id)} class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mt-1 mr-1">Delete</button>
                     </div>
 
-                    <div className="weekly-schedule">
+                    <div className="weekly-schedule" onClick={() => handleOpenDialog(city)}>
                       {WEEKDAYS.map((day) => {
                         const activities = city.scheduleData[day] || [];
                         return (
@@ -164,7 +196,18 @@ const Search = () => {
                             <div className="day-header text-blue-800">{capitalize(day)}</div>
                             {activities.length > 0 ? (
                               activities.map((item) => (
-                                <div key={item.id} className="activity-chip bg-blue-100 text-blue-800">
+                                <div
+                                  key={item.id}
+                                  className={
+                                    item.status === 'completed'
+                                      ? "activity-chip bg-blue-100 text-blue-800 item-completed"
+                                      : item.status === 'pending'
+                                        ? "activity-chip bg-blue-100 text-blue-800 item-pending"
+                                        : item.status === 'cancelled'
+                                          ? "activity-chip bg-blue-100 text-blue-800 item-cancelled"
+                                          : "activity-chip bg-blue-100 text-blue-800"
+                                  }
+                                >
                                   <div className="p-1 truncate max-w-[150px]" title={item.activity}>
                                     {item.activity}
                                   </div>
@@ -172,7 +215,7 @@ const Search = () => {
                                 </div>
                               ))
                             ) : (
-                              <div className="text-sm text-gray-400 italic" style={{textAlign: "center", padding: 20}}>Empty</div>
+                              <div className="text-sm text-gray-400 italic" style={{ textAlign: "center", padding: 20 }}>Empty</div>
                             )}
                           </div>
                         );
@@ -185,8 +228,21 @@ const Search = () => {
           </div>
         </div>
       </div>
+      <Dialog open={!!selectedCity} onOpenChange={handleCloseDialog}>
+        <DialogContent className="max-w-[550px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Weather for {selectedCity?.id}</DialogTitle>
+          </DialogHeader>
+          {selectedCity && (
+            <WeatherCard2
+              city={selectedCity.id}
+              lat={selectedCity.lat}
+              long={selectedCity.long}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
-
 export default Search

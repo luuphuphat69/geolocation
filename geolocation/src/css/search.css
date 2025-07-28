@@ -1,24 +1,72 @@
-      /* Weather App Specific Styles */
+/* Weather App Specific Styles */
         .weather-app {
             font-family: 'Montserrat', sans-serif;
         }
         
         .weather-app .hero-background {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Cstyle%3E.sky %7B fill: %234a94e8; %7D .cloud %7B fill: %23ffffff; %7D .sun %7B fill: %23ffcc33; %7D .rain %7B fill: %23a3d5ff; %7D%3C/style%3E%3Crect class='sky' width='800' height='600'/%3E%3C!-- Sun --%3E%3Ccircle class='sun' cx='650' cy='120' r='60'/%3E%3Ccircle fill='%23ffe066' cx='650' cy='120' r='45'/%3E%3C!-- Clouds --%3E%3Cpath class='cloud' d='M150,150 Q180,120 210,150 Q240,120 270,150 Q300,120 330,150 L330,190 L150,190 Z' opacity='0.9'/%3E%3Cpath class='cloud' d='M500,200 Q530,170 560,200 Q590,170 620,200 Q650,170 680,200 L680,240 L500,240 Z' opacity='0.9'/%3E%3Cpath class='cloud' d='M330,100 Q350,80 370,100 Q390,80 410,100 L410,130 L330,130 Z' opacity='0.85'/%3E%3Cpath class='cloud' d='M100,250 Q120,230 140,250 Q160,230 180,250 L180,280 L100,280 Z' opacity='0.85'/%3E%3C!-- Rain --%3E%3Cline class='rain' x1='180' y1='280' x2='170' y2='310' stroke='%23a3d5ff' stroke-width='2' stroke-linecap='round'/%3E%3Cline class='rain' x1='160' y1='280' x2='150' y2='310' stroke='%23a3d5ff' stroke-width='2' stroke-linecap='round'/%3E%3Cline class='rain' x1='140' y1='280' x2='130' y2='310' stroke='%23a3d5ff' stroke-width='2' stroke-linecap='round'/%3E%3Cline class='rain' x1='120' y1='280' x2='110' y2='310' stroke='%23a3d5ff' stroke-width='2' stroke-linecap='round'/%3E%3C!-- More clouds --%3E%3Cpath class='cloud' d='M400,300 Q430,270 460,300 Q490,270 520,300 Q550,270 580,300 L580,340 L400,340 Z' opacity='0.8'/%3E%3C/svg%3E");
-            background-size: cover;
-            background-position: center;
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            position: relative;
+            overflow: hidden;
             min-height: 100vh;
             width: 100%;
         }
         
+        /* Cloud animations */
+        .weather-app .hero-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000' opacity='0.4'%3E%3Cpath fill='%23ffffff' d='M170,220 Q200,180 230,220 Q260,180 290,220 L290,250 L170,250 Z'/%3E%3Cpath fill='%23ffffff' d='M570,150 Q600,110 630,150 Q660,110 690,150 L690,180 L570,180 Z'/%3E%3Cpath fill='%23ffffff' d='M370,300 Q400,260 430,300 Q460,260 490,300 L490,330 L370,330 Z'/%3E%3Cpath fill='%23ffffff' d='M770,250 Q800,210 830,250 Q860,210 890,250 L890,280 L770,280 Z'/%3E%3C/svg%3E");
+            background-size: 1000px 1000px;
+            animation: cloudMove 60s linear infinite;
+        }
+        
+        @keyframes cloudMove {
+            0% {
+                background-position: 0px 0px;
+            }
+            100% {
+                background-position: 1000px 0px;
+            }
+        }
+        
+        /* Sun effect */
+        .weather-app .sun-effect {
+            position: absolute;
+            top: 50px;
+            right: 100px;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            animation: pulse 5s infinite alternate;
+            box-shadow: 0 0 60px 30px rgba(255, 253, 200, 0.6);
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.9;
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+        }
+        
         .weather-app .search-container {
             backdrop-filter: blur(8px);
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.4);
             border-radius: 0.75rem;
             padding: 1.5rem;
             margin-bottom: 2rem;
             width: 100%;
             max-width: 32rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.7);
         }
         
         .weather-app .schedule-item {
@@ -26,11 +74,12 @@
             border-radius: 0.5rem;
             padding: 1.25rem;
             margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
         }
         
         .weather-app .schedule-item:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
         }
         
         .weather-app .day-column {
@@ -57,10 +106,12 @@
             display: flex;
             align-items: center;
             transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         
         .weather-app .activity-chip:hover {
             transform: translateY(-2px);
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.08);
         }
         
         .weather-app .activity-time {
@@ -74,10 +125,12 @@
             border-radius: 0.5rem;
             padding: 1.25rem;
             margin-bottom: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
         }
         
         .weather-app .weather-card:hover {
             transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
         }
         
         .weather-app .btn {
@@ -88,10 +141,12 @@
             font-weight: 600;
             padding: 0.75rem 1.5rem;
             transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
         .weather-app .btn:hover {
             transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
         
         .weather-app .btn:focus {
@@ -100,25 +155,25 @@
         }
         
         .weather-app .btn-blue {
-            background-color: #3182ce;
+            background-color: #4299e1;
             color: white;
         }
         
         .weather-app .btn-blue:hover {
-            background-color: #2c5282;
+            background-color: #3182ce;
         }
         
         .weather-app .btn-indigo {
-            background-color: #5a67d8;
+            background-color: #667eea;
             color: white;
         }
         
         .weather-app .btn-indigo:hover {
-            background-color: #4c51bf;
+            background-color: #5a67d8;
         }
         
         .weather-app .btn-green {
-            background-color: #38a169;
+            background-color: #48bb78;
             color: white;
             border-radius: 9999px;
             padding: 0.25rem 1rem;
@@ -126,24 +181,26 @@
         }
         
         .weather-app .btn-green:hover {
-            background-color: #2f855a;
+            background-color: #38a169;
         }
         
         .weather-app .container-white {
             background-color: white;
             border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
             padding: 1.5rem;
             margin-bottom: 2rem;
             width: 100%;
-            max-width: 62rem;
+            max-width: 64rem;
+            border: 1px solid rgba(226, 232, 240, 0.7);
         }
         
         .weather-app .forecast-card {
             background-color: white;
             border-radius: 0.5rem;
             padding: 0.75rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(226, 232, 240, 0.5);
         }
         
         .weather-app .text-temp-high {
@@ -208,5 +265,42 @@
             background-color: rgba(156, 163, 175, 0.8);
         }
         
-        /* Import Montserrat font */
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+        /* Light rays effect */
+        .weather-app .light-rays {
+            position: absolute;
+            top: -50px;
+            right: 80px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,253,200,0.4) 0%, rgba(255,253,200,0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+        
+        .weather-app .light-rays::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,253,200,0.2) 0%, rgba(255,253,200,0) 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+
+      .item-completed {
+          background-color: #00f9aa
+      }
+
+      .item-pending {
+          background-color: #ffa600
+      }
+
+      .item-cancelled {
+          background-color: #ff0000
+      }
+
+      /* Import Montserrat font */
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');

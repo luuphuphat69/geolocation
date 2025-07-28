@@ -206,7 +206,7 @@ const WeatherCard2 = ({ city, lat, long }) => {
                             style={{ display: activeTab === "schedule" ? "block" : "none" }}
                         >
                             {/* Schedule content goes here */}
-                            <Schedule cityName={city}></Schedule>
+                            <Schedule cityName={city} lat={lat} long={long}></Schedule>
                         </div>
                     </div>
                 </div>
