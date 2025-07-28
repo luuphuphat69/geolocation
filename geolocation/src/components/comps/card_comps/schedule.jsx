@@ -40,7 +40,7 @@ const loadScheduleFromBrowser = (cityName, callback) => {
   };
 };
 
-const saveScheduleOnBrowser = (scheduleData, cityName) => {
+const saveScheduleOnBrowser = (scheduleData, cityName, lat, long) => {
   const request = indexedDB.open("schedule_db", 1);
 
   request.onupgradeneeded = (event) => {
@@ -63,6 +63,8 @@ const saveScheduleOnBrowser = (scheduleData, cityName) => {
     const record = {
       id: cityName,
       scheduleData: scheduleData,
+      lat: lat,
+      long, long
     };
 
     const putRequest = store.put(record);
@@ -104,7 +106,7 @@ const formatTime = (time) => {
   return `${hours}:${m} ${ampm}`;
 };
 
-const Schedule = ({ cityName }) => {
+const Schedule = ({ cityName, lat, long}) => {
   const scheduleContainerRef = useRef(null);
 
   const getTodayKey = () => {
@@ -182,7 +184,6 @@ const Schedule = ({ cityName }) => {
 
   }, [dataLoaded, scheduleData, currentDay]);
 
-
   const handleAddSchedule = () => {
     if (!formTime || !formActivity.trim()) return alert('Fill in all fields.');
 
@@ -201,10 +202,8 @@ const Schedule = ({ cityName }) => {
     setScheduleData(updatedData);
     setShowForm(false);
     setCurrentDay(formDay);
-    saveScheduleOnBrowser(updatedData, cityName);
+    saveScheduleOnBrowser(updatedData, cityName, lat, long);
   };
-
-
 
   const handleStatusChange = (day, index, newStatus) => {
     const newData = { ...scheduleData };
@@ -214,7 +213,7 @@ const Schedule = ({ cityName }) => {
       newData[day][index].status = newStatus;
     }
     setScheduleData(newData);
-    saveScheduleOnBrowser(newData, cityName);
+    saveScheduleOnBrowser(newData, cityName, lat, long);
   };
 
   const sortedSchedule = [...scheduleData[currentDay]].sort((a, b) => a.time.localeCompare(b.time));
@@ -286,7 +285,7 @@ const Schedule = ({ cityName }) => {
                 className={`schedule-item flex items-center justify-between p-3 rounded-lg border ${statusInfo.class}`}
               >
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3" style={{maxWidth: "50%"}}>
                   <i className={`fas ${statusInfo.icon} ${statusInfo.pulse ? 'animate-pulse' : ''}`} />
                   <div>
                     <div
