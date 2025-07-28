@@ -113,7 +113,8 @@ const WeatherCard2 = ({ city, lat, long }) => {
                     <div className="flex justify-between items-center">
                         <div>
                             <h2 className="text-3xl font-bold">{city}</h2>
-                            {/* <p className="text-blue-100" id="local-time">{weatherData.timezone}</p> */}
+                            {hourlyForecastData ? <p className="text-blue-100" id="local-time">{hourlyForecastData.location.localtime}</p> : 
+                            <p>Loading local time...</p>}
                         </div>
                         <div className="flex space-x-3">
                             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

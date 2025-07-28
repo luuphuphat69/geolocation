@@ -25,8 +25,6 @@ const loadScheduleFromBrowser = (cityName, callback) => {
       const result = getRequest.result;
       if (result && result.scheduleData) {
         callback(result.scheduleData);
-      } else {
-        console.log("No existing schedule found for city:", cityName);
       }
     };
 

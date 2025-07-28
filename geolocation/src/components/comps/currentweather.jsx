@@ -51,8 +51,8 @@ const CurrentWeather = ({ cityData }) => {
                             </div>
                             <div class="ml-2">
                                 <div class="text-sm text-gray-500 unit-toggle" id="unit-toggle">
-                                    <span id="celsius" class="active" onClick={() => handleUnitClick('C')}>°C</span> | 
-                                    <span id="fahrenheit" class="inactive" onClick={() => handleUnitClick('F')}>°F</span>
+                                    <button id="celsius" class="active" onClick={() => handleUnitClick('C')}>°C</button> | 
+                                    <button id="fahrenheit" class="inactive" onClick={() => handleUnitClick('F')}>°F</button>
                                 </div>
                                 <div class="text-lg font-medium">{cityData.current.weather[0].description}</div>
                             </div>

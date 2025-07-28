@@ -1,16 +1,20 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import "../css/search.css"
 import "../css/button.css"
 import "../css/validation.css"
 import "../css/autocomplete-list.css"
 import { getLocation } from "../ultilities/api/api"
+import { getAllIndexDB } from "../ultilities/browser/browser"
+import WeatherCard2 from "./weathercard2"
 
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [suggestions, setSuggestions] = useState([])
   const [validationMessage, setValidationMessage] = useState("")
   const [showValidation, setShowValidation] = useState(false)
+  const [showSchedule, setShowSchedule] = useState(false)
+  const [scheduleData, setScheduleData] = useState(null);
   const navigate = useNavigate()
 
   const fetchSuggestions = async (query) => {
@@ -52,12 +56,18 @@ const Search = () => {
       setSearchTerm(name)
       setShowValidation(false)
       setValidationMessage("")
+      navigate(`/result?city=${encodeURIComponent(name)}`)
     }
     setSuggestions([])
   }
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch(e)
+    }
+  };
+
   const handleSearch = (e) => {
-    e.preventDefault()
     const message = validateInput(searchTerm)
 
     if (message) {
@@ -71,53 +81,109 @@ const Search = () => {
     }
   }
 
+  const handleShowSchedule = () => {
+    setShowSchedule(!showSchedule)
+  }
+
+  const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+
+  useEffect(() => {
+    getAllIndexDB((dataFromDB) => {
+      setScheduleData(dataFromDB);
+    });
+  }, [showSchedule === true]);
+
   return (
-    <div className="relative flex min-h-screen flex-col">
-      {/* <SiteHeader /> */}
-      <div className="s013 flex-1">
-        <form id="form" onSubmit={handleSearch}>
-          <fieldset>
-            <legend>QUICK FIND YOUR CITY</legend>
-          </fieldset>
-          <div className="inner-form">
-            <div className="left">
-              <div className="input-wrap first">
-                <div className="input-field first">
-                  <label>
-                    WHAT CITY ?
-                    <input
-                      id="input"
-                      type="text"
-                      value={searchTerm}
-                      onChange={handleSearchChange}
-                      className={showValidation && validationMessage ? "error" : ""}
-                    />
-                  </label>
+    <div class="weather-app">
+      <div class="hero-background">
+        <div class="container mx-auto px-4 py-16 flex flex-col items-center">
+          <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 text-center" style={{ color: '#000000' }}>Weather Forecast</h1>
+          <p class="text-xl text-blue-100 mb-8 text-center" style={{ color: "#000000ff" }}>Search for a city to check the weather</p>
 
-                  {/* Validation Message */}
-                  {showValidation && validationMessage && (
-                    <div className="validation-message">
-                      <span>{validationMessage}</span>
-                    </div>
-                  )}
-
-                  {suggestions.length > 0 && (
-                    <ul className="autocomplete-list">
-                      {suggestions.map((suggestion) => (
-                        <li key={suggestion._id} onClick={() => handleSuggestionClick(suggestion.name)}>
-                          {suggestion.name}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </div>
+          <div class="search-container">
+            <div class="flex flex-col md:flex-row gap-4">
+              <input onKeyDown={handleKeyDown} onChange={handleSearchChange} type="text" id="citySearch" placeholder="Enter city name..." class="flex-grow px-5 py-3 rounded-lg border-2 border-blue-300 focus:border-blue-500 focus:outline-none text-lg" />
+              <button onClick={handleSearch} id="searchBtn" class="btn btn-blue">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                Search
+              </button>
             </div>
-            <button id="button" style={{ marginLeft: "10px" }}>
-              Find now
-            </button>
+            {suggestions.length > 0 && (
+              <ul className="autocomplete-list">
+                {suggestions.map((suggestion) => (
+                  <li key={suggestion._id} onClick={() => handleSuggestionClick(suggestion.name)}>
+                    {suggestion.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {/* Validation Message */}
+            {showValidation && validationMessage && (
+              <div className="validation-message">
+                <span>{validationMessage}</span>
+              </div>
+            )}
+
           </div>
-        </form>
+
+          <button onClick={handleShowSchedule} id="showScheduleBtn" class="btn btn-indigo mb-8">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Show My Schedules
+          </button>
+          <div id="scheduleContainer" class={showSchedule === true ? " container-white" : "hidden"}>
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-2xl font-bold text-gray-800">My Weather Schedules</h2>
+              <span class="bg-gray-100 text-gray-700 text-xs font-medium px-2.5 py-1 rounded-full">Scroll for more</span>
+            </div>
+
+            <div className="schedules-scroll-container">
+              {scheduleData?.map((city) => (
+                <div key={city.id} className="space-y-6 mt-3">
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                      <h3 className="text-xl font-bold text-blue-800 flex">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {city.id}
+                      </h3>
+                      <button class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mt-1 mr-1">Delete</button>
+                    </div>
+
+                    <div className="weekly-schedule">
+                      {WEEKDAYS.map((day) => {
+                        const activities = city.scheduleData[day] || [];
+                        return (
+                          <div key={day} className="day-column">
+                            <div className="day-header text-blue-800">{capitalize(day)}</div>
+                            {activities.length > 0 ? (
+                              activities.map((item) => (
+                                <div key={item.id} className="activity-chip bg-blue-100 text-blue-800">
+                                  <div className="p-1 truncate max-w-[150px]" title={item.activity}>
+                                    {item.activity}
+                                  </div>
+                                  <div className="activity-time">{item.time}</div>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="text-sm text-gray-400 italic" style={{textAlign: "center", padding: 20}}>Empty</div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
