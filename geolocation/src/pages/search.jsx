@@ -4,7 +4,7 @@ import "../css/search.css"
 import "../css/validation.css"
 import "../css/autocomplete-list.css"
 import { getLocation } from "../ultilities/api/api"
-import { getAllIndexDB, deleteSelectedIndex} from "../ultilities/browser/browser"
+import { getAllIndexDB, deleteSelectedIndex } from "../ultilities/browser/browser"
 import WeatherCard2 from "./weathercard2"
 import {
   Dialog,
@@ -116,20 +116,23 @@ const Search = () => {
     });
   }, [showSchedule === true]);
 
-const handleDeleteSelectedSchedule = (city) => {
-  const confirmed = window.confirm(`Are you sure you want to delete the schedule for ${city}?`);
-  if (!confirmed) return;
+  const handleDeleteSelectedSchedule = (city) => {
+    const confirmed = window.confirm(`Are you sure you want to delete the schedule for ${city}?`);
+    if (!confirmed) return;
 
-  deleteSelectedIndex(city);
-  getAllIndexDB((dataFromDB) => {
-    setScheduleData(dataFromDB);
-  });
-};
+    deleteSelectedIndex(city);
+    getAllIndexDB((dataFromDB) => {
+      setScheduleData(dataFromDB);
+    });
+  };
 
 
   return (
     <div class="weather-app">
       <div class="hero-background">
+        <div className="clouds-bg"></div> 
+        <div class="light-rays"></div>
+        <div class="sun-effect"></div>
         <div class="container mx-auto px-4 py-16 flex flex-col items-center">
           <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 text-center" style={{ color: '#000000' }}>Geolocation 🌍</h1>
           <p class="text-xl text-blue-100 mb-8 text-center" style={{ color: "#000000ff" }}>Search for a city to check the weather</p>

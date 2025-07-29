@@ -1,12 +1,12 @@
   .weather-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            position: relative;
-            height: 500px;
-            overflow: hidden;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      position: relative;
+      height: 500px;
+      overflow: hidden;
   }
 
   .card-content {
@@ -62,3 +62,80 @@
           max-height: 500px;
       }
   }
+
+  /* Dynamic Weather Backgrounds */
+  .weather-thunderstorm {
+      background: linear-gradient(135deg, #2F4F4F 0%, #36454F 25%, #4B0082 50%, #483D8B 75%, #191970 100%);
+  }
+
+  .weather-drizzle {
+      background: linear-gradient(135deg, #708090 0%, #778899 25%, #87CEEB 50%, #B0C4DE 75%, #D3D3D3 100%);
+  }
+
+  .weather-rain {
+      background: linear-gradient(135deg, #4682B4 0%, #5F9EA0 25%, #708090 50%, #778899 75%, #696969 100%);
+  }
+
+  .weather-snow {
+      background: linear-gradient(135deg, #F0F8FF 0%, #E6E6FA 25%, #F5F5F5 50%, #FFFAFA 75%, #F8F8FF 100%);
+  }
+
+  .weather-atmosphere {
+      background: linear-gradient(135deg, #D3D3D3 0%, #C0C0C0 25%, #A9A9A9 50%, #DCDCDC 75%, #E5E5E5 100%);
+  }
+
+  .weather-clear {
+      background: linear-gradient(135deg, #87CEEB 0%, #98D8E8 25%, #F0E68C 50%, #FFD700 75%, #FFA500 100%);
+  }
+
+  .weather-clouds {
+      background: linear-gradient(135deg, #B0C4DE 0%, #D3D3D3 25%, #E6E6FA 50%, #F5F5F5 75%, #DCDCDC 100%);
+  }
+
+  /* Animated background elements */
+        .weather-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .rain-drop {
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background: rgba(173, 216, 230, 0.6);
+            animation: rain-fall 1s linear infinite;
+        }
+        
+        .snow-flake {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.8);
+            animation: snow-fall 3s linear infinite;
+            font-size: 14px;
+        }
+        
+        .cloud-particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            animation: cloud-drift 20s linear infinite;
+        }
+        
+        @keyframes rain-fall {
+            0% { top: -20px; opacity: 1; }
+            100% { top: 100vh; opacity: 0; }
+        }
+        
+        @keyframes snow-fall {
+            0% { top: -20px; opacity: 1; transform: translateX(0px); }
+            100% { top: 100vh; opacity: 0; transform: translateX(100px); }
+        }
+        
+        @keyframes cloud-drift {
+            0% { left: -200px; }
+            100% { left: 100vw; }
+        }
