@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { kelvinToCelsius, kelvinToFahrenheit } from "../../ultilities/common";
 const CurrentWeather = ({ cityData }) => {
-    
+
     const [currentUnit, setCurrentUnit] = useState('C');
 
     const currentDate = new Date();
@@ -15,16 +15,24 @@ const CurrentWeather = ({ cityData }) => {
     }
     const getRecommendedOutfit = (temp) => {
         const celsiusTemp = temp - 273.15;
+
         if (celsiusTemp < 10) {
-            return "Heavy coat, scarf, and gloves"
+            return "Heavy coat, scarf, and gloves";
         } else if (celsiusTemp < 20) {
-            return "Light jacket or sweater"
+            return "Light jacket or sweater";
         } else if (celsiusTemp < 30) {
-            return "T-shirt and light pants"
+            return "T-shirt and light pants";
+        } else if (celsiusTemp >= 30 && celsiusTemp <= 39) {
+            return "Shorts and a breathable shirt, stay hydrated";
+        } else if (celsiusTemp > 39 && celsiusTemp <= 50) {
+            return "Very hot! Wear loose, light-colored clothes and avoid outdoor activities";
+        } else if (celsiusTemp > 50) {
+            return "Extreme heat! Stay indoors with air conditioning if possible";
         } else {
-            return "Light, breathable clothing"
+            return "Light, breathable clothing";
         }
-    }
+    };
+
     const handleUnitClick = (unit) => {
         if (unit === currentUnit) return;
         setCurrentUnit(unit);
@@ -35,7 +43,7 @@ const CurrentWeather = ({ cityData }) => {
     return (
         <div class="weather-card p-6">
             <h2 class="text-xl font-semibold mb-4 text-blue-800 flex items-center">
-            <img src={`https://openweathermap.org/img/wn/${cityData.current.weather[0].icon}@2x.png`} alt="Weather icon" />
+                <img src={`https://openweathermap.org/img/wn/${cityData.current.weather[0].icon}@2x.png`} alt="Weather icon" />
                 Current Weather
             </h2>
 
@@ -51,7 +59,7 @@ const CurrentWeather = ({ cityData }) => {
                             </div>
                             <div class="ml-2">
                                 <div class="text-sm text-gray-500 unit-toggle" id="unit-toggle">
-                                    <button id="celsius" class="active" onClick={() => handleUnitClick('C')}>°C</button> | 
+                                    <button id="celsius" class="active" onClick={() => handleUnitClick('C')}>°C</button> |
                                     <button id="fahrenheit" class="inactive" onClick={() => handleUnitClick('F')}>°F</button>
                                 </div>
                                 <div class="text-lg font-medium">{cityData.current.weather[0].description}</div>

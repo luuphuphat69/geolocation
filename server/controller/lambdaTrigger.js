@@ -9,10 +9,11 @@ aws.config.update({
 const lambdaTrigger = {
     writetodb: async (req, res) => {
         const lambda = new aws.Lambda();
-        const mail = req.query.mail;
-        const lat = req.query.lat;
-        const long = req.query.long;
-        const city = req.query.city;
+        const mail = req.body.params?.mail;
+        const lat = req.body.params?.lat;
+        const long = req.body.params?.long;
+        const city = req.body.params?.city;
+
 
         const isMailExisted = await checkSubscribedMail(mail);
         if (isMailExisted && isMailExisted.length > 0) {
@@ -38,24 +39,24 @@ const lambdaTrigger = {
             });
         }
     },
-    unsubcribe: async(req, res) => {
+    unsubcribe: async (req, res) => {
         const lambda = new aws.Lambda();
-        const id = req.query.id;
-        const mail = req.query.mail;
+        const id = req.body.params?.id;
+        const mail = req.body.params?.mail;
 
         const params = {
             FunctionName: "sendDeactiveMail",
             Payload: JSON.stringify({
                 id: id,
-                mail: mail        
+                mail: mail
             })
         };
 
-        lambda.invoke(params, function(err, data){
-            if(err){
+        lambda.invoke(params, function (err, data) {
+            if (err) {
                 console.log(err, err.stack);
                 res.status(500).send("Error invoking function");
-            }else{
+            } else {
                 console.log(data);
                 res.status(200).send("Lambda function invoked successfully");
             }
