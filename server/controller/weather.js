@@ -11,13 +11,13 @@ const weather = {
             }
 
             const cacheKey = `current_weather:${lat},${long}`;
-            
-            // // Check the cache
-            // const cachedData = await redisClient.get(cacheKey);
-            // if (cachedData) {
-            //     console.log('Cache hit');
-            //     return res.status(200).json(JSON.parse(cachedData));
-            // }
+
+            // Check the cache
+            const cachedData = await redisClient.get(cacheKey);
+            if (cachedData) {
+                console.log('Cache hit');
+                return res.status(200).json(JSON.parse(cachedData));
+            }
 
             // Fetch data from OpenWeather API
             const response = await axios.get(
@@ -33,10 +33,10 @@ const weather = {
             );
 
             const weatherData = response.data;
-            // // Cache the response
-            // await redisClient.set(cacheKey, JSON.stringify(weatherData), {
-            //     EX: 600, // Expire after 600 seconds
-            // });
+            // Cache the response
+            await redisClient.set(cacheKey, JSON.stringify(weatherData), {
+                EX: 600, // Expire after 600 seconds
+            });
 
             res.status(200).json(weatherData);
         } catch (err) {
@@ -44,8 +44,8 @@ const weather = {
             res.status(500).json({ error: 'Failed to fetch weather data' });
         }
     },
-    
-    GetWeatherForecastData: async(req, res) => {
+
+    GetWeatherForecastData: async (req, res) => {
         try {
             const lat = req.query.lat;
             const long = req.query.long;
@@ -54,14 +54,14 @@ const weather = {
                 return res.status(400).json({ error: 'Latitude and longitude are required' });
             }
 
-            // const cacheKey = `forecast:${lat},${long}`;
-            
-            // // Check the cache
-            // const cachedData = await redisClient.get(cacheKey);
-            // if (cachedData) {
-            //     console.log('Cache hit');
-            //     return res.status(200).json(JSON.parse(cachedData));
-            // }
+            const cacheKey = `forecast:${lat},${long}`;
+
+            // Check the cache
+            const cachedData = await redisClient.get(cacheKey);
+            if (cachedData) {
+                console.log('Cache hit');
+                return res.status(200).json(JSON.parse(cachedData));
+            }
 
             // Fetch data from OpenWeather API
             const response = await axios.get(
@@ -77,10 +77,10 @@ const weather = {
             );
 
             const weatherData = response.data;
-            // // Cache the response
-            // await redisClient.set(cacheKey, JSON.stringify(weatherData), {
-            //     EX: 600, // Expire after 600 seconds
-            // });
+            // Cache the response
+            await redisClient.set(cacheKey, JSON.stringify(weatherData), {
+                EX: 600, // Expire after 600 seconds
+            });
 
             res.status(200).json(weatherData);
         } catch (err) {
@@ -88,27 +88,8 @@ const weather = {
             res.status(500).json({ error: 'Failed to fetch weather data' });
         }
     },
-        GetHoursForecastData: async(req, res) => {
-            try{
-                const lat = req.query.lat;
-                const long = req.query.long;
-                if (!lat || !long) {
-                    return res.status(400).json({ error: 'Latitude and longitude are required' });
-                }
-                const forecast = await axios.get(`http://api.weatherapi.com/v1/forecast.json`,{
-                    params:{
-                        key: process.env.WEATHER_API_KEY,
-                        q: `${lat},${long}`
-                    }
-                });
-                res.status(200).json(forecast.data);
-            }catch(err){
-                console.log(err);
-                res.status(500).json({ error: 'Failed to fetch weather data' });
-            }
-        },
-
-    GetAirPollutionData: async(req, res) => {
+    
+    GetHoursForecastData: async (req, res) => {
         try {
             const lat = req.query.lat;
             const long = req.query.long;
@@ -117,14 +98,48 @@ const weather = {
                 return res.status(400).json({ error: 'Latitude and longitude are required' });
             }
 
-            // const cacheKey = `air_pollution:${lat},${long}`;
-            
-            // // Check the cache
-            // const cachedData = await redisClient.get(cacheKey);
-            // if (cachedData) {
-            //     console.log('Cache hit');
-            //     return res.status(200).json(JSON.parse(cachedData));
-            // }
+            const cacheKey = `hours_forecast:${lat},${long}`;
+            const cachedData = await redisClient.get(cacheKey);
+            if (cachedData) {
+                console.log('Cache hit');
+                return res.status(200).json(JSON.parse(cachedData));
+            }
+
+            const forecast = await axios.get(`http://api.weatherapi.com/v1/forecast.json`, {
+                params: {
+                    key: process.env.WEATHER_API_KEY,
+                    q: `${lat},${long}`
+                }
+            });
+
+            await redisClient.set(cacheKey, JSON.stringify(forecast.data), {
+                EX: 600, // 10 minutes
+            });
+
+            res.status(200).json(forecast.data);
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ error: 'Failed to fetch weather data' });
+        }
+    },
+
+    GetAirPollutionData: async (req, res) => {
+        try {
+            const lat = req.query.lat;
+            const long = req.query.long;
+
+            if (!lat || !long) {
+                return res.status(400).json({ error: 'Latitude and longitude are required' });
+            }
+
+            const cacheKey = `air_pollution:${lat},${long}`;
+
+            // Check the cache
+            const cachedData = await redisClient.get(cacheKey);
+            if (cachedData) {
+                console.log('Cache hit');
+                return res.status(200).json(JSON.parse(cachedData));
+            }
 
             // Fetch data from OpenWeather API
             const response = await axios.get(
@@ -140,9 +155,9 @@ const weather = {
 
             const weatherData = response.data;
             // Cache the response
-            // await redisClient.set(cacheKey, JSON.stringify(weatherData), {
-            //     EX: 600, // Expire after 600 seconds
-            // });
+            await redisClient.set(cacheKey, JSON.stringify(weatherData), {
+                EX: 600, // Expire after 600 seconds
+            });
 
             res.status(200).json(weatherData);
         } catch (err) {
