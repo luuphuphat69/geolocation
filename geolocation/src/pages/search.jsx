@@ -128,20 +128,20 @@ const Search = () => {
 
 
   return (
-    <div class="weather-app">
-      <div class="hero-background">
+    <div className="weather-app">
+      <div className="hero-background">
         <div className="clouds-bg"></div> 
-        <div class="light-rays"></div>
-        <div class="sun-effect"></div>
-        <div class="container mx-auto px-4 py-16 flex flex-col items-center">
-          <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 text-center" style={{ color: '#000000' }}>Geolocation 🌍</h1>
-          <p class="text-xl text-blue-100 mb-8 text-center" style={{ color: "#000000ff" }}>Search for a city to check the weather</p>
-          <div class="search-container">
-            <div class="flex flex-col md:flex-row gap-4">
-              <input onKeyDown={handleKeyDown} onChange={handleSearchChange} type="text" id="citySearch" placeholder="Enter city name..." class="flex-grow px-5 py-3 rounded-lg border-2 border-blue-300 focus:border-blue-500 focus:outline-none text-lg" />
-              <button onClick={handleSearch} id="searchBtn" class="btn btn-blue">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <div className="light-rays"></div>
+        <div className="sun-effect"></div>
+        <div className="container mx-auto px-4 py-16 flex flex-col items-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 text-center" style={{ color: '#000000' }}>Geolocation 🌍</h1>
+          <p className="text-xl text-blue-100 mb-8 text-center" style={{ color: "#000000ff" }}>Search for a city to check the weather</p>
+          <div className="search-container">
+            <div className="flex flex-col md:flex-row gap-4">
+              <input onKeyDown={handleKeyDown} onChange={handleSearchChange} type="text" id="citySearch" placeholder="Enter city name..." className="flex-grow px-5 py-3 rounded-lg border-2 border-blue-300 focus:border-blue-500 focus:outline-none text-lg" />
+              <button onClick={handleSearch} id="searchBtn" className="btn btn-blue">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 Search
               </button>
@@ -164,16 +164,16 @@ const Search = () => {
 
           </div>
 
-          <button onClick={handleShowSchedule} id="showScheduleBtn" class="btn btn-indigo mb-8">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          <button onClick={handleShowSchedule} id="showScheduleBtn" className="btn btn-indigo mb-8">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             Show My Schedules
           </button>
-          <div id="scheduleContainer" class={showSchedule === true && scheduleData.length > 0 ? " container-white" : "hidden"}>
-            <div class="flex justify-between items-center mb-4">
-              <h2 class="text-2xl font-bold text-gray-800">My Weather Schedules</h2>
-              <span class="bg-gray-100 text-gray-700 text-xs font-medium px-2.5 py-1 rounded-full">Scroll for more</span>
+          <div id="scheduleContainer" className={showSchedule === true && scheduleData.length > 0 ? " container-white" : "hidden"}>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-800">My Weather Schedules</h2>
+              <span className="bg-gray-100 text-gray-700 text-xs font-medium px-2.5 py-1 rounded-full">Scroll for more</span>
             </div>
 
             <div className="schedules-scroll-container">
@@ -188,7 +188,7 @@ const Search = () => {
                         </svg>
                         {city.id}
                       </h3>
-                      <button onClick={() => handleDeleteSelectedSchedule(city.id)} class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mt-1 mr-1">Delete</button>
+                      <button onClick={() => handleDeleteSelectedSchedule(city.id)} className="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mt-1 mr-1">Delete</button>
                     </div>
 
                     <div className="weekly-schedule" onClick={() => handleOpenDialog(city)}>
