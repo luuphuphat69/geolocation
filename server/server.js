@@ -1,10 +1,13 @@
-const express = require('express');
-const app = express();
-const mongoose = require('mongoose');
 require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
 const morgan = require('morgan');
 const router = require('./router/router');
-const cors = require('cors');
+
+const app = express();
+
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -23,20 +26,25 @@ const corsOptions = {
     'Authorization'
   ],
 };
-
 app.use(cors(corsOptions));
 app.use(morgan("common"));
-app.listen(3000, () => {
-  console.log(`App listening on port ${3000}`)
-});
-app.use('/v1', router);
 
-const mongoURI = process.env.MONGODB_CONNECTION;
+// Routes
+app.use('/v1', router);
+app.get('/health', (req, res) => res.send('OK'));
+
+// MongoDB
 (async () => {
   try {
-    await mongoose.connect(mongoURI);
+    await mongoose.connect(process.env.MONGODB_CONNECTION);
     console.log('Connected to MongoDB');
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
   }
 })();
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
+});
