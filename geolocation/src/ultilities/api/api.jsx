@@ -65,3 +65,16 @@ export const subLambda = (mail, lat, long, city) => {
         }
     })
 }
+
+export const sendTokenToServer = async (token, lat, lon) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/FCM/token`, {
+            token: token,
+            lat: lat,
+            lon: lon,
+        });
+        console.log(response);
+    } catch (error) {
+        console.log(error);
+    }
+}
