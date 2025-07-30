@@ -64,7 +64,7 @@ const saveScheduleOnBrowser = (scheduleData, cityName, lat, long) => {
       id: cityName,
       scheduleData: scheduleData,
       lat: lat,
-      long, long
+      long: long
     };
 
     const putRequest = store.put(record);
