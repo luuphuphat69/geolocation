@@ -4,11 +4,11 @@ FROM node:18-alpine
 
 WORKDIR /server
 
-COPY server/package.json server/package-lock.json ./
+COPY package.json package-lock.json ./
 
 RUN npm install
 
-COPY server .
+COPY . .
 
 EXPOSE 3000
 
