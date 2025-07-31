@@ -1,6 +1,15 @@
 export const getAllIndexDB = (callback) => {
   const request = indexedDB.open("schedule_db", 1);
 
+  request.onupgradeneeded = (event) => {
+    const db = event.target.result;
+
+    // Create the object store if it doesn't exist
+    if (!db.objectStoreNames.contains("schedule_os")) {
+      db.createObjectStore("schedule_os", { keyPath: "id", autoIncrement: true });
+    }
+  };
+
   request.onsuccess = (event) => {
     const db = event.target.result;
     const tx = db.transaction("schedule_os", "readonly");
@@ -17,7 +26,7 @@ export const getAllIndexDB = (callback) => {
         const lat = cursor.value.lat;
         const long = cursor.value.long;
         const data = cursor.value.scheduleData;
-        schedules.push({ id, scheduleData: data , lat, long});
+        schedules.push({ id, scheduleData: data, lat, long });
         cursor.continue();
       } else {
         // Finished reading all entries
