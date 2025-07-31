@@ -130,7 +130,7 @@ const Search = () => {
   return (
     <div className="weather-app">
       <div className="hero-background">
-        <div className="clouds-bg"></div> 
+        <div className="clouds-bg"></div>
         <div className="light-rays"></div>
         <div className="sun-effect"></div>
         <div className="container mx-auto px-4 py-16 flex flex-col items-center">
@@ -170,7 +170,12 @@ const Search = () => {
             </svg>
             Show My Schedules
           </button>
-          <div id="scheduleContainer" className={showSchedule === true && scheduleData.length > 0 ? " container-white" : "hidden"}>
+          <div id="scheduleContainer" className={
+            showSchedule === true && scheduleData?.length > 0
+              ? " container-white"
+              : "hidden"
+          }
+          >
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold text-gray-800">My Weather Schedules</h2>
               <span className="bg-gray-100 text-gray-700 text-xs font-medium px-2.5 py-1 rounded-full">Scroll for more</span>
