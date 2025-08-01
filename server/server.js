@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
-  origin: [process.env.CLIENT_BASE],
+  origin: [ process.env.CLIENT_BASE], // process.env.CLIENT_BASE || "http://localhost:5173"
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
   allowedHeaders: [
@@ -48,4 +48,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
-console.log('Allowed CORS origin:', process.env.CLIENT_BASE);
