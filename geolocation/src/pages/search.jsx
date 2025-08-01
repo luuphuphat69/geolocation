@@ -208,11 +208,11 @@ const Search = () => {
                                   key={item.id}
                                   className={
                                     item.status === 'completed'
-                                      ? "activity-chip bg-blue-100 text-blue-800 item-completed"
+                                      ? "activity-chip text-blue-800 item-completed"
                                       : item.status === 'pending'
-                                        ? "activity-chip bg-blue-100 text-blue-800 item-pending"
+                                        ? "activity-chip text-blue-800 item-pending"
                                         : item.status === 'cancelled'
-                                          ? "activity-chip bg-blue-100 text-blue-800 item-cancelled"
+                                          ? "activity-chip text-blue-800 item-cancelled"
                                           : "activity-chip bg-blue-100 text-blue-800"
                                   }
                                 >
