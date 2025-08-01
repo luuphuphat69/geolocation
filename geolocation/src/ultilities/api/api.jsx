@@ -3,6 +3,7 @@ import axios from 'axios';
 const prodURL = "https://geolocation-server-xfs4.onrender.com/v1";
 const localURL = "http://localhost:3000/v1";
 
+//const BASE_URL = prodURL;
 const BASE_URL = prodURL;
 
 export const getLocation = (queries) => {
