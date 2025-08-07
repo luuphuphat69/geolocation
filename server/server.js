@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
-  origin: ["http://localhost:5173"], // process.env.CLIENT_BASE || "http://localhost:5173"
+  origin: [process.env.CLIENT_BASE], // process.env.CLIENT_BASE || "http://localhost:5173"
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
   allowedHeaders: [
