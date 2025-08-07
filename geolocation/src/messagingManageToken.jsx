@@ -23,7 +23,6 @@ export const getFCMToken = async (messaging) => {
           const lon = position.coords.longitude;
 
           await sendTokenToServer(currentToken, lat, lon);
-          localStorage.setItem("lastFcmToken", currentToken);
           console.log("New token sent to server and stored.");
         },
         (err) => {
