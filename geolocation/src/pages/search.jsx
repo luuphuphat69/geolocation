@@ -6,6 +6,7 @@ import "../css/autocomplete-list.css"
 import { getLocation } from "../ultilities/api/api"
 import { getAllIndexDB, deleteSelectedIndex } from "../ultilities/browser/browser"
 import WeatherCard2 from "./weathercard2"
+import AllowNotify from "../components/comps/allownotify"
 import {
   Dialog,
   DialogContent,
@@ -163,7 +164,8 @@ const Search = () => {
             )}
 
           </div>
-
+          {/* Notify switch */}
+          <AllowNotify/>
           <button onClick={handleShowSchedule} id="showScheduleBtn" className="btn btn-indigo mb-8">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
