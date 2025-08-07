@@ -4,7 +4,7 @@ const prodURL = "https://geolocation-server-xfs4.onrender.com/v1";
 const localURL = "http://localhost:3000/v1";
 
 //const BASE_URL = prodURL;
-const BASE_URL = prodURL;
+const BASE_URL = localURL;
 
 export const getLocation = (queries) => {
     return axios.get(`${BASE_URL}/location`, {
@@ -76,6 +76,17 @@ export const sendTokenToServer = async (token, lat, lon) => {
             token: token,
             lat: lat,
             lon: lon,
+        });
+        console.log(response);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const deleteFCMTokenFromServer = async (token) => {
+    try {
+        const response = await axios.delete(`${BASE_URL}/FCM/token`,{
+            data: { token }
         });
         console.log(response);
     } catch (error) {

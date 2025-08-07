@@ -15,4 +15,5 @@ router.get('/weather/forecast/hourly', weatherController.GetHoursForecastData)
 router.get('/weather/airpollution', weatherController.GetAirPollutionData);
 
 router.post('/FCM/token', FCMController.saveToken);
+router.delete('/FCM/token', FCMController.deleteToken);
 module.exports = router;

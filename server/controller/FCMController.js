@@ -38,5 +38,28 @@ const FCMController = {
             res.status(500).json({ message: "Internal server error." });
         }
     },
+    deleteToken: async (req, res) => {
+        try {
+            const { token } = req.body;
+            console.log(token)
+            if (!token) {
+                return res.status(400).json({ message: "Token is required." });
+            }
+
+            const docRef = db.collection('FCM_tokens').doc(token);
+            const docSnapshot = await docRef.get();
+
+            if (!docSnapshot.exists) {
+                return res.status(404).json({ message: "Token not found in database." });
+            }
+
+            await docRef.delete();
+            return res.status(200).json({ message: "Token deleted successfully." });
+        } catch (error) {
+            console.error("Error deleting token:", error);
+            return res.status(500).json({ message: "Internal server error." });
+        }
+    }
+
 };
 module.exports = FCMController;
