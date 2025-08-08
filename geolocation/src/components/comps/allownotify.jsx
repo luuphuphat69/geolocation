@@ -120,7 +120,6 @@ const AllowNotify = () => {
                 <div className="relative" onClick={handleNotifySwitchClick}>
                     <input type="checkbox" className="sr-only" checked={notifyStatus} readOnly />
                     <div className={`notification-toggle-bg w-12 h-6 bg-white/30 rounded-full shadow-inner cursor-pointer transition-colors duration-300 ${notifyStatus ? 'active' : ''}`}></div>
-
                     <div
                         className={`notification-toggle-dot absolute w-5 h-5 bg-white rounded-full shadow-md top-0.5 left-0.5 transition-transform duration-300 transform flex items-center justify-center
                         ${notifyStatus ? 'active' : ''} ${loading ? 'loading' : ''}`}
