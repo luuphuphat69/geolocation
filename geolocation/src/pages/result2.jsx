@@ -220,19 +220,13 @@ const Result2 = () => {
                 </table>
             )}
             <Dialog open={!!selectedRow} onOpenChange={handleCloseDialog}>
-                <DialogContent
-                    className="max-w-[550px] max-h-[90vh] overflow-y-auto"
-                    aria-describedby="dialog-description"
-                >
+                <DialogContent className="max-w-[550px] max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle>Weather for {selectedRow?.name}</DialogTitle>
+                        <DialogDescription>
+                            Detailed weather forecast for selected location.
+                        </DialogDescription>
                     </DialogHeader>
-
-                    {/* Optional: visually hidden element */}
-                    <p id="dialog-description" className="sr-only">
-                        Detailed weather forecast for selected location.
-                    </p>
-
                     {selectedRow && (
                         <WeatherCard2
                             city={selectedRow?.name}
