@@ -137,7 +137,7 @@ const AllowNotify = () => {
                     <DialogHeader>
                         <DialogTitle>Notifications Enabled</DialogTitle>
                         <DialogDescription>
-                            You’ll now receive weather alerts at 10AM based on your current location.
+                            You’ll now receive weather alerts based on your current location.
                         </DialogDescription>
                     </DialogHeader>
                 </DialogContent>
