@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyATcsVW3yFiRODjWlLaZJVQKSHRHwG2Sa8",
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: "geolocation-72da3.firebaseapp.com",
     projectId: "geolocation-72da3",
     storageBucket: "geolocation-72da3.firebasestorage.app",
