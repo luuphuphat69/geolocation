@@ -6,6 +6,40 @@ const localURL = "http://localhost:3000/v1";
 //const BASE_URL = prodURL;
 const BASE_URL = localURL;
 
+const lambdaAPI_ID = ["qnwo61w86a", "fl67rvmwfa"];
+const lambdaAPI_stage = "default";
+const lambdaAPI_path = ["sendDeactiveMail", "writetodb"];
+
+export const SendActivasion = async (mail, city, lat, long) => {
+    try {
+        const res = await axios.post(
+            `https://${lambdaAPI_ID[1]}.execute-api.us-east-1.amazonaws.com/${lambdaAPI_stage}/${lambdaAPI_path[1]}`,
+            { mail, city, lat, long },
+            { headers: { "Content-Type": "application/json" } }
+        );
+        // console.log("Success:", res.data);
+        return res;
+    } catch (err) {
+        //console.error("Error:", err.response?.data || err.message);
+        return err.response;
+    }
+};
+
+export const unsubcribeNotify = async(id, mail) => {
+    try {
+        const res = await axios.post(
+            `https://${lambdaAPI_ID[0]}.execute-api.us-east-1.amazonaws.com/${lambdaAPI_stage}/${lambdaAPI_path[0]}`,
+            { mail, id },
+            { headers: { "Content-Type": "application/json" } }
+        );
+        //console.log("Success:", res.data);
+        return res;
+    } catch (err) {
+        //console.error("Error:", err.response?.data || err.message);
+        return err.response;
+    }
+}
+
 export const getLocation = (queries) => {
     return axios.get(`${BASE_URL}/location`, {
         params: {
