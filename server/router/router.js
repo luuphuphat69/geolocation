@@ -6,9 +6,6 @@ const FCMController = require('../controller/FCMController');
 const router = require('express').Router();
 router.get('/location', locationController.retrieveData);
 
-router.post('/lambda/sub', lambdaController.writetodb);
-router.get('/lambda/unsub', lambdaController.unsubcribe);
-
 router.get('/weather/current', weatherController.GetCurrentWeatherData);
 router.get('/weather/forecast', weatherController.GetWeatherForecastData);
 router.get('/weather/forecast/hourly', weatherController.GetHoursForecastData)

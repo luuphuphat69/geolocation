@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { Eye, Bell } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import '../css/weathercard.css'
-import { getCurrentWeather, getHourlyForecast, unsubLambda, subLambda } from '../ultilities/api/api';
+import { getCurrentWeather, getHourlyForecast, SendActivasion, unsubcribeNotify} from '../ultilities/api/api';
 import WeatherCard_Comp from '../components/comps/card_comps/weather_card';
 import Schedule from '../components/comps/card_comps/schedule';
 import {
@@ -25,7 +25,6 @@ const WeatherCard2 = ({ city, lat, long }) => {
     const [seeDetails, setSeeDatails] = useState(false)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [email, setEmail] = useState("")
-    const [id, setId] = useState("");
     const [activeTab, setActiveTab] = useState("weather");
     const [hourlyForecastData, setHourlyForecastData] = useState(null);
     const { toast } = useToast()
@@ -58,8 +57,8 @@ const WeatherCard2 = ({ city, lat, long }) => {
     const iconCode = weatherData.current.weather[0].icon;
     const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 
-    const handleUnsubcribe = async (email, id) => {
-        await unsubLambda(id, email)
+    const handleUnsubcribe = async (id, mail) => {
+        await unsubcribeNotify(id, mail)
         toast({
             title: "Geolocation Notification",
             description: "We sent you an email. Please check your mail box and confirm to unsubcribe our notificaion"
@@ -72,21 +71,18 @@ const WeatherCard2 = ({ city, lat, long }) => {
         setIsDialogOpen(false);
 
         try {
-            const response = await subLambda(email, lat, long, city);
-            const description = response.status === 281
+            const response = await SendActivasion(email, lat, long, city);
+            const description = response.status === 409
                 ? 'This mail is USED. Use another email or unsubscribe now'
                 : `You will receive daily weather updates for ${city} at 7:00 AM to ${email}`;
 
-            const variant = response.status === 281 ? 'destructive' : '';
-            const id = response.status === 281 ? response.data.ID : null
-            if (id) {
-                setId(id);
-            }
+            const variant = response.status === 409 ? 'destructive' : '';
+            const id = response.status === 409 ? response.data.ID : null
 
             toast({
                 title: "Geolocation Notification",
                 description: description,
-                action: <ToastAction onClick={() => handleUnsubcribe(email, id)} altText="Unsubscribe">Unsubscribe</ToastAction>,
+                action: <ToastAction onClick={() => handleUnsubcribe(id, email)} altText="Unsubscribe">Unsubscribe</ToastAction>,
                 variant: variant,
             });
 
