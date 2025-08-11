@@ -14,8 +14,7 @@
 
 ![Push Notification Flow](https://github.com/user-attachments/assets/bbbd41ca-4c33-483e-b289-4f1b5a5cd597)
 
-*Diagram 2: Process flow of how the browser requests an FCM token, registers a service worker, and receives push notifications via Firebase Cloud Messaging (FCM).*
-
+*Diagram 2: Process flow of how the browser send push notification
 
 ## Table of Contents
 
