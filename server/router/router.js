@@ -1,5 +1,4 @@
 const locationController = require('../controller/location');
-const lambdaController = require('../controller/lambdaTrigger');
 const weatherController = require('../controller/weather');
 const FCMController = require('../controller/FCMController');
 
