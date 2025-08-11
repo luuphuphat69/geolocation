@@ -8,9 +8,9 @@
 - **Real-Time Weather Updates**: Get up-to-date weather information with details on temperature, humidity, wind speed, and more.
 - **Daily Weather Email Subscription**: Users can subscribe to receive daily weather updates for their chosen city at 7:00 AM.
 - **Notification for current location**: Users can turn on/off for notification, which will send their's current location weather at specific times.
-![Untitled Diagram drawio (2)](https://github.com/user-attachments/assets/57947b73-7272-4c28-a970-15e2f717fa64)
+![Untitled Diagram drawio (2)](https://github.com/user-attachments/assets/f59e098c-7d60-43e8-a2e6-c6a758d03494)
 
-*Diagram 1: Workflow showing how the system handles a user's first-time subscription for daily weather updates.*
+*Diagram 1: Workflow showing how users can sign up mail notification*
 
 ![Push Notification Flow](https://github.com/user-attachments/assets/bbbd41ca-4c33-483e-b289-4f1b5a5cd597)
 
