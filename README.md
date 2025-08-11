@@ -7,6 +7,7 @@
 - **City Search**: Find your location or search for a city worldwide to see the current weather.
 - **Real-Time Weather Updates**: Get up-to-date weather information with details on temperature, humidity, wind speed, and more.
 - **Daily Weather Email Subscription**: Users can subscribe to receive daily weather updates for their chosen city at 7:00 AM.
+- **Notification for current location**: Users can turn on/off for notification, which will send their's current location weather at specific times.
 ![Untitled Diagram drawio (2)](https://github.com/user-attachments/assets/57947b73-7272-4c28-a970-15e2f717fa64)
 
 *Diagram 1: Workflow showing how the system handles a user's first-time subscription for daily weather updates.*
