@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { Eye, Bell } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import '../css/weathercard.css'
-import { getCurrentWeather, getHourlyForecast, SendActivasion, unsubcribeNotify} from '../ultilities/api/api';
+import { getCurrentWeather, getHourlyForecast, SendActivasion, unsubcribeNotify } from '../ultilities/api/api';
 import WeatherCard_Comp from '../components/comps/card_comps/weather_card';
 import Schedule from '../components/comps/card_comps/schedule';
 import {
@@ -18,6 +18,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ToastAction } from "@/components/ui/toast"
+
+function isValidEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+}
 
 const WeatherCard2 = ({ city, lat, long }) => {
     const [weatherData, setWeatherData] = useState(null);
@@ -70,6 +75,16 @@ const WeatherCard2 = ({ city, lat, long }) => {
         setNotifyEmail(true);
         setIsDialogOpen(false);
 
+        const isEmail = isValidEmail(email);
+        if (isEmail === false) {
+            toast({
+                title: "Geolocation Notification",
+                description: "Invalid email, please input another valid email",
+                variant: "destructive",
+            });
+        }
+
+
         try {
             const response = await SendActivasion(email, lat, long, city);
             const description = response.status === 409
@@ -109,8 +124,8 @@ const WeatherCard2 = ({ city, lat, long }) => {
                     <div className="flex justify-between items-center">
                         <div>
                             <h2 className="text-3xl font-bold">{city}</h2>
-                            {hourlyForecastData ? <p className="text-blue-100" id="local-time">{hourlyForecastData.location.localtime}</p> : 
-                            <p>Loading local time...</p>}
+                            {hourlyForecastData ? <p className="text-blue-100" id="local-time">{hourlyForecastData.location.localtime}</p> :
+                                <p>Loading local time...</p>}
                         </div>
                         <div className="flex space-x-3">
                             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -194,7 +209,7 @@ const WeatherCard2 = ({ city, lat, long }) => {
                             style={{ display: activeTab === "weather" ? "block" : "none" }}
                         >
                             {/* Weather content goes here */}
-                            <WeatherCard_Comp weatherData={weatherData} hourlyForecastData={hourlyForecastData} iconUrl = {iconUrl}/>
+                            <WeatherCard_Comp weatherData={weatherData} hourlyForecastData={hourlyForecastData} iconUrl={iconUrl} />
                         </div>
                         <div
                             className={`weather-card__section ${activeTab === "schedule" ? "weather-card__section--active" : ""}`}
