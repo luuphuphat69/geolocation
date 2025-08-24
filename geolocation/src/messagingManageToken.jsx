@@ -1,5 +1,5 @@
 import { getToken, deleteToken } from "firebase/messaging";
-import { sendTokenToServer, deleteFCMTokenFromServer } from "./ultilities/api/api";
+import { sendTokenToServer, deleteFCMTokenFromServer } from "./utilities/api/api";
 
 export const getFCMToken = async (messaging) => {
   try {
