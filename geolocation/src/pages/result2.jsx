@@ -9,7 +9,7 @@ import {
     DialogDescription,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { getLocation } from "../ultilities/api/api";
+import { getLocation } from "../utilities/api/api";
 import "../css/result.css";
 import WeatherCard2 from "./weathercard2";
 
