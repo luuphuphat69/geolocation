@@ -24,7 +24,6 @@ const Search = () => {
   const [selectedCity, setSelectedCity] = useState(null);
 
   const navigate = useNavigate()
-
   const fetchSuggestions = async (query) => {
     try {
       const response = await getLocation(query)
