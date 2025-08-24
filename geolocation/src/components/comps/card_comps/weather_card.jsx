@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { kelvinToCelsius, kelvinToFahrenheit } from "../../../ultilities/common";
+import { kelvinToCelsius, kelvinToFahrenheit } from "../../../utilities/common";
 import HourlyForecast from "../hourlyforecast";
 const WeatherCard_Comp = ({ weatherData, iconUrl, hourlyForecastData}) => {
 
