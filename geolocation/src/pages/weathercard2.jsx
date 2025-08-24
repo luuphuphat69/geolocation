@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { Eye, Bell } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import '../css/weathercard.css'
-import { getCurrentWeather, getHourlyForecast, SendActivasion, unsubcribeNotify } from '../ultilities/api/api';
+import { getCurrentWeather, getHourlyForecast, SendActivasion, unsubcribeNotify } from '../utilities/api/api';
 import WeatherCard_Comp from '../components/comps/card_comps/weather_card';
 import Schedule from '../components/comps/card_comps/schedule';
 import {
