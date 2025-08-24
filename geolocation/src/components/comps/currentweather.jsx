@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { kelvinToCelsius, kelvinToFahrenheit } from "../../ultilities/common";
+import { kelvinToCelsius, kelvinToFahrenheit } from "../../utilities/common";
 const CurrentWeather = ({ cityData }) => {
 
     const [currentUnit, setCurrentUnit] = useState('C');
