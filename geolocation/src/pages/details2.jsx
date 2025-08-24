@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom'
 import { useState, useEffect} from 'react'
 import '../css/details.css'
-import { getAirPolution, getCurrentWeather, getForecast } from '../ultilities/api/api'
+import { getAirPolution, getCurrentWeather, getForecast } from '../utilities/api/api'
 import CurrentWeather from '../components/comps/currentweather'
 import AirPollution from '../components/comps/airpollution'
 import Forecast from '../components/comps/forecast'
