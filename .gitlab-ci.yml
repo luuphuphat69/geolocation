@@ -25,10 +25,9 @@ build-server-job:
   script:
     - cd server
     - npm ci
-    - npm run build
   artifacts:
     paths:
-      - server/dist
+      - server
     expire_in: 1 hour
 
 # Test client using artifacts
