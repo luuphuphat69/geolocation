@@ -44,7 +44,7 @@ export const deleteFCMToken = async (messaging) => {
     await deleteFCMTokenFromServer(currentToken);
     await deleteToken(messaging);
     localStorage.removeItem("fcm_token");
-    console.log("FCM token deleted successfully.");
+    //console.log("FCM token deleted successfully.");
   } catch (err) {
     console.error("Error deleting FCM token:", err);
   }
