@@ -1,0 +1,22 @@
+service: geolocation-server
+
+image: luuphuphat69/server
+
+servers:
+  web:
+    - 161.248.4.185
+
+proxy:
+  ssl: true
+  host: app.geolocation.space
+
+registry:
+  username: luuphuphat69
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+    
+builder:
+  arch: amd64
+
+git_repo: https://github.com/luuphuphat69/geolocation.git
