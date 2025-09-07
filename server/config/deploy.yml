@@ -18,5 +18,3 @@ registry:
     
 builder:
   arch: amd64
-
-git_repo: https://github.com/luuphuphat69/geolocation.git
