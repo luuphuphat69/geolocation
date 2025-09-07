@@ -4,7 +4,7 @@ image: luuphuphat69/server
 
 servers:
   web:
-    - 161.248.4.185
+    - 161.248.4.185:8686
 
 proxy:
   ssl: true
@@ -18,3 +18,5 @@ registry:
     
 builder:
   arch: amd64
+  context: .
+  dockerfile: ./Dockerfile
