@@ -4,7 +4,11 @@ image: luuphuphat69/server
 
 servers:
   web:
-    - 161.248.4.185:8686
+    - 161.248.4.185
+
+ssh:
+  user: root
+  port: 8686  # 👈 Explicitly tell Kamal to use 8686 for SSH
 
 proxy:
   ssl: true
@@ -15,7 +19,6 @@ registry:
   password:
     - KAMAL_REGISTRY_PASSWORD
 
-    
 builder:
   arch: amd64
   context: .
