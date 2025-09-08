@@ -1,5 +1,6 @@
 .env
 */.env
+
 # Logs
 logs
 *.log
@@ -27,3 +28,4 @@ dist-ssr
 
 # Kamal secrets
 .kamal/secrets
+server/.kamal/secrets
