@@ -29,6 +29,8 @@ app.use(morgan("common"));
 
 // Routes
 app.use('/v1', router);
-app.get('/health', (req, res) => res.send('OK'));
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 
 module.exports = app;
