@@ -4,7 +4,6 @@ const morgan = require('morgan');
 const router = require('./router/router');
 
 const app = express();
-const CLIENT_BASE = "https://www.geolocation.space";
 
 const allowedOrigins = [
   "https://www.geolocation.space",
