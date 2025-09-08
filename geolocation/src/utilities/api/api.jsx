@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const prodURL = "https://geolocation-server-xfs4.onrender.com/v1";
+const prodURL = "https://app.geolocation.space/v1";
 const localURL = "http://localhost:3000/v1";
 
 const BASE_URL = prodURL;

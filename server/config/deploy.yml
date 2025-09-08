@@ -5,14 +5,19 @@ image: luuphuphat69/server
 servers:
   web:
     - 161.248.4.185
-
+    
 ssh:
   user: root
-  port: 8686  # 👈 Explicitly tell Kamal to use 8686 for SSH
+  port: 8686
 
 proxy:
   ssl: true
   host: app.geolocation.space
+  app_port: 3000
+  healthcheck:
+    path: /health
+    interval: 10
+    timeout: 30
 
 registry:
   username: luuphuphat69
@@ -23,3 +28,10 @@ builder:
   arch: amd64
   context: .
   dockerfile: ./Dockerfile
+
+env:
+  secret:
+    - FIREBASE_SERVICE_ACCOUNT_JSON_BASE64
+    - MONGODB_CONNECTION
+    - REDIS_PASSWORD
+    - KAMAL_REGISTRY_PASSWORD
