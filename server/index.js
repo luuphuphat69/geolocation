@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const app = require('./server');
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 const HOST = '0.0.0.0';
 
 (async () => {

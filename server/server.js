@@ -9,8 +9,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const CLIENT_BASE = "https://www.geolocation.space"
+//const CLIENT_BASE = "http://localhost:5173"
+
 const corsOptions = {
-  origin: [process.env.CLIENT_BASE],
+  origin: [CLIENT_BASE],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
   allowedHeaders: [
