@@ -6,8 +6,20 @@ const router = require('./router/router');
 const app = express();
 const CLIENT_BASE = "https://www.geolocation.space";
 
+const allowedOrigins = [
+  "https://www.geolocation.space",
+  "http://localhost:5173"
+];
+
 const corsOptions = {
-  origin: CLIENT_BASE,
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    callback(new Error("Not allowed by CORS"));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
   allowedHeaders: [
@@ -23,7 +35,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // handle preflight
+app.options('*', cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
