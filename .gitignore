@@ -29,3 +29,4 @@ dist-ssr
 # Kamal secrets
 .kamal/secrets
 server/.kamal/secrets
+*/.kamal/secrets
