@@ -67,7 +67,7 @@ function getServiceAccountFromEnvironment() {
       throw error;
     }
   }
-
+  
   // Fallback to building from env + normalized PEM
   return {
     type: "service_account",
