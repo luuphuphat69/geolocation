@@ -31,6 +31,7 @@ const weather = {
                     },
                 }
             );
+            console.log(response.data)
 
             const weatherData = response.data;
             // Cache the response
