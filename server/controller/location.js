@@ -18,7 +18,6 @@ const location = {
             const data = await Cities.aggregate(agg);
             res.status(200).json(data);
         } catch (err) {
-            console.log(err);
             res.status(500).json({ error: 'An error occurred while retrieving data' });
         }
     },

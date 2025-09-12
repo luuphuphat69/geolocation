@@ -15,7 +15,6 @@ const weather = {
             // Check the cache
             const cachedData = await redisClient.get(cacheKey);
             if (cachedData) {
-                console.log('Cache hit');
                 return res.status(200).json(JSON.parse(cachedData));
             }
 
@@ -31,8 +30,6 @@ const weather = {
                     },
                 }
             );
-            console.log(response.data)
-
             const weatherData = response.data;
             // Cache the response
             await redisClient.set(cacheKey, JSON.stringify(weatherData), {
@@ -41,7 +38,6 @@ const weather = {
 
             res.status(200).json(weatherData);
         } catch (err) {
-            console.error('Error fetching weather data:', err);
             res.status(500).json({ error: 'Failed to fetch weather data' });
         }
     },
@@ -60,7 +56,6 @@ const weather = {
             // Check the cache
             const cachedData = await redisClient.get(cacheKey);
             if (cachedData) {
-                console.log('Cache hit');
                 return res.status(200).json(JSON.parse(cachedData));
             }
 
@@ -85,7 +80,6 @@ const weather = {
 
             res.status(200).json(weatherData);
         } catch (err) {
-            console.error('Error fetching weather data:', err);
             res.status(500).json({ error: 'Failed to fetch weather data' });
         }
     },
@@ -102,7 +96,6 @@ const weather = {
             const cacheKey = `hours_forecast:${lat},${long}`;
             const cachedData = await redisClient.get(cacheKey);
             if (cachedData) {
-                console.log('Cache hit');
                 return res.status(200).json(JSON.parse(cachedData));
             }
 
@@ -118,8 +111,7 @@ const weather = {
             });
 
             res.status(200).json(forecast.data);
-        } catch (err) {
-            console.log(err);
+        } catch (err) {;
             res.status(500).json({ error: 'Failed to fetch weather data' });
         }
     },
@@ -138,7 +130,6 @@ const weather = {
             // Check the cache
             const cachedData = await redisClient.get(cacheKey);
             if (cachedData) {
-                console.log('Cache hit');
                 return res.status(200).json(JSON.parse(cachedData));
             }
 
@@ -162,7 +153,6 @@ const weather = {
 
             res.status(200).json(weatherData);
         } catch (err) {
-            console.error('Error fetching weather data:', err);
             res.status(500).json({ error: 'Failed to fetch weather data' });
         }
     }
