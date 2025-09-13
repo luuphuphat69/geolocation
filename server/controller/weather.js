@@ -54,7 +54,7 @@ const weather = {
         params: {
           lat,
           lon: long,
-          appid: process.env.API_KEY,
+          appid: process.env.OPENWEATHER_API_KEY,
           units: 'metric',
         },
       });
@@ -116,7 +116,7 @@ const weather = {
         params: {
           lat,
           lon: long,
-          appid: process.env.API_KEY,
+          appid: process.env.OPENWEATHER_API_KEY,
         },
       });
 
