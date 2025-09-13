@@ -2,7 +2,8 @@ const cors = require('cors');
 const express = require('express');
 const morgan = require('morgan');
 const router = require('./router/router');
-
+const rateLimit = require('express-rate-limit');
+const requestIp = require('request-ip');
 const app = express();
 
 const allowedOrigins = [
@@ -32,6 +33,15 @@ const corsOptions = {
     'Authorization'
   ],
 };
+
+app.use(requestIp.mw());
+app.use(rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 30, // limit each IP to 30 requests per windowMs
+  keyGenerator: (req, res) => {
+    return req.clientIp // IP address from requestIp.mw(), as opposed to req.ip
+  }
+}));
 
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
