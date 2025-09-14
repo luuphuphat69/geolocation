@@ -15,9 +15,9 @@ import WeatherCard2 from "./weathercard2";
 
 const Result2 = () => {
     const columns = [
-        { id: "name", label: "City" },
-        { id: "state_name", label: "State / Province" },
-        { id: "country_name", label: "Country" },
+        { id: "city", label: "City" },
+        { id: "state", label: "State / Province" },
+        { id: "country", label: "Country" },
         { id: "latitude", label: "Latitude" },
         { id: "longitude", label: "Longitude" },
     ];
