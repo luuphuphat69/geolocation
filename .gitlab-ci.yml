@@ -16,7 +16,7 @@ build-client-job:
   artifacts:
     paths:
       - geolocation/dist
-    expire_in: 1 hour  # Optional: how long to keep artifacts
+    expire_in: 1 hour
 
 # Build server
 build-server-job:
@@ -30,7 +30,7 @@ build-server-job:
       - server
     expire_in: 1 hour
 
-# Test client using artifacts
+# Unit tests for client
 unit-test-client-job:
   stage: test
   image: node:18
@@ -42,14 +42,31 @@ unit-test-client-job:
     - npm ci
     - npm run test
 
-# # Test server using artifacts
-# unit-test-server-job:
-#   stage: test
-#   image: node:18
-#   needs:
-#     - job: build-server-job
-#       artifacts: true
-#   script:
-#     - cd server
-#     - npm ci
-#     - npm run test
+# Autotest job (Playwright)
+auto-test-job:
+  stage: test
+  image: mcr.microsoft.com/playwright:v1.48.0-jammy  # Playwright Docker image
+  needs:
+    - job: build-client-job
+      artifacts: true
+    - job: build-server-job
+      artifacts: true
+  script:
+    # Clone the autotest repo
+    - git clone https://github.com/luuphuphat69/autotest-geolocation.git autotest
+    - cd autotest
+
+    # Install dependencies
+    - npm ci
+
+    # Install Playwright browsers
+    - npx playwright install --with-deps
+
+    # Run tests
+    - npx playwright test --reporter=html
+
+  artifacts:
+    when: always
+    paths:
+      - autotest/playwright-report
+    expire_in: 1 week
