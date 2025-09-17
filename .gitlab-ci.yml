@@ -59,5 +59,8 @@ deploy-server-job:
   script:
     - cd server
     - kamal deploy --version $CI_COMMIT_SHA
+  variables:
+    KAMAL_REGISTRY_USERNAME: "$DOCKERHUB_USERNAME"
+    KAMAL_REGISTRY_PASSWORD: "$DOCKERHUB_PASSWORD"
   only:
     - main
