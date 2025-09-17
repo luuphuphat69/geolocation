@@ -47,17 +47,17 @@ unit-test-client-job:
 # Deploy server (via Kamal)
 deploy-server-job:
   stage: deploy
-  image: docker:24.0.5
-  services:
-    - docker:24.0.5-dind
+  image: ruby:3.2
   before_script:
-  - mkdir -p ~/.ssh
-  - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-  - cd server
-  - mkdir -p .kamal
-  - echo "KAMAL_REGISTRY_USERNAME=$DOCKERHUB_USERNAME" >> .kamal/secrets
-  - echo "KAMAL_REGISTRY_PASSWORD=$DOCKERHUB_PASSWORD" >> .kamal/secrets
+    - apt-get update && apt-get install -y docker.io
+    - gem install kamal
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - cd server
+    - mkdir -p .kamal
+    - echo "KAMAL_REGISTRY_USERNAME=$DOCKERHUB_USERNAME" >> .kamal/secrets
+    - echo "KAMAL_REGISTRY_PASSWORD=$DOCKERHUB_PASSWORD" >> .kamal/secrets
 
   script:
     - kamal deploy --version $CI_COMMIT_SHA
