@@ -1,11 +1,16 @@
 stages:
   - build
   - test
+  - deploy
 
 variables:
   NODE_ENV: development
 
-# Build client
+before_script:
+  # Login to Docker Hub for build + push
+  - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+
+# Build client (artifact for unit tests)
 build-client-job:
   stage: build
   image: node:18
@@ -18,17 +23,18 @@ build-client-job:
       - geolocation/dist
     expire_in: 1 hour
 
-# Build server
+# Build server (Docker image, push to Docker Hub)
 build-server-job:
   stage: build
-  image: node:18
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
   script:
-    - cd server
-    - npm ci
-  artifacts:
-    paths:
-      - server
-    expire_in: 1 hour
+    - docker build -t $DOCKERHUB_USERNAME/geolocation-server:$CI_COMMIT_SHA server
+    - docker push $DOCKERHUB_USERNAME/geolocation-server:$CI_COMMIT_SHA
+    # Optionally tag latest for convenience
+    - docker tag $DOCKERHUB_USERNAME/geolocation-server:$CI_COMMIT_SHA $DOCKERHUB_USERNAME/geolocation-server:latest
+    - docker push $DOCKERHUB_USERNAME/geolocation-server:latest
 
 # Unit tests for client
 unit-test-client-job:
@@ -42,31 +48,19 @@ unit-test-client-job:
     - npm ci
     - npm run test
 
-# Autotest job (Playwright)
-auto-test-job:
-  stage: test
-  image: mcr.microsoft.com/playwright:v1.48.0-jammy  # Playwright Docker image
+# Deploy server (via Kamal)
+deploy-server-job:
+  stage: deploy
+  image: ruby:3.2
   needs:
-    - job: build-client-job
-      artifacts: true
     - job: build-server-job
-      artifacts: true
+  before_script:
+    - gem install kamal
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
   script:
-    # Clone the autotest repo
-    - git clone https://github.com/luuphuphat69/autotest-geolocation.git autotest
-    - cd autotest
-
-    # Install dependencies
-    - npm ci
-
-    # Install Playwright browsers
-    - npx playwright install --with-deps
-
-    # Run tests
-    - npx playwright test --reporter=html
-
-  artifacts:
-    when: always
-    paths:
-      - autotest/playwright-report
-    expire_in: 1 week
+    - cd server
+    - kamal deploy
+  only:
+    - main
