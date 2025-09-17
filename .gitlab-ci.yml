@@ -51,15 +51,13 @@ deploy-server-job:
   services:
     - docker:24.0.5-dind
   before_script:
-    # Install Ruby + Kamal
-    - apk add --no-cache ruby ruby-bundler ruby-dev build-base
+    - apk add --no-cache ruby ruby-bundler ruby-dev build-base git
     - gem install kamal
-    # Setup SSH
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
   script:
     - cd server
-    - kamal deploy
+    - kamal deploy --version $CI_COMMIT_SHA
   only:
     - main
