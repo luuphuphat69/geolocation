@@ -1,7 +1,6 @@
 stages:
   - build
   - test
-  - deploy
 
 variables:
   NODE_ENV: development
@@ -43,33 +42,3 @@ unit-test-client-job:
     - cd geolocation
     - npm ci
     - npm run test
-
-# Deploy server (via Kamal)
-deploy-server-job:
-  stage: deploy
-  image: ruby:3.2
-  services:
-    - docker:24.0.5-dind
-  variables:
-    DOCKER_TLS_CERTDIR: ""   # allow docker client to talk to dind without TLS
-  before_script:
-    # Install Docker client inside ruby:3.2
-    - apt-get update && apt-get install -y docker.io
-    # Install Kamal
-    - gem install kamal
-    # Setup SSH key for VPS
-    - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    # Move into server folder
-    - cd server
-    # Create .kamal/secrets file dynamically
-    - mkdir -p .kamal
-    - echo "KAMAL_REGISTRY_USERNAME=$DOCKERHUB_USERNAME" >> .kamal/secrets
-    - echo "KAMAL_REGISTRY_PASSWORD=$DOCKERHUB_PASSWORD" >> .kamal/secrets
-  script:
-    - kamal deploy --version $CI_COMMIT_SHA
-  needs:
-    - job: build-server-job
-  only:
-    - main
