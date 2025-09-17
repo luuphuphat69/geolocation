@@ -51,18 +51,15 @@ deploy-server-job:
   services:
     - docker:24.0.5-dind
   before_script:
-  - apk add --no-cache ruby ruby-bundler ruby-dev build-base git
-  - gem install kamal
   - mkdir -p ~/.ssh
   - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
-  # 👇 Write Kamal secrets file
+  - cd server
   - mkdir -p .kamal
   - echo "KAMAL_REGISTRY_USERNAME=$DOCKERHUB_USERNAME" >> .kamal/secrets
   - echo "KAMAL_REGISTRY_PASSWORD=$DOCKERHUB_PASSWORD" >> .kamal/secrets
 
   script:
-    - cd server
     - kamal deploy --version $CI_COMMIT_SHA
   only:
     - main
