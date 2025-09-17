@@ -11,17 +11,17 @@ before_script:
   - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
 # Build client (artifact for unit tests)
-build-client-job:
+build-client-image:
   stage: build
-  image: node:18
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  before_script:
+    - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
   script:
-    - cd geolocation
-    - npm ci
-    - npm run build
-  artifacts:
-    paths:
-      - geolocation/dist
-    expire_in: 1 hour
+    - docker build -t $DOCKERHUB_USERNAME/geolocation-client:$CI_COMMIT_SHA geolocation
+    - docker push $DOCKERHUB_USERNAME/geolocation-client:$CI_COMMIT_SHA
+
 
 # Build server (Docker image, push to Docker Hub)
 build-server-job:
@@ -41,7 +41,7 @@ unit-test-client-job:
   stage: test
   image: node:18
   needs:
-    - job: build-client-job
+    - job: build-client-image
       artifacts: true
   script:
     - cd geolocation
