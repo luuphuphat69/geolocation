@@ -56,11 +56,11 @@ deploy-server-job:
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
+    # 👇 Export GitLab CI/CD vars so Kamal can read them
+    - export KAMAL_REGISTRY_USERNAME="$DOCKERHUB_USERNAME"
+    - export KAMAL_REGISTRY_PASSWORD="$DOCKERHUB_PASSWORD"
   script:
     - cd server
     - kamal deploy --version $CI_COMMIT_SHA
-  variables:
-    KAMAL_REGISTRY_USERNAME: "$DOCKERHUB_USERNAME"
-    KAMAL_REGISTRY_PASSWORD: "$DOCKERHUB_PASSWORD"
   only:
     - main
