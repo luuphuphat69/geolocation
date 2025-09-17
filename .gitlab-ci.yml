@@ -6,11 +6,7 @@ stages:
 variables:
   NODE_ENV: development
 
-before_script:
-  # Login to Docker Hub for build + push
-  - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-
-# Build client (artifact for unit tests)
+# Build client (Docker image, push to Docker Hub)
 build-client-image:
   stage: build
   image: docker:24.0.5
@@ -22,13 +18,14 @@ build-client-image:
     - docker build -t $DOCKERHUB_USERNAME/geolocation-client:$CI_COMMIT_SHA geolocation
     - docker push $DOCKERHUB_USERNAME/geolocation-client:$CI_COMMIT_SHA
 
-
 # Build server (Docker image, push to Docker Hub)
 build-server-job:
   stage: build
   image: docker:24.0.5
   services:
     - docker:24.0.5-dind
+  before_script:
+    - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
   script:
     - docker build -t $DOCKERHUB_USERNAME/geolocation-server:$CI_COMMIT_SHA server
     - docker push $DOCKERHUB_USERNAME/geolocation-server:$CI_COMMIT_SHA
@@ -42,7 +39,6 @@ unit-test-client-job:
   image: node:18
   needs:
     - job: build-client-image
-      artifacts: true
   script:
     - cd geolocation
     - npm ci
@@ -51,11 +47,14 @@ unit-test-client-job:
 # Deploy server (via Kamal)
 deploy-server-job:
   stage: deploy
-  image: ruby:3.2
-  needs:
-    - job: build-server-job
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
   before_script:
+    # Install Ruby + Kamal
+    - apk add --no-cache ruby ruby-bundler ruby-dev build-base
     - gem install kamal
+    # Setup SSH
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
