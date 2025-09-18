@@ -1,6 +1,6 @@
 service: geolocation-server
 
-image: luuphuphat69/server
+image: luuphuphat69/geolocation-server
 
 servers:
   web:
