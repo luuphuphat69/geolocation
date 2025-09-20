@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom"
 import { Eye, Bell } from "lucide-react"
+import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast"
 import '../css/weathercard.css'
 import { getCurrentWeather, getHourlyForecast, SendActivasion, unsubcribeNotify } from '../utilities/api/api';
@@ -56,7 +57,9 @@ const WeatherCard2 = ({ city, lat, long }) => {
     }, [lat, long]);
 
     if (!weatherData) {
-        return <p>Loading weather data...</p>
+        return <div className="flex justify-center items-center h-64">
+            <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
     }
 
     const iconCode = weatherData.current.weather[0].icon;
@@ -125,7 +128,8 @@ const WeatherCard2 = ({ city, lat, long }) => {
                         <div>
                             <h2 className="text-3xl font-bold">{city}</h2>
                             {hourlyForecastData ? <p className="text-blue-100" id="local-time">{hourlyForecastData.location.localtime}</p> :
-                                <p>Loading local time...</p>}
+                                <Loader2 className="h-8 w-8 animate-spin" />
+                            }
                         </div>
                         <div className="flex space-x-3">
                             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

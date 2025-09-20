@@ -2,7 +2,7 @@ import "../../../css/drawer.css"
 import { Fav } from "./fav";
 import { Options } from "./options";
 // Drawer component
-export const Drawer = ({ isOpen, onClose, favourites, onSelectCity }) => {
+export const Drawer = ({ isOpen, onClose }) => {
   return (
     <>
       {/* Overlay */}
@@ -52,7 +52,7 @@ export const Drawer = ({ isOpen, onClose, favourites, onSelectCity }) => {
           </button>
         </div>
         <Options />
-        <Fav favourites={favourites} />
+        <Fav />
       </aside>
     </>
   );

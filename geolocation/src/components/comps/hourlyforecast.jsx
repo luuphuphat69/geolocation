@@ -1,5 +1,5 @@
 import '../../css/hourlyforecast.css'
-
+import { Loader2 } from "lucide-react";
 const HourlyForecast = ({ hourlyForecastData }) => {
     if (
         !hourlyForecastData ||
@@ -8,7 +8,7 @@ const HourlyForecast = ({ hourlyForecastData }) => {
         !hourlyForecastData.forecast.forecastday[0] ||
         !hourlyForecastData.forecast.forecastday[0].hour
     ) {
-        return <div>Loading hourly forecast...</div>;
+        return  <Loader2 className="h-8 w-8 animate-spin" />
     }
 
     return (

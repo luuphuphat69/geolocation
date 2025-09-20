@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router-dom'
 import { useState, useEffect} from 'react'
+import { Loader2 } from "lucide-react";
 import '../css/details.css'
 import { getAirPolution, getCurrentWeather, getForecast } from '../utilities/api/api'
 import CurrentWeather from '../components/comps/currentweather'
@@ -84,7 +85,9 @@ const WeatherDetails = () => {
     }, [weatherType]);
 
     if (!cityData || !forecast.length || !airPollution) {
-        return <div className="flex justify-center items-center h-screen">Loading...</div>
+        return <div className="flex justify-center items-center h-64">
+            <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
     }
 
     function createWeatherParticles(weatherType) {
