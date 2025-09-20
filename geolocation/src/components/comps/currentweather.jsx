@@ -4,7 +4,6 @@ import { useAppOptions } from "../../AppOptionsContext";
 const CurrentWeather = ({ cityData }) => {
 
     const { isCelciusUnit, setIsCelciusUnit } = useAppOptions();
-    const [currentUnit, setCurrentUnit] = useState('C');
 
     const currentDate = new Date();
     const formatDate = (date) => {
