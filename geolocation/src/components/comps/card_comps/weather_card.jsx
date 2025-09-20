@@ -5,8 +5,8 @@ import { useAppOptions } from "../../../AppOptionsContext";
 const WeatherCard_Comp = ({ weatherData, iconUrl, hourlyForecastData }) => {
   const { isCelciusUnit, setIsCelciusUnit } = useAppOptions();
 
-  const handleUnitClick = (unit) => {
-    setIsCelciusUnit(unit === "C");
+  const handleUnitClick = () => {
+    setIsCelciusUnit(!isCelciusUnit);
   };
 
   return (
@@ -36,7 +36,7 @@ const WeatherCard_Comp = ({ weatherData, iconUrl, hourlyForecastData }) => {
                     className={`weather-card__unit-option ${
                       isCelciusUnit ? "weather-card__unit-option--active" : ""
                     }`}
-                    onClick={() => handleUnitClick("C")}
+                    onClick={handleUnitClick}
                   >
                     °C
                   </span>
@@ -44,7 +44,7 @@ const WeatherCard_Comp = ({ weatherData, iconUrl, hourlyForecastData }) => {
                     className={`weather-card__unit-option ${
                       !isCelciusUnit ? "weather-card__unit-option--active" : ""
                     }`}
-                    onClick={() => handleUnitClick("F")}
+                    onClick={handleUnitClick}
                   >
                     °F
                   </span>
