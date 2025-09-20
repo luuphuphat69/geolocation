@@ -1,10 +1,9 @@
+// ---- Get all records ----
 export const getAllIndexDB = (callback) => {
   const request = indexedDB.open("schedule_db", 1);
 
   request.onupgradeneeded = (event) => {
     const db = event.target.result;
-
-    // Create the object store if it doesn't exist
     if (!db.objectStoreNames.contains("schedule_os")) {
       db.createObjectStore("schedule_os", { keyPath: "id", autoIncrement: true });
     }
@@ -12,25 +11,28 @@ export const getAllIndexDB = (callback) => {
 
   request.onsuccess = (event) => {
     const db = event.target.result;
+
+    if (!db.objectStoreNames.contains("schedule_os")) {
+      console.warn("Object store 'schedule_os' not fOund, returning empty list");
+      callback([]);
+      db.close();
+      return;
+    }
+
     const tx = db.transaction("schedule_os", "readonly");
     const store = tx.objectStore("schedule_os");
 
     const schedules = [];
-
     const cursorRequest = store.openCursor();
 
     cursorRequest.onsuccess = (event) => {
       const cursor = event.target.result;
       if (cursor) {
-        const id = cursor.key;
-        const lat = cursor.value.lat;
-        const long = cursor.value.long;
-        const data = cursor.value.scheduleData;
-        schedules.push({ id, scheduleData: data, lat, long });
+        const { lat, long, scheduleData } = cursor.value;
+        schedules.push({ id: cursor.key, scheduleData, lat, long });
         cursor.continue();
       } else {
-        // Finished reading all entries
-        callback(schedules);
+        callback(schedules); // Done
       }
     };
 
@@ -43,14 +45,23 @@ export const getAllIndexDB = (callback) => {
 
   request.onerror = (event) => {
     console.error("Error opening database:", event.target.error);
+    callback([]);
   };
 };
 
+// ---- Delete a record by id ----
 export const deleteSelectedIndex = (id) => {
   const request = indexedDB.open("schedule_db", 1);
 
   request.onsuccess = (event) => {
     const db = event.target.result;
+
+    if (!db.objectStoreNames.contains("schedule_os")) {
+      console.warn("Object store 'schedule_os' not found, nothing to delete");
+      db.close();
+      return;
+    }
+
     const tx = db.transaction("schedule_os", "readwrite");
     const store = tx.objectStore("schedule_os");
 
@@ -64,9 +75,7 @@ export const deleteSelectedIndex = (id) => {
       console.error("Error deleting record:", e.target.error);
     };
 
-    tx.oncomplete = () => {
-      db.close();
-    };
+    tx.oncomplete = () => db.close();
   };
 
   request.onerror = (e) => {

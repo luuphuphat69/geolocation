@@ -3,8 +3,8 @@ import axios from 'axios';
 const prodURL = "https://app.geolocation.space/v1";
 const localURL = "http://localhost:3000/v1";
 
-const BASE_URL = prodURL;
-//const BASE_URL = localURL;
+//const BASE_URL = prodURL;
+const BASE_URL = localURL;
 
 const lambdaAPI_ID = ["qnwo61w86a", "fl67rvmwfa"];
 const lambdaAPI_stage = "default";
@@ -111,7 +111,7 @@ export const sendTokenToServer = async (token, lat, lon) => {
             lat: lat,
             lon: lon,
         });
-        console.log(response);
+        //console.log(response);
     } catch (error) {
         console.log(error);
     }
@@ -122,8 +122,21 @@ export const deleteFCMTokenFromServer = async (token) => {
         const response = await axios.delete(`${BASE_URL}/FCM/token`,{
             data: { token }
         });
-        console.log(response);
+        //console.log(response);
     } catch (error) {
         console.log(error);
+    }
+}
+
+export const reverseGeocoding =  (lat, lon) => {
+    try{
+        return axios.get(`${BASE_URL}/location/reverse-geocoding`, {
+            params:{
+                lat,
+                lon
+            }
+        })
+    }catch(err){
+        console.log(err)
     }
 }

@@ -1,6 +1,6 @@
 const Cities = require('../model/cities');
 const NodeCache = require('node-cache');
-
+const axios = require('axios');
 // Cache instance, TTL = 10 minutes
 const cache = new NodeCache({ stdTTL: 600, checkperiod: 120 });
 
@@ -45,6 +45,18 @@ const location = {
             res.status(500).json({ error: 'An error occurred while retrieving data' });
         }
     },
+    reverseGeocoding: async (req, res) => {
+        try {
+            const lat = req.query.lat;
+            const lon = req.query.lon;
+
+            const response = await axios.get(`http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${process.env.OPENWEATHER_API_KEY}`);
+            res.status(200).json(response.data);
+        } catch (err) {
+            res.status(500).json({ error: 'Failed to fetch location data' });
+        }
+
+    }
 };
 
 module.exports = location;

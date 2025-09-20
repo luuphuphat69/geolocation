@@ -1,0 +1,59 @@
+import "../../../css/drawer.css"
+import { Fav } from "./fav";
+import { Options } from "./options";
+// Drawer component
+export const Drawer = ({ isOpen, onClose, favourites, onSelectCity }) => {
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        className={`drawer-overlay ${isOpen ? "show" : ""}`}
+        onClick={onClose}
+      ></div>
+
+      {/* Drawer */}
+      <aside
+        className={`drawer rounded-r-2xl transition-transform ${isOpen ? "open" : ""
+          }`}
+      >
+        <div className="p-4 border-b border-slate-200/80 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <svg width="24px" height="24px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+              <g id="SVGRepo_bgCarrier" stroke-width="0" />
+              <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
+              <g id="SVGRepo_iconCarrier">
+                <path d="M512 512m-277.333333 0a277.333333 277.333333 0 1 0 554.666666 0 277.333333 277.333333 0 1 0-554.666666 0Z" fill="#EFD358" />
+                <path d="M85.333333 533.333333H42.666667a21.333333 21.333333 0 1 1 0-42.666666h42.666666a21.333333 21.333333 0 1 1 0 42.666666zM209.066667 230.4a21.269333 21.269333 0 0 1-15.082667-6.250667l-29.866667-29.866666a21.333333 21.333333 0 1 1 30.165334-30.165334l29.866666 29.866667A21.333333 21.333333 0 0 1 209.066667 230.4zM512 106.666667a21.333333 21.333333 0 0 1-21.333333-21.333334V42.666667a21.333333 21.333333 0 1 1 42.666666 0v42.666666a21.333333 21.333333 0 0 1-21.333333 21.333334zM814.933333 230.4a21.333333 21.333333 0 0 1-15.082666-36.416l29.866666-29.866667a21.333333 21.333333 0 1 1 30.165334 30.165334l-29.866667 29.866666a21.269333 21.269333 0 0 1-15.082667 6.250667zM981.333333 533.333333h-42.666666a21.333333 21.333333 0 1 1 0-42.666666h42.666666a21.333333 21.333333 0 1 1 0 42.666666z" fill="#EFD358" />
+                <path d="M810.666667 1002.666667H213.333333c-105.856 0-192-86.122667-192-192s86.144-192 192-192c17.322667 0 34.624 2.453333 51.669334 7.338666A256.128 256.128 0 0 1 490.666667 490.666667a255.786667 255.786667 0 0 1 232.533333 149.290666A189.653333 189.653333 0 0 1 810.666667 618.666667c105.856 0 192 86.122667 192 192s-86.144 192-192 192z" fill="#E0E0E0" />
+              </g>
+            </svg>
+            <h3 className="text-sm font-semibold text-slate-800">
+              Menu
+            </h3>
+          </div>
+          <button
+            onClick={onClose}
+            className="rounded-full p-1 hover:bg-slate-100 transition"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-slate-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        <Options />
+        <Fav favourites={favourites} />
+      </aside>
+    </>
+  );
+};

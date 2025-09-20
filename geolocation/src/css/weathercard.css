@@ -1,16 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-.weather-app {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f0f5ff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 70vh;
-    margin: 0;
-    padding: 10px;
-}
-
 .weather-card {
     transition: all 0.3s ease;
     background-color: white;

@@ -4,6 +4,7 @@ const FCMController = require('../controller/FCMController');
 
 const router = require('express').Router();
 router.get('/location', locationController.retrieveData);
+router.get('/location/reverse-geocoding', locationController.reverseGeocoding);
 
 router.get('/weather/current', weatherController.GetCurrentWeatherData);
 router.get('/weather/forecast', weatherController.GetWeatherForecastData);

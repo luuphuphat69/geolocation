@@ -3,10 +3,14 @@ import { useNavigate } from "react-router-dom"
 import "../css/search.css"
 import "../css/validation.css"
 import "../css/autocomplete-list.css"
+import "../css/menu.css"
 import { getLocation } from "../utilities/api/api"
 import { getAllIndexDB, deleteSelectedIndex } from "../utilities/browser/browser"
 import WeatherCard2 from "./weathercard2"
 import AllowNotify from "../components/comps/allownotify"
+import { Drawer } from "../components/comps/drawer/drawer"
+import { LocalWeather } from "../components/comps/localweather"
+import { useAppOptions } from "../AppOptionsContext"
 import {
   Dialog,
   DialogContent,
@@ -15,6 +19,58 @@ import {
 } from "@/components/ui/dialog"
 
 const Search = () => {
+  const weatherExampleData = [
+    {
+      city: "New York",
+      country: "USA",
+      current: { temp: 72, condition: "Partly Cloudy", humidity: 65, wind: 8 },
+      forecast: [
+        { day: "Monday", high: 74, low: 62, condition: "Partly Cloudy" },
+        { day: "Tuesday", high: 78, low: 64, condition: "Sunny" },
+        { day: "Wednesday", high: 68, low: 60, condition: "Rain" }
+      ]
+    },
+    {
+      city: "Paris",
+      country: "France",
+      current: { temp: 68, condition: "Sunny", humidity: 55, wind: 6 },
+      forecast: [
+        { day: "Monday", high: 70, low: 58, condition: "Sunny" },
+        { day: "Tuesday", high: 72, low: 60, condition: "Sunny" },
+        { day: "Wednesday", high: 69, low: 59, condition: "Partly Cloudy" }
+      ]
+    },
+    {
+      city: "Tokyo",
+      country: "Japan",
+      current: { temp: 82, condition: "Cloudy", humidity: 70, wind: 5 },
+      forecast: [
+        { day: "Monday", high: 84, low: 72, condition: "Cloudy" },
+        { day: "Tuesday", high: 86, low: 74, condition: "Partly Cloudy" },
+        { day: "Wednesday", high: 88, low: 76, condition: "Sunny" }
+      ]
+    },
+    {
+      city: "London",
+      country: "UK",
+      current: { temp: 64, condition: "Rain", humidity: 80, wind: 12 },
+      forecast: [
+        { day: "Monday", high: 66, low: 58, condition: "Rain" },
+        { day: "Tuesday", high: 68, low: 56, condition: "Showers" },
+        { day: "Wednesday", high: 70, low: 58, condition: "Cloudy" }
+      ]
+    },
+    {
+      city: "Sydney",
+      country: "Australia",
+      current: { temp: 76, condition: "Sunny", humidity: 50, wind: 10 },
+      forecast: [
+        { day: "Monday", high: 78, low: 64, condition: "Sunny" },
+        { day: "Tuesday", high: 80, low: 66, condition: "Sunny" },
+        { day: "Wednesday", high: 76, low: 62, condition: "Partly Cloudy" }
+      ]
+    }
+  ];
   const [searchTerm, setSearchTerm] = useState("")
   const [suggestions, setSuggestions] = useState([])
   const [validationMessage, setValidationMessage] = useState("")
@@ -22,6 +78,11 @@ const Search = () => {
   const [showSchedule, setShowSchedule] = useState(false)
   const [scheduleData, setScheduleData] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [coords, setCoords] = useState(null);
+  const [error, setError] = useState(null);
+  const { showCurrentCard } = useAppOptions();
+  const [favourites, setFavourites] = useState(weatherExampleData); // assuming weatherData available
 
   const navigate = useNavigate()
   const fetchSuggestions = async (query) => {
@@ -55,6 +116,7 @@ const Search = () => {
 
   };
 
+  const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
   const handleSearchChange = (e) => {
     const query = e.target.value
@@ -116,6 +178,22 @@ const Search = () => {
     });
   }, [showSchedule === true]);
 
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setCoords({
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+        });
+      },
+      (err) => {
+        console.error("Failed to get location:", err);
+        setError("Location access is required to show your local weather.");
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }, []);
+
   const handleDeleteSelectedSchedule = (city) => {
     const confirmed = window.confirm(`Are you sure you want to delete the schedule for ${city}?`);
     if (!confirmed) return;
@@ -133,6 +211,37 @@ const Search = () => {
         <div className="clouds-bg"></div>
         <div className="light-rays"></div>
         <div className="sun-effect"></div>
+        <button id="favMenuBtn" class="menu-button" onClick={toggleDrawer}>
+          {isDrawerOpen ? (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-slate-700 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-slate-700 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          )}
+        </button>
+        <Drawer
+          isOpen={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+          favourites={favourites}
+          onSelectCity={(city) => {
+            setSelectedCity(city);
+            setIsDrawerOpen(false);
+          }}
+        />
+
+        {coords ? (
+              <div>
+      {showCurrentCard && <LocalWeather lat={coords.lat} lon={coords.lon} />}
+      {/* Other components */}
+    </div>
+        
+        ) : (
+          <LocalWeather />
+        )}
+
         <div className="container mx-auto px-4 py-16 flex flex-col items-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 text-center" style={{ color: '#000000' }}>Geolocation 🌍</h1>
           <p className="text-xl text-blue-100 mb-8 text-center" style={{ color: "#000000ff" }}>Search for a city to check the weather</p>
@@ -161,18 +270,20 @@ const Search = () => {
                 <span>{validationMessage}</span>
               </div>
             )}
-
           </div>
+
           {/* Notify switch */}
           <div>
-            <AllowNotify/>
+            <AllowNotify />
           </div>
+
           <button onClick={handleShowSchedule} id="showScheduleBtn" className="btn btn-indigo mb-8">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             Show My Schedules
           </button>
+
           <div id="scheduleContainer" className={
             showSchedule === true && scheduleData?.length > 0
               ? " container-white"

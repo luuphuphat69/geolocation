@@ -1,8 +1,11 @@
 const cors = require('cors');
 const express = require('express');
 const morgan = require('morgan');
+const dotenv = require('dotenv');
+dotenv.config({ path: __dirname + '/.env' }); 
 const router = require('./router/router');
 const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit'); // import helper
 const requestIp = require('request-ip');
 const app = express();
 
@@ -35,12 +38,18 @@ const corsOptions = {
 };
 
 app.use(requestIp.mw());
+// app.use(rateLimit({
+//   windowMs: 60 * 1000, // 1 minute
+//   max: 30, // limit each IP to 30 requests per windowMs
+//   keyGenerator: (req, res) => {
+//     return req.clientIp // IP address from requestIp.mw(), as opposed to req.ip
+//   }
+// }));
+
 app.use(rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 30, // limit each IP to 30 requests per windowMs
-  keyGenerator: (req, res) => {
-    return req.clientIp // IP address from requestIp.mw(), as opposed to req.ip
-  }
+  max: 30,
+  keyGenerator: (req, res) => ipKeyGenerator(req), // safe for IPv6
 }));
 
 app.use(cors(corsOptions));
