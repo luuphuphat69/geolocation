@@ -1,5 +1,5 @@
 import '../../css/forecast.css';
-import { kelvinToCelsius, kelvinToFahrenheit } from '../utilities/common';
+import { kelvinToCelsius, kelvinToFahrenheit } from '../../utilities/common';
 import { useAppOptions } from '../../AppOptionsContext';
 
 const Forecast = ({ forecast }) => {
