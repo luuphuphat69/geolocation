@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { kelvinToCelsius, kelvinToFahrenheit } from "../../utilities/common";
+import { useAppOptions } from "../../AppOptionsContext";
 const CurrentWeather = ({ cityData }) => {
 
+    const { isCelciusUnit, setIsCelciusUnit } = useAppOptions();
     const [currentUnit, setCurrentUnit] = useState('C');
 
     const currentDate = new Date();
@@ -34,9 +36,12 @@ const CurrentWeather = ({ cityData }) => {
     };
 
     const handleUnitClick = (unit) => {
-        if (unit === currentUnit) return;
-        setCurrentUnit(unit);
+        const toCelsius = unit === 'C';
+        if (toCelsius !== isCelciusUnit) {
+            setIsCelciusUnit(toCelsius);
+        }
     };
+
     if (!cityData?.current) {
         return <div className="flex justify-center items-center h-64">
             <Loader2 className="h-8 w-8 animate-spin" />
@@ -54,7 +59,7 @@ const CurrentWeather = ({ cityData }) => {
                     <div className="flex-1 text-center md:text-left">
                         <div className="flex items-center justify-center md:justify-start">
                             <div className="text-6xl font-bold text-blue-700">
-                                {currentUnit === 'C'
+                                {isCelciusUnit
                                     ? `${kelvinToCelsius(cityData.current.temp)}°C`
                                     : `${kelvinToFahrenheit(cityData.current.temp)}°F`}
 
@@ -75,7 +80,7 @@ const CurrentWeather = ({ cityData }) => {
                     <div className="bg-blue-50 p-3 rounded-lg">
                         <div className="text-sm text-gray-500">Feels Like</div>
                         <div className="text-xl font-semibold"><span id="feels-like">
-                            {currentUnit === 'C'
+                            {isCelciusUnit
                                 ? `${kelvinToCelsius(cityData.current.feels_like)}°C`
                                 : `${kelvinToFahrenheit(cityData.current.feels_like)}°F`}</span></div>
                     </div>
