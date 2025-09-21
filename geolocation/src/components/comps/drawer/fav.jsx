@@ -67,13 +67,13 @@ export const Fav = () => {
             <Dialog open={!!selectedLocation} onOpenChange={handleCloseDialog}>
                 <DialogContent className="max-w-[550px] max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
-                        <DialogTitle>Weather for {selectedLocation.name}</DialogTitle>
+                        <DialogTitle>Weather for {selectedLocation?.name}</DialogTitle>
                     </DialogHeader>
-                    {selectedLocation.name && (
+                    {selectedLocation?.name && (
                         <WeatherCard2
-                            city={selectedLocation.name}
-                            lat={selectedLocation.latitude}
-                            long={selectedLocation.longitude}
+                            city={selectedLocation?.name}
+                            lat={selectedLocation?.latitude}
+                            long={selectedLocation?.longitude}
                         />
                     )}
                 </DialogContent>
