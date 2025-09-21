@@ -19,58 +19,6 @@ import {
 } from "@/components/ui/dialog"
 
 const Search = () => {
-  const weatherExampleData = [
-    {
-      city: "New York",
-      country: "USA",
-      current: { temp: 72, condition: "Partly Cloudy", humidity: 65, wind: 8 },
-      forecast: [
-        { day: "Monday", high: 74, low: 62, condition: "Partly Cloudy" },
-        { day: "Tuesday", high: 78, low: 64, condition: "Sunny" },
-        { day: "Wednesday", high: 68, low: 60, condition: "Rain" }
-      ]
-    },
-    {
-      city: "Paris",
-      country: "France",
-      current: { temp: 68, condition: "Sunny", humidity: 55, wind: 6 },
-      forecast: [
-        { day: "Monday", high: 70, low: 58, condition: "Sunny" },
-        { day: "Tuesday", high: 72, low: 60, condition: "Sunny" },
-        { day: "Wednesday", high: 69, low: 59, condition: "Partly Cloudy" }
-      ]
-    },
-    {
-      city: "Tokyo",
-      country: "Japan",
-      current: { temp: 82, condition: "Cloudy", humidity: 70, wind: 5 },
-      forecast: [
-        { day: "Monday", high: 84, low: 72, condition: "Cloudy" },
-        { day: "Tuesday", high: 86, low: 74, condition: "Partly Cloudy" },
-        { day: "Wednesday", high: 88, low: 76, condition: "Sunny" }
-      ]
-    },
-    {
-      city: "London",
-      country: "UK",
-      current: { temp: 64, condition: "Rain", humidity: 80, wind: 12 },
-      forecast: [
-        { day: "Monday", high: 66, low: 58, condition: "Rain" },
-        { day: "Tuesday", high: 68, low: 56, condition: "Showers" },
-        { day: "Wednesday", high: 70, low: 58, condition: "Cloudy" }
-      ]
-    },
-    {
-      city: "Sydney",
-      country: "Australia",
-      current: { temp: 76, condition: "Sunny", humidity: 50, wind: 10 },
-      forecast: [
-        { day: "Monday", high: 78, low: 64, condition: "Sunny" },
-        { day: "Tuesday", high: 80, low: 66, condition: "Sunny" },
-        { day: "Wednesday", high: 76, low: 62, condition: "Partly Cloudy" }
-      ]
-    }
-  ];
   const [searchTerm, setSearchTerm] = useState("")
   const [suggestions, setSuggestions] = useState([])
   const [validationMessage, setValidationMessage] = useState("")
@@ -82,7 +30,9 @@ const Search = () => {
   const [coords, setCoords] = useState(null);
   const [error, setError] = useState(null);
   const { showCurrentCard } = useAppOptions();
-  const [favourites, setFavourites] = useState(weatherExampleData); // assuming weatherData available
+
+  const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
 
   const navigate = useNavigate()
   const fetchSuggestions = async (query) => {
@@ -169,9 +119,6 @@ const Search = () => {
     setShowSchedule(!showSchedule)
   }
 
-  const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-  const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
-
   useEffect(() => {
     getAllIndexDB((dataFromDB) => {
       setScheduleData(dataFromDB);
@@ -204,7 +151,6 @@ const Search = () => {
     });
   };
 
-
   return (
     <div className="weather-app">
       <div className="hero-background">
@@ -225,21 +171,15 @@ const Search = () => {
         <Drawer
           isOpen={isDrawerOpen}
           onClose={() => setIsDrawerOpen(false)}
-          favourites={favourites}
-          onSelectCity={(city) => {
-            setSelectedCity(city);
-            setIsDrawerOpen(false);
-          }}
         />
 
         {coords ? (
-              <div>
-      {showCurrentCard && <LocalWeather lat={coords.lat} lon={coords.lon} />}
-      {/* Other components */}
-    </div>
-        
+          <div>
+            {showCurrentCard && <LocalWeather lat={coords.lat} lon={coords.lon} />}
+            {/* Other components */}
+          </div>
         ) : (
-          <LocalWeather />
+          showCurrentCard && <div> <LocalWeather /> </div>
         )}
 
         <div className="container mx-auto px-4 py-16 flex flex-col items-center">
