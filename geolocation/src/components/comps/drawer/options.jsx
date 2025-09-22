@@ -1,7 +1,6 @@
 import { useAppOptions } from "../../../AppOptionsContext";
 export const Options = () => {
-
-    const { isCelciusUnit, setIsCelciusUnit, showCurrentCard, setShowCurrentCard } = useAppOptions();
+    const { isCelciusUnit, setIsCelciusUnit, showCurrentCard, setShowCurrentCard, showSchedule, setShowSchedule} = useAppOptions();
     return (
         <div className="p-3">
             <div className="flex items-center justify-between mb-2">
@@ -44,6 +43,24 @@ export const Options = () => {
                         <span className="sr-only">Toggle Celsius</span>
                         <span
                             className={`dot inline-block h-5 w-5 transform rounded-full bg-white shadow ring-1 ring-black/5 transition ${isCelciusUnit ? "translate-x-5" : "translate-x-0"
+                                }`}
+                        ></span>
+                    </button>
+                </label>
+                {/* Toggle Show schedule */}
+                <label className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg border border-transparent hover:border-slate-200 hover:bg-slate-50 transition">
+                    <span className="text-[13px] text-slate-700">Always show schedule</span>
+                    <button
+                        id="optToggleCelsius"
+                        type="button"
+                        onClick={() => setShowSchedule(!showSchedule)}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${showSchedule ? "bg-blue-500" : "bg-slate-300"
+                            }`}
+                        aria-pressed={showSchedule}
+                    >
+                        <span className="sr-only">Toggle Schedule</span>
+                        <span
+                            className={`dot inline-block h-5 w-5 transform rounded-full bg-white shadow ring-1 ring-black/5 transition ${showSchedule ? "translate-x-5" : "translate-x-0"
                                 }`}
                         ></span>
                     </button>

@@ -23,13 +23,12 @@ const Search = () => {
   const [suggestions, setSuggestions] = useState([])
   const [validationMessage, setValidationMessage] = useState("")
   const [showValidation, setShowValidation] = useState(false)
-  const [showSchedule, setShowSchedule] = useState(false)
   const [scheduleData, setScheduleData] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [coords, setCoords] = useState(null);
   const [error, setError] = useState(null);
-  const { showCurrentCard } = useAppOptions();
+  const { showCurrentCard, showSchedule, setShowSchedule} = useAppOptions();
 
   const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
   const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);

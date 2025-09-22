@@ -14,7 +14,16 @@ export const AppOptionsProvider = ({ children }) => {
     return saved !== null ? JSON.parse(saved) : true; // default = show
   });
 
+  const [showSchedule, setShowSchedule] = useState(() => {
+    const saved = localStorage.getItem("showSchedule");
+    return saved !== null ? JSON.parse(saved) : false; // default = hidden
+  });
+
   // Save to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("showSchedule", JSON.stringify(showSchedule));
+  }, [showSchedule]);
+
   useEffect(() => {
     localStorage.setItem("isCelciusUnit", JSON.stringify(isCelciusUnit));
   }, [isCelciusUnit]);
@@ -30,6 +39,8 @@ export const AppOptionsProvider = ({ children }) => {
         setIsCelciusUnit,
         showCurrentCard,
         setShowCurrentCard,
+        showSchedule,
+        setShowSchedule
       }}
     >
       {children}
