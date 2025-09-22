@@ -1,17 +1,9 @@
 import '../../css/forecast.css';
-import { kelvinToCelsius, kelvinToFahrenheit } from '../../utilities/common';
+import { celsiusToFahrenheit, formatDate } from '../../utilities/common';
 import { useAppOptions } from '../../AppOptionsContext';
 
 const Forecast = ({ forecast }) => {
   const { isCelciusUnit, setIsCelciusUnit } = useAppOptions();
-
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
 
   const handleUnitClick = (unit) => {
     const toCelsius = unit === 'C';
@@ -64,8 +56,8 @@ const Forecast = ({ forecast }) => {
         <div className="grid grid-cols-1 md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-gray-200">
           {forecast.map((day, index) => {
             const temp = isCelciusUnit
-              ? `${kelvinToCelsius(day.main.temp)}°C`
-              : `${kelvinToFahrenheit(day.main.temp)}°F`;
+              ? `${day.main.temp}°C`
+              : `${celsiusToFahrenheit(day.main.temp)}°F`;
 
             return (
               <div className="forecast-day p-4" key={index}>

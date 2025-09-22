@@ -1,17 +1,17 @@
 export const kelvinToCelsius = (k) => {
-    if(k < 0){
-        throw new Error("Kelvin can't be negative")
-    }
-    const temp = Math.round((k - 273.15) * 10) / 10
-    return temp;
+  if (k < 0) {
+    throw new Error("Kelvin can't be negative")
+  }
+  const temp = Math.round((k - 273.15) * 10) / 10
+  return temp;
 };
 
-export const kelvinToFahrenheit = (k) =>{
-    if(k < 0){
-        throw new Error("Kelvin can't be negative")
-    }
-    const temp =  Math.round(((k * 9) / 5 - 459.67) * 10) / 10;
-    return temp;
+export const kelvinToFahrenheit = (k) => {
+  if (k < 0) {
+    throw new Error("Kelvin can't be negative")
+  }
+  const temp = Math.round(((k * 9) / 5 - 459.67) * 10) / 10;
+  return temp;
 }
 
 export const fahrenheitToCelsius = (f) => {
@@ -39,3 +39,11 @@ export const getCurrentTimeHHMMSS = () => {
   // Combine the components into the desired format
   return `${hours}:${minutes}`;
 }
+
+export const formatDate = (date) => {
+  return new Date(date).toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  });
+};

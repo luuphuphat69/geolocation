@@ -1,18 +1,29 @@
 import { useEffect, useState } from "react";
 import "../../css/localweather.css";
-import { getCurrentWeather, reverseGeocoding } from "../../utilities/api/api";
-import { kelvinToCelsius, getCurrentTimeHHMMSS, kelvinToFahrenheit } from "../../utilities/common";
+import WeatherCard2 from "../../pages/weathercard2"
+import { getCurrentWeather, reverseGeocoding, getForecast } from "../../utilities/api/api";
+import { kelvinToCelsius, getCurrentTimeHHMMSS, kelvinToFahrenheit, celsiusToFahrenheit, formatDate } from "../../utilities/common";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { useAppOptions } from "../../AppOptionsContext";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog"
 
 export const LocalWeather = ({ lat, lon }) => {
   const [weather, setWeather] = useState(null);
+  const [forecast, setForecast] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [city, setCity] = useState("");
   const [condition, setCondition] = useState(null);
   const [localTime, setLocalTime] = useState("");
   const { isCelciusUnit, setIsCelciusUnit } = useAppOptions();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchWeather = async () => {
@@ -38,11 +49,16 @@ export const LocalWeather = ({ lat, lon }) => {
 
       try {
         const weatherData = await getCurrentWeather(latitude, longitude);
-        const citydata = await reverseGeocoding(latitude, longitude);
-
         setWeather(weatherData.data);
-        setCity(citydata.data);
         setCondition(weatherData.data.current.weather[0].description);
+
+        const citydata = await reverseGeocoding(latitude, longitude);
+        setCity(citydata.data);
+
+        const forecastResponse = await getForecast(latitude, longitude)
+        const forecastData = await forecastResponse.data
+        setForecast(forecastData.list.filter((item, index) => index % 8 === 0))
+
         setLocalTime(getCurrentTimeHHMMSS());
       } catch (error) {
         console.error("Failed to fetch weather:", error);
@@ -86,7 +102,7 @@ export const LocalWeather = ({ lat, lon }) => {
     );
   }
 
-  if (!weather) {
+  if (!weather || !forecast) {
     return (
       <div id="currentTempCard" className="current-temp theme-cloud">
         <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -94,6 +110,13 @@ export const LocalWeather = ({ lat, lon }) => {
         </Box>
       </div>
     );
+  }
+
+  const handleLocalCardClick = () => {
+    setIsDialogOpen(!isDialogOpen)
+  }
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
   }
 
   const rawTempK = weather.current.temp;
@@ -106,7 +129,7 @@ export const LocalWeather = ({ lat, lon }) => {
   return (
     <div id="currentTempCard" className={`current-temp ${theme}`}>
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 rounded-full bg-white/20 border border-white/40 items-center justify-center shrink-0">
+        <div className="flex h-10 w-10 rounded-full bg-white/20 border border-white/40 items-center justify-center shrink-0" onClick={handleLocalCardClick}>
           <span id="currentTempIcon" className="text-white text-lg">
             {icon}
           </span>
@@ -116,27 +139,30 @@ export const LocalWeather = ({ lat, lon }) => {
             <p
               id="currentTempCity"
               className="text-xs uppercase tracking-wider opacity-95"
+              onClick={handleLocalCardClick}
             >
-              {city[0].name + " - " + city[0].state || "Your Location"}
+              {city[0]?.name + " - " + city[0]?.state || "Your Location"}
             </p>
-            <button
-              id="unitToggleBtn"
-              className="inline-flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 border border-white/50 px-2.5 py-1 text-xs font-semibold transition"
-              title="Switch units"
-              onClick={() => setIsCelciusUnit(!isCelciusUnit)}
-            >
-              °{isCelciusUnit ? "C" : "F"}
-            </button>
-            <button
-              id="refreshTempBtn"
-              onClick={() => window.location.reload()}
-              className="inline-flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 border border-white/50 p-2 transition"
-              title="Refresh"
-            >
-              <i className="fa fa-refresh"></i>
-            </button>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                id="unitToggleBtn"
+                className="inline-flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 border border-white/50 px-2.5 py-1 text-xs font-semibold transition"
+                title="Switch units"
+                onClick={() => setIsCelciusUnit(!isCelciusUnit)}
+              >
+                °{isCelciusUnit ? "C" : "F"}
+              </button>
+              <button
+                id="refreshTempBtn"
+                onClick={() => window.location.reload()}
+                className="inline-flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 border border-white/50 p-2 transition"
+                title="Refresh"
+              >
+                <i className="fa fa-refresh"></i>
+              </button>
+            </div>
           </div>
-          <div className="flex items-baseline gap-2 mt-1">
+          <div className="flex items-baseline gap-2 mt-1" onClick={handleLocalCardClick}>
             <span
               id="currentTempValue"
               className="text-3xl font-extrabold"
@@ -150,6 +176,26 @@ export const LocalWeather = ({ lat, lon }) => {
               {condition}
             </span>
           </div>
+
+          <div className="flex gap-2 mt-3 overflow-x-auto" onClick={handleLocalCardClick}>
+            {forecast?.map((day, index) => {
+              const temp = isCelciusUnit
+                ? `${day.main.temp}°C`
+                : `${celsiusToFahrenheit(day.main.temp)}°F`;
+
+              return (
+                <div
+                  key={index}
+                  className="rounded-md border border-white/40 bg-white/15 px-2 py-1.5 text-center text-[11px] text-white min-w-[70px]"
+                >
+                  <div className="font-semibold opacity-95">{formatDate(day.dt_txt)}</div>
+                  <div className="mt-0.5">
+                    <span className="opacity-90">{temp}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
           <p
             id="currentTempUpdated"
             className="text-[11px] opacity-90 mt-1"
@@ -158,6 +204,20 @@ export const LocalWeather = ({ lat, lon }) => {
           </p>
         </div>
       </div>
+      {isDialogOpen ? <Dialog open={!!city} onOpenChange={handleCloseDialog}>
+        <DialogContent className="max-w-[550px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Weather for {city[0]?.name}</DialogTitle>
+          </DialogHeader>
+          {city[0]?.name && (
+            <WeatherCard2
+              city={city[0]?.name}
+              lat={lat}
+              long={lon}
+            />
+          )}
+        </DialogContent>
+      </Dialog> : null}
     </div>
   );
 };
