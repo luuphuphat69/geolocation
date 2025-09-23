@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog"
-import WeatherCard2 from "../../../pages/weathercard2";
+import WeatherCard2 from "../../../weather-card/page/weathercard2";
 
 export const Fav = () => {
     const [favourites, setFavourites] = useState([]);

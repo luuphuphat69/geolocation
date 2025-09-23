@@ -1,13 +1,13 @@
 import { useLocation } from 'react-router-dom'
 import { useState, useEffect} from 'react'
 import { Loader2 } from "lucide-react";
-import '../css/details.css'
-import { getAirPolution, getCurrentWeather, getForecast } from '../utilities/api/api'
-import CurrentWeather from '../components/comps/currentweather'
-import AirPollution from '../components/comps/airpollution'
-import Forecast from '../components/comps/forecast'
-import UVIndex from '../components/comps/uvindex'
-import WeatherMap from '../components/comps/weathermap'
+import '../../css/details.css'
+import { getAirPolution, getCurrentWeather, getForecast } from '../../utilities/api/api'
+import CurrentWeather from '../shared-features/currentweather'
+import AirPollution from '../shared-features/airpollution';
+import Forecast from '../shared-features/forecast'
+import UVIndex from '../shared-features/uvindex'
+import WeatherMap from '../shared-features/weathermap'
 
 const getWeatherType = (id) => {
     if (id >= 200 && id < 300) return "thunderstorm";

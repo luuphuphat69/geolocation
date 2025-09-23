@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Search from './pages/search';
-import Result from './pages/result2';
-import WeatherDetails from './pages/details2';
+import Search from './features/search/pages/search'
+import Result from './features/result/result2';
+import WeatherDetails from './features/details/details2';
 import firebaseApp from './firebaseapp';
 import { getMessaging } from 'firebase/messaging';
 import {getFCMToken} from './messagingManageToken';

@@ -1,4 +1,4 @@
-import "../../../css/drawer.css"
+import "../../../../css/drawer.css"
 import { Fav } from "./fav";
 import { Options } from "./options";
 // Drawer component

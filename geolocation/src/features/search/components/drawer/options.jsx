@@ -1,4 +1,4 @@
-import { useAppOptions } from "../../../AppOptionsContext";
+import { useAppOptions } from "../../../../AppOptionsContext";
 export const Options = () => {
     const { isCelciusUnit, setIsCelciusUnit, showCurrentCard, setShowCurrentCard, showSchedule, setShowSchedule} = useAppOptions();
     return (

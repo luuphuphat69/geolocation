@@ -1,4 +1,4 @@
-import '../../css/hourlyforecast.css'
+import '../../../css/hourlyforecast.css'
 import { Loader2 } from "lucide-react";
 const HourlyForecast = ({ hourlyForecastData }) => {
     if (

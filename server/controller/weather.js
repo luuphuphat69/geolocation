@@ -24,7 +24,7 @@ const weather = {
 
             res.status(200).json(response.data);
         } catch (err) {
-            res.status(500).json({ error: 'Failed to fetch weather data' });
+            res.status(500).json(err);
         }
     },
 

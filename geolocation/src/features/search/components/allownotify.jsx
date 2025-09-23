@@ -1,8 +1,8 @@
-import '../../css/allownotify.css';
+import '../../../css/allownotify.css';
 import { useState, useRef } from 'react';
-import { getFCMToken, deleteFCMToken } from '../../messagingManageToken';
+import { getFCMToken, deleteFCMToken } from '../../../messagingManageToken';
 import { getMessaging } from 'firebase/messaging';
-import firebaseApp from '../../firebaseapp';
+import firebaseApp from '../../../firebaseapp';
 import {
     Dialog,
     DialogContent,

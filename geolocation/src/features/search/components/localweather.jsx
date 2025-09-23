@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import "../../css/localweather.css";
-import WeatherCard2 from "../../pages/weathercard2"
-import { getCurrentWeather, reverseGeocoding, getForecast } from "../../utilities/api/api";
-import { kelvinToCelsius, getCurrentTimeHHMMSS, kelvinToFahrenheit, celsiusToFahrenheit, formatDate } from "../../utilities/common";
+import "../../../css/localweather.css";
+import WeatherCard2 from "../../weather-card/page/weathercard2";
+import { getCurrentWeather, reverseGeocoding, getForecast } from "../../../utilities/api/api";
+import { kelvinToCelsius, getCurrentTimeHHMMSS, kelvinToFahrenheit, celsiusToFahrenheit, formatDate } from "../../../utilities/common";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import { useAppOptions } from "../../AppOptionsContext";
+import { useAppOptions } from "../../../AppOptionsContext";
 import {
   Dialog,
   DialogContent,

@@ -1,5 +1,4 @@
-import React from "react";
-import "../../css/result.css";
+import "../../../css/result.css";
 
 export const AddToFavoriteButton = ({ item, isFavorite, onToggle }) => {
   return (

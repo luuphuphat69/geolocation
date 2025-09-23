@@ -11,10 +11,10 @@ import {
     DialogDescription,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { getLocation } from "../utilities/api/api";
-import "../css/result.css";
-import WeatherCard2 from "./weathercard2";
-import { AddToFavoriteButton } from "../components/comps/addtoFavoriteBtn";
+import { getLocation } from "../../utilities/api/api";
+import "../../css/result.css";
+import WeatherCard2 from "../weather-card/page/weathercard2";
+import { AddToFavoriteButton } from "./components/addtoFavoriteBtn";
 
 const Result2 = () => {
     const columns = [

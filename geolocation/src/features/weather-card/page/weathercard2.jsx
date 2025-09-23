@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom"
 import { Eye, Bell } from "lucide-react"
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast"
-import '../css/weathercard.css'
-import { getCurrentWeather, getHourlyForecast, SendActivasion, unsubcribeNotify } from '../utilities/api/api';
-import WeatherCard_Comp from '../components/comps/card_comps/weather_card';
-import Schedule from '../components/comps/card_comps/schedule';
+import '../../../css/weathercard.css'
+import { getCurrentWeather, getHourlyForecast, SendActivasion, unsubcribeNotify } from '../../../utilities/api/api';
+import WeatherCard_Comp from '../components/weather-tab';
+import Schedule from '../components/schedule'
 import {
     Dialog,
     DialogContent,
@@ -45,7 +45,7 @@ const WeatherCard2 = ({ city, lat, long }) => {
             try {
                 const temper = await getCurrentWeather(lat, long);
                 setWeatherData(temper.data);
-
+            
                 const hourlyForecast = await getHourlyForecast(lat, long);
                 setHourlyForecastData(hourlyForecast.data);
 
@@ -210,7 +210,7 @@ const WeatherCard2 = ({ city, lat, long }) => {
                         <div
                             className={`weather-card__section ${activeTab === "weather" ? "weather-card__section--active" : ""}`}
                             data-section="weather"
-                            style={{ display: activeTab === "weather" ? "block" : "none" }}
+                            style={{ display: activeTab.includes("weather") ? "block" : "none" }}
                         >
                             {/* Weather content goes here */}
                             <WeatherCard_Comp weatherData={weatherData} hourlyForecastData={hourlyForecastData} iconUrl={iconUrl} />
@@ -218,7 +218,7 @@ const WeatherCard2 = ({ city, lat, long }) => {
                         <div
                             className={`weather-card__section ${activeTab === "schedule" ? "weather-card__section--active" : ""}`}
                             data-section="schedule"
-                            style={{ display: activeTab === "schedule" ? "block" : "none" }}
+                            style={{ display: activeTab.includes("schedule") ? "block" : "none" }}
                         >
                             {/* Schedule content goes here */}
                             <Schedule cityName={city} lat={lat} long={long}></Schedule>
