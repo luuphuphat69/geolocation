@@ -20,10 +20,11 @@ const PORT = 3000;
 })();
 
 function connectDB() {
-  mongoose.connect(process.env.MONGODB_CONNECTION, { autoReconnect: true })
+  mongoose.connect(process.env.MONGODB_CONNECTION)
     .then(() => console.log("MongoDB connected"))
     .catch(err => {
       console.error("MongoDB connection error:", err);
       setTimeout(connectDB, 5000); // retry after 5s
     });
 }
+
