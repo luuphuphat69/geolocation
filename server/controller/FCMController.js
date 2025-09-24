@@ -98,7 +98,7 @@ const FCMController = {
     saveToken: async (req, res) => {
         try {
             const { token, lat, lon } = req.body;
-            console.log("Token:", token, "Lat:", lat, "Lon:", lon);
+            //console.log("Token:", token, "Lat:", lat, "Lon:", lon);
             if (!token || !lat || !lon) {
                 return res.status(400).json({ message: "Invalid request body. Token, lat, and lon are required." });
             }
