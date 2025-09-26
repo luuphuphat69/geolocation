@@ -82,3 +82,47 @@ export const deleteSelectedIndex = (id) => {
     console.error("Error opening IndexedDB:", e.target.error);
   };
 };
+
+export function requestLocation() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported in your browser.');
+      return reject("Unsupported");
+    }
+
+    navigator.permissions.query({ name: 'geolocation' }).then((permissionStatus) => {
+      if (permissionStatus.state === 'denied') {
+        alert('Location permission is denied. Please allow it in your browser settings.');
+        reject("Denied");
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          () => resolve("Granted"),
+          (err) => {
+            console.error("Error getting location:", err.message);
+            alert("Unable to retrieve location.");
+            reject(err.message);
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+      }
+    });
+  });
+}
+
+export function requestPermission() {
+  return new Promise((resolve, reject) => {
+    Notification.requestPermission()
+      .then((permission) => {
+        if (permission === 'granted') {
+          resolve("Granted");
+        } else {
+          alert("Notification permission denied.");
+          reject("Notification denied");
+        }
+      })
+      .catch((error) => {
+        console.log("Permission error:", error);
+        reject(error);
+      });
+  });
+}
