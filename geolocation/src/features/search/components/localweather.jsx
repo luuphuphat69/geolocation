@@ -186,7 +186,7 @@ export const LocalWeather = ({ lat, lon }) => {
               return (
                 <div
                   key={index}
-                  className="rounded-md border border-white/40 bg-white/15 px-2 py-1.5 text-center text-[11px] text-white min-w-[70px]"
+                  className="rounded-md border border-white/40 bg-white/15 px-2 py-1.5 text-center text-[12px] text-white min-w-[70px]"
                 >
                   <div className="font-semibold opacity-95">{formatDate(day.dt_txt)}</div>
                   <div className="mt-0.5">
