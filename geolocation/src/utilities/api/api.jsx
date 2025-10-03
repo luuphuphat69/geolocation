@@ -14,7 +14,7 @@ export const SendActivasion = async (mail, city, lat, long) => {
     try {
         const res = await axios.post(
             `https://${lambdaAPI_ID[1]}.execute-api.us-east-1.amazonaws.com/${lambdaAPI_stage}/${lambdaAPI_path[1]}`,
-            { mail, city, lat, long },
+            { mail, lat, long, city },
             { headers: { "Content-Type": "application/json" } }
         );
         // console.log("Success:", res.data);
