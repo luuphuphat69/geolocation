@@ -89,7 +89,7 @@ const WeatherCard2 = ({ city, lat, long }) => {
 
 
         try {
-            const response = await SendActivasion(email, lat, long, city);
+            const response = await SendActivasion(email, city, lat, long);
             const description = response.status === 409
                 ? 'This mail is USED. Use another email or unsubscribe now'
                 : `You will receive daily weather updates for ${city} at 7:00 AM to ${email}`;
