@@ -78,21 +78,30 @@ export const LocalWeather = ({ lat, lon }) => {
     return "⛅";
   };
 
-  const pickTheme = (temp, condition = "") => {
-    const c = condition.toLowerCase();
-    if (c.includes("rain") || c.includes("shower")) return "theme-rain";
-    if (c.includes("cloud")) return "theme-cloud";
-    if (c.includes("sunny") || c.includes("clear")) {
-      if (temp >= 88) return "theme-hot";
-      if (temp >= 72) return "theme-warm";
-      if (temp >= 55) return "theme-mild";
-      return "theme-cold";
-    }
-    if (temp >= 90) return "theme-hot";
-    if (temp >= 72) return "theme-warm";
-    if (temp >= 55) return "theme-mild";
+const pickTheme = (temp, condition = "", isCelcius = true) => {
+  // Normalize temperature thresholds to match selected unit
+  const thresholds = isCelcius
+    ? { hot: 31, warm: 22, mild: 13 } // °C
+    : { hot: 88, warm: 72, mild: 55 }; // °F
+
+  const c = condition.toLowerCase();
+
+  if (c.includes("rain") || c.includes("shower")) return "theme-rain";
+  if (c.includes("cloud")) return "theme-cloud";
+  if (c.includes("sunny") || c.includes("clear")) {
+    if (temp >= thresholds.hot) return "theme-hot";
+    if (temp >= thresholds.warm) return "theme-warm";
+    if (temp >= thresholds.mild) return "theme-mild";
     return "theme-cold";
-  };
+  }
+
+  // fallback by temperature
+  if (temp >= thresholds.hot) return "theme-hot";
+  if (temp >= thresholds.warm) return "theme-warm";
+  if (temp >= thresholds.mild) return "theme-mild";
+  return "theme-cold";
+};
+
 
   if (errorMsg) {
     return (
@@ -123,7 +132,8 @@ export const LocalWeather = ({ lat, lon }) => {
   const displayTemp = isCelciusUnit
     ? kelvinToCelsius(rawTempK)
     : kelvinToFahrenheit(rawTempK);
-  const theme = pickTheme(displayTemp, condition);
+    
+  const theme = pickTheme(displayTemp, condition, isCelciusUnit);
   const icon = getMiniIcon(condition);
 
   return (
