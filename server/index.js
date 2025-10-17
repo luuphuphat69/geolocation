@@ -1,30 +1,16 @@
-const mongoose = require('mongoose');
+const { connectDB } = require('./db');
 const app = require('./server');
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 (async () => {
   try {
-    mongoose.connection.on("disconnected", () => {
-      console.log("MongoDB disconnected! Reconnecting...");
-      connectDB();
-    });
-    connectDB();
-    
+    await connectDB();
     app.listen(PORT, () => {
-      console.log(`App listening on ${PORT}`);
+      console.log(`Server running on port ${PORT}`);
     });
   } catch (error) {
-    console.error('Error connecting to MongoDB:', error);
+    console.error("Failed to start server:", error);
+    process.exit(1);
   }
 })();
-
-function connectDB() {
-  mongoose.connect(process.env.MONGODB_CONNECTION)
-    .then(() => console.log("MongoDB connected"))
-    .catch(err => {
-      console.error("MongoDB connection error:", err);
-      setTimeout(connectDB, 5000); // retry after 5s
-    });
-}
-
