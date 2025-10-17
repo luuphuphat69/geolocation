@@ -1,309 +1,216 @@
-import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import "../../../css/search.css"
-import "../../../css/validation.css"
-import "../../../css/autocomplete-list.css"
-import "../../../css/menu.css"
-import { getLocation } from "../../../utilities/api/api"
-import { getAllIndexDB, deleteSelectedIndex } from "../../../utilities/browser/browser"
-import WeatherCard2 from "../../weather-card/page/weathercard2"
-import AllowNotify from "../components/allownotify"
-import { Drawer } from "../components/drawer/drawer"
-import { LocalWeather } from "../components/localweather"
-import { useAppOptions } from "../../../AppOptionsContext"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "../../../css/search.css";
+import "../../../css/validation.css";
+import "../../../css/autocomplete-list.css";
+import "../../../css/menu.css";
+import { getLocation } from "../../../utilities/api/api";
 
 const Search = () => {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [suggestions, setSuggestions] = useState([])
-  const [validationMessage, setValidationMessage] = useState("")
-  const [showValidation, setShowValidation] = useState(false)
-  const [scheduleData, setScheduleData] = useState(null);
-  const [selectedCity, setSelectedCity] = useState(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [coords, setCoords] = useState(null);
-  const [error, setError] = useState(null);
-  const { showCurrentCard, showSchedule, setShowSchedule} = useAppOptions();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [validation, setValidation] = useState({
+    format: true,
+    length: false,
+    available: false,
+    isValid: false,
+  });
+  const [validationMessage, setValidationMessage] = useState("");
+  const [showRequirements, setShowRequirements] = useState(false);
+  const navigate = useNavigate();
 
-  const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-  const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
-
-  const navigate = useNavigate()
+  // Fetch city suggestions
   const fetchSuggestions = async (query) => {
     try {
-      const response = await getLocation(query)
-      const data = await response.data
-      setSuggestions(data)
+      const response = await getLocation(query);
+      const data = await response.data;
+      setSuggestions(data);
+      return data;
     } catch (error) {
-      console.error("Error fetching suggestions:", error)
+      console.error("Error fetching suggestions:", error);
+      return [];
     }
-  }
-
-  const validateInput = (input) => {
-    if (!input || input.trim() === "") {
-      return "Please enter a city name."
-    }
-    return ""
-  }
-
-  const handleOpenDialog = (city) => {
-    setSelectedCity(city);
   };
 
-  const handleCloseDialog = () => {
-    setSelectedCity(null);
+  // ✅ Validation logic
+  const validateInput = (value, citySuggestions = []) => {
+    const validation = {
+      length: value.length >= 2,
+      format: /^[a-zA-Z\s]+$/.test(value) || value === "",
+      available: false,
+      isValid: false,
+    };
 
-    // After close dialog, there's might be some changes, retrieve data again
-    getAllIndexDB((dataFromDB) => {
-      setScheduleData(dataFromDB);
-    });
+    if (value.length >= 2 && validation.format) {
+  const normalizedValue = value.toLowerCase().trim();
+  validation.available = citySuggestions.some(
+    (city) =>
+      city.name?.toLowerCase().includes(normalizedValue) ||
+      city.country?.toLowerCase().includes(normalizedValue)
+  );
+}
 
+
+    validation.isValid = validation.length && validation.format && validation.available;
+    return validation;
   };
 
-  const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
+  //  Live validation on typing
+  const handleSearchChange = async (e) => {
+    const query = e.target.value;
+    setSearchTerm(query);
+    setShowRequirements(true);
 
-  const handleSearchChange = (e) => {
-    const query = e.target.value
-    setSearchTerm(query)
+    // Fetch suggestions first
+    const fetchedSuggestions = query.length >= 2 ? await fetchSuggestions(query) : [];
 
-    // Clear validation message when user starts typing
-    if (showValidation) {
-      setShowValidation(false)
-      setValidationMessage("")
+    // Validate input
+    const validated = validateInput(query, fetchedSuggestions);
+    setValidation(validated);
+
+    // Determine validation message
+    let message = "";
+    if (!validated.format) {
+      message = "No special characters allowed.";
+    } else if (!validated.length && query.length > 0) {
+      message = "Enter at least 2 characters.";
+    } else if (validated.length && validated.format && !validated.available) {
+      message = "City not found in database.";
     }
 
-    if (query) {
-      fetchSuggestions(query)
-    } else {
-      setSuggestions([])
+    setValidationMessage(message);
+
+    // Hide suggestions if any validation fails
+    if (message) {
+      setSuggestions([]);
     }
-  }
+  };
 
   const handleSuggestionClick = (name) => {
-    if (name && name.trim()) {
-      setSearchTerm(name)
-      setShowValidation(false)
-      setValidationMessage("")
-      navigate(`/result?city=${encodeURIComponent(name)}`)
-    }
-    setSuggestions([])
-  }
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      handleSearch(e)
-    }
+    setSearchTerm(name);
+    setValidationMessage("");
+    setShowRequirements(false);
+    navigate(`/result?city=${encodeURIComponent(name)}`);
+    setSuggestions([]);
   };
 
   const handleSearch = (e) => {
-    const message = validateInput(searchTerm)
+    e.preventDefault();
 
-    if (message) {
-      setValidationMessage(message)
-      setShowValidation(true)
-      return
+    if (validation.isValid) {
+      navigate(`/result?city=${encodeURIComponent(searchTerm)}`);
+    } else {
+      setShowRequirements(true);
     }
-
-    if (searchTerm && searchTerm.trim()) {
-      navigate(`/result?city=${encodeURIComponent(searchTerm)}`)
-    }
-  }
-
-  const handleShowSchedule = () => {
-    setShowSchedule(!showSchedule)
-  }
-
-  useEffect(() => {
-    getAllIndexDB((dataFromDB) => {
-      setScheduleData(dataFromDB);
-    });
-  }, [showSchedule === true]);
+  };
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setCoords({
-          lat: pos.coords.latitude,
-          lon: pos.coords.longitude,
-        });
+        // Do nothing here for now
       },
       (err) => {
         console.error("Failed to get location:", err);
-        setError("Location access is required to show your local weather.");
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
   }, []);
 
-  const handleDeleteSelectedSchedule = (city) => {
-    const confirmed = window.confirm(`Are you sure you want to delete the schedule for ${city}?`);
-    if (!confirmed) return;
-
-    deleteSelectedIndex(city);
-    getAllIndexDB((dataFromDB) => {
-      setScheduleData(dataFromDB);
-    });
-  };
-
   return (
-    <div className="weather-app">
-      <div className="hero-background">
-        <div className="clouds-bg"></div>
-        <div className="light-rays"></div>
-        <div className="sun-effect"></div>
-        <button id="favMenuBtn" class="menu-button" onClick={toggleDrawer}>
-          {isDrawerOpen ? (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-slate-700 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-slate-700 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          )}
-        </button>
-        <Drawer
-          isOpen={isDrawerOpen}
-          onClose={() => setIsDrawerOpen(false)}
+    <div className="search-page-container">
+      <header className="search-page-mb-3">
+        <h1 className="search-page-main-title">Geolocation.space</h1>
+        <p className="search-page-subtitle">Check weather data and forecasts</p>
+      </header>
+
+      <section className="search-page-input-container">
+        <input
+          type="text"
+          className={`search-page-input-field ${
+            validation.isValid ? "valid" : validationMessage ? "invalid" : ""
+          }`}
+          placeholder="Enter city name..."
+          id="cityInput"
+          aria-label="City name"
+          autoComplete="off"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          onFocus={() => setShowRequirements(true)}
         />
 
-        {coords ? (
-          <div>
-            {showCurrentCard && <LocalWeather lat={coords.lat} lon={coords.lon} />}
-            {/* Other components */}
+        {/* Suggestions only show when valid */}
+        <div
+          id="suggestionsDropdown"
+          className={`search-page-suggestions-dropdown ${
+            suggestions.length > 0 && !validationMessage ? "show" : ""
+          }`}
+        >
+          {suggestions.map((suggestion) => (
+            <div
+              key={suggestion._id}
+              className="search-page-suggestion-item"
+              onClick={() => handleSuggestionClick(suggestion.name)}
+            >
+              <div className="search-page-suggestion-text">{suggestion.name}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Validation Requirements */}
+        {showRequirements && (
+          <div className="search-page-input-requirements show" id="inputRequirements">
+            <div className="search-page-requirement-item">
+              <div
+                className={`search-page-requirement-icon ${
+                  validation.format ? "valid" : "invalid"
+                }`}
+              >
+                {validation.format ? "✓" : "✗"}
+              </div>
+              <span>No special characters</span>
+            </div>
+
+            <div className="search-page-requirement-item">
+              <div
+                className={`search-page-requirement-icon ${
+                  validation.length ? "valid" : "invalid"
+                }`}
+              >
+                {validation.length ? "✓" : "✗"}
+              </div>
+              <span>At least 2 characters</span>
+            </div>
+
+            <div className="search-page-requirement-item">
+              <div
+                className={`search-page-requirement-icon ${
+                  validation.available ? "valid" : "invalid"
+                }`}
+              >
+                {validation.available ? "✓" : "✗"}
+              </div>
+              <span>City available in database</span>
+            </div>
+
           </div>
-        ) : (
-          showCurrentCard && <div> <LocalWeather /> </div>
         )}
 
-        <div className="container mx-auto px-4 py-16 flex flex-col items-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 text-center" style={{ color: '#000000' }}>Geolocation 🌍</h1>
-          <p className="text-xl text-blue-100 mb-8 text-center" style={{ color: "#000000ff" }}>Search for a city to check the weather</p>
-          <div className="search-container">
-            <div className="flex flex-col md:flex-row gap-4">
-              <input onKeyDown={handleKeyDown} onChange={handleSearchChange} type="text" id="citySearch" placeholder="Enter city name..." className="flex-grow px-5 py-3 rounded-lg border-2 border-blue-300 focus:border-blue-500 focus:outline-none text-lg" />
-              <button onClick={handleSearch} id="searchBtn" className="btn btn-blue">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                Search
-              </button>
-            </div>
-            {suggestions.length > 0 && (
-              <ul className="autocomplete-list">
-                {suggestions.map((suggestion) => (
-                  <li key={suggestion._id} onClick={() => handleSuggestionClick(suggestion.name)}>
-                    {suggestion.name}
-                  </li>
-                ))}
-              </ul>
-            )}
-            {/* Validation Message */}
-            {showValidation && validationMessage && (
-              <div className="validation-message">
-                <span>{validationMessage}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Notify switch */}
-          <div>
-            <AllowNotify />
-          </div>
-
-          <button onClick={handleShowSchedule} id="showScheduleBtn" className="btn btn-indigo mb-8">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            Show My Schedules
-          </button>
-
-          <div id="scheduleContainer" className={
-            showSchedule === true && scheduleData?.length > 0
-              ? " container-white"
-              : "hidden"
-          }
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-800">My Weather Schedules</h2>
-              <span className="bg-gray-100 text-gray-700 text-xs font-medium px-2.5 py-1 rounded-full">Scroll for more</span>
-            </div>
-
-            <div className="schedules-scroll-container">
-              {scheduleData?.map((city) => (
-                <div key={city.id} className="space-y-6 mt-3">
-                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-                      <h3 className="text-xl font-bold text-blue-800 flex">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        {city.id}
-                      </h3>
-                      <button onClick={() => handleDeleteSelectedSchedule(city.id)} className="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mt-1 mr-1">Delete</button>
-                    </div>
-
-                    <div className="weekly-schedule" onClick={() => handleOpenDialog(city)}>
-                      {WEEKDAYS.map((day) => {
-                        const activities = city.scheduleData[day] || [];
-                        return (
-                          <div key={day} className="day-column">
-                            <div className="day-header text-blue-800">{capitalize(day)}</div>
-                            {activities.length > 0 ? (
-                              activities.map((item) => (
-                                <div
-                                  key={item.id}
-                                  className={
-                                    item.status === 'completed'
-                                      ? "activity-chip text-blue-800 item-completed"
-                                      : item.status === 'pending'
-                                        ? "activity-chip text-blue-800 item-pending"
-                                        : item.status === 'cancelled'
-                                          ? "activity-chip text-blue-800 item-cancelled"
-                                          : "activity-chip bg-blue-100 text-blue-800"
-                                  }
-                                >
-                                  <div className="p-1 truncate max-w-[150px]" title={item.activity}>
-                                    {item.activity}
-                                  </div>
-                                  <div className="activity-time">{item.time}</div>
-                                </div>
-                              ))
-                            ) : (
-                              <div className="text-sm text-gray-400 italic" style={{ textAlign: "center", padding: 20 }}>Empty</div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-      <Dialog open={!!selectedCity} onOpenChange={handleCloseDialog}>
-        <DialogContent className="max-w-[550px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Weather for {selectedCity?.id}</DialogTitle>
-          </DialogHeader>
-          {selectedCity && (
-            <WeatherCard2
-              city={selectedCity.id}
-              lat={selectedCity.lat}
-              long={selectedCity.long}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+        {/* Search button */}
+        <button
+          className="search-page-primary-btn"
+          id="searchBtn"
+          disabled={!validation.isValid}
+          style={{
+            opacity: validation.isValid ? "1" : "0.6",
+            cursor: validation.isValid ? "pointer" : "not-allowed",
+          }}
+          onClick={handleSearch}
+        >
+          Search Weather
+        </button>
+      </section>
     </div>
-  )
-}
-export default Search
+  );
+};
+
+export default Search;
