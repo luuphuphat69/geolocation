@@ -45,7 +45,7 @@ const WeatherCard2 = ({ city, lat, long }) => {
             try {
                 const temper = await getCurrentWeather(lat, long);
                 setWeatherData(temper.data);
-            
+
                 const hourlyForecast = await getHourlyForecast(lat, long);
                 setHourlyForecastData(hourlyForecast.data);
 
@@ -124,14 +124,16 @@ const WeatherCard2 = ({ city, lat, long }) => {
             <div className="weather-card">
                 {/* <!-- Header with city name and local time --> */}
                 <div className="weather-card__header">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-start w-full">
+
                         <div>
                             <h2 className="text-3xl font-bold">{city}</h2>
                             {hourlyForecastData ? <p className="text-blue-100" id="local-time">{hourlyForecastData.location.localtime}</p> :
                                 <Loader2 className="h-8 w-8 animate-spin" />
                             }
                         </div>
-                        <div className="flex space-x-3">
+                        <div className="flex space-x-3 ml-auto">
+
                             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                 <DialogTrigger asChild>
                                     <Button
