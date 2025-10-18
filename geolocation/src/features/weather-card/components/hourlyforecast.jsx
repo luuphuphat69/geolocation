@@ -1,6 +1,10 @@
 import '../../../css/hourlyforecast.css'
 import { Loader2 } from "lucide-react";
+import { celsiusToFahrenheit, fahrenheitToCelsius } from '../../../utilities/common';
+import { useAppOptions } from '../../../AppOptionsContext';
 const HourlyForecast = ({ hourlyForecastData }) => {
+    const { isCelciusUnit, setIsCelciusUnit } = useAppOptions();
+
     if (
         !hourlyForecastData ||
         !hourlyForecastData.forecast ||
@@ -21,7 +25,8 @@ const HourlyForecast = ({ hourlyForecastData }) => {
                         <div className="forecast-icon">
                             <img src={`https:${item.condition.icon}`} alt="weather icon" />
                         </div>
-                        <p className="forecast-temp">{item.temp_c}°</p>
+                        <p className="forecast-temp">{isCelciusUnit ? item.temp_c  + "°C" :
+                         celsiusToFahrenheit(item.temp_c) + "°F"}</p>
                     </div>
                 ))}
             </div>

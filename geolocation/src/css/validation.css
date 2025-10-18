@@ -1,19 +1,95 @@
-.validation-message {
-  color: #e53e3e;
-  font-size: 14px;
-  margin-top: 8px;
-  display: flex;
-  align-items: center;
-  padding-left: 5px;
-}
+  /* Search Page Input Validation */
+  .search-page-input-field.invalid {
+    border-color: #ff0000;
+    box-shadow: inset 3px 3px 0 rgba(255, 0, 0, 0.2);
+  }
 
-.validation-message::before {
-  content: "⚠️";
-  margin-right: 6px;
-  font-size: 12px;
-}
+  .search-page-input-field.valid {
+    border-color: #00aa00;
+    box-shadow: inset 3px 3px 0 rgba(0, 170, 0, 0.2);
+  }
 
-.input-field input.error {
-  border-color: #e53e3e !important;
-  box-shadow: 0 0 0 1px #e53e3e !important;
-}
+  .search-page-validation-message {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 140px;
+    background: #ff0000;
+    color: var(--search-page-off-white);
+    border: 3px solid var(--search-page-pure-black);
+    box-shadow: 4px 4px 0 var(--search-page-shadow);
+    padding: 1rem 1.5rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 999;
+    margin-top: 0.5rem;
+    display: none;
+  }
+
+  .search-page-validation-message.show {
+    display: block;
+  }
+
+  .search-page-validation-message.success {
+    background: #00aa00;
+  }
+
+  .search-page-validation-message.warning {
+    background: #ff8800;
+  }
+
+  .search-page-input-requirements {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 140px;
+    background: var(--search-page-light-gray);
+    border: 3px solid var(--search-page-pure-black);
+    box-shadow: 4px 4px 0 var(--search-page-shadow);
+    padding: 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    z-index: 998;
+    margin-top: 0.5rem;
+    display: none;
+  }
+
+  .search-page-input-requirements.show {
+    display: block;
+  }
+
+  .search-page-requirement-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .search-page-requirement-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .search-page-requirement-icon {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--search-page-pure-black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+
+  .search-page-requirement-icon.valid {
+    background: #00aa00;
+    color: var(--search-page-off-white);
+  }
+
+  .search-page-requirement-icon.invalid {
+    background: #ff0000;
+    color: var(--search-page-off-white);
+  }
