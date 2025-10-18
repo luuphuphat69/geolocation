@@ -1,11 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../../css/search.css";
-import "../../../css/validation.css";
-import "../../../css/autocomplete-list.css";
-import "../../../css/menu.css";
 import { getLocation } from "../../../utilities/api/api";
-
+import { LocalWeather } from "../components/localweather";
+import SettingsComp from "../../settings/settings";
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -18,6 +16,8 @@ const Search = () => {
   const [validationMessage, setValidationMessage] = useState("");
   const [showRequirements, setShowRequirements] = useState(false);
   const navigate = useNavigate();
+  const inputRef = useRef(null);
+  const requirementsRef = useRef(null);
 
   // Fetch city suggestions
   const fetchSuggestions = async (query) => {
@@ -32,7 +32,7 @@ const Search = () => {
     }
   };
 
-  // ✅ Validation logic
+  // Validation logic
   const validateInput = (value, citySuggestions = []) => {
     const validation = {
       length: value.length >= 2,
@@ -42,24 +42,22 @@ const Search = () => {
     };
 
     if (value.length >= 2 && validation.format) {
-  const normalizedValue = value.toLowerCase().trim();
-  validation.available = citySuggestions.some(
-    (city) =>
-      city.name?.toLowerCase().includes(normalizedValue) ||
-      city.country?.toLowerCase().includes(normalizedValue)
-  );
-}
-
+      const normalizedValue = value.toLowerCase().trim();
+      validation.available = citySuggestions.some(
+        (city) =>
+          city.name?.toLowerCase().includes(normalizedValue) ||
+          city.country?.toLowerCase().includes(normalizedValue)
+      );
+    }
 
     validation.isValid = validation.length && validation.format && validation.available;
     return validation;
   };
 
-  //  Live validation on typing
+  // Live validation on typing
   const handleSearchChange = async (e) => {
     const query = e.target.value;
     setSearchTerm(query);
-    setShowRequirements(true);
 
     // Fetch suggestions first
     const fetchedSuggestions = query.length >= 2 ? await fetchSuggestions(query) : [];
@@ -104,11 +102,28 @@ const Search = () => {
     }
   };
 
+  // Hide requirements when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target) &&
+        requirementsRef.current &&
+        !requirementsRef.current.contains(event.target)
+      ) {
+        setShowRequirements(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        // Do nothing here for now
-      },
+      (pos) => { },
       (err) => {
         console.error("Failed to get location:", err);
       },
@@ -118,6 +133,17 @@ const Search = () => {
 
   return (
     <div className="search-page-container">
+      <SettingsComp/>
+      <div className="floating-shapes">
+        <div className="floating-shape shape-1"></div>
+        <div className="floating-shape shape-2"></div>
+        <div className="floating-shape shape-3"></div>
+        <div className="floating-shape shape-4"></div>
+        <div className="floating-shape shape-5"></div>
+        <div className="floating-shape shape-6"></div>
+        <div className="floating-shape shape-7"></div>
+        <div className="floating-shape shape-8"></div>
+      </div>
       <header className="search-page-mb-3">
         <h1 className="search-page-main-title">Geolocation.space</h1>
         <p className="search-page-subtitle">Check weather data and forecasts</p>
@@ -125,10 +151,9 @@ const Search = () => {
 
       <section className="search-page-input-container">
         <input
+          ref={inputRef}
           type="text"
-          className={`search-page-input-field ${
-            validation.isValid ? "valid" : validationMessage ? "invalid" : ""
-          }`}
+          className={`search-page-input-field ${validation.isValid ? "valid" : validationMessage ? "invalid" : ""}`}
           placeholder="Enter city name..."
           id="cityInput"
           aria-label="City name"
@@ -138,12 +163,11 @@ const Search = () => {
           onFocus={() => setShowRequirements(true)}
         />
 
-        {/* Suggestions only show when valid */}
+        {/* Suggestions */}
         <div
           id="suggestionsDropdown"
-          className={`search-page-suggestions-dropdown ${
-            suggestions.length > 0 && !validationMessage ? "show" : ""
-          }`}
+          className={`search-page-suggestions-dropdown ${suggestions.length > 0 && !validationMessage ? "show" : ""
+            }`}
         >
           {suggestions.map((suggestion) => (
             <div
@@ -158,40 +182,31 @@ const Search = () => {
 
         {/* Validation Requirements */}
         {showRequirements && (
-          <div className="search-page-input-requirements show" id="inputRequirements">
+          <div
+            ref={requirementsRef}
+            className="search-page-input-requirements show"
+            id="inputRequirements"
+          >
             <div className="search-page-requirement-item">
-              <div
-                className={`search-page-requirement-icon ${
-                  validation.format ? "valid" : "invalid"
-                }`}
-              >
+              <div className={`search-page-requirement-icon ${validation.format ? "valid" : "invalid"}`}>
                 {validation.format ? "✓" : "✗"}
               </div>
               <span>No special characters</span>
             </div>
 
             <div className="search-page-requirement-item">
-              <div
-                className={`search-page-requirement-icon ${
-                  validation.length ? "valid" : "invalid"
-                }`}
-              >
+              <div className={`search-page-requirement-icon ${validation.length ? "valid" : "invalid"}`}>
                 {validation.length ? "✓" : "✗"}
               </div>
               <span>At least 2 characters</span>
             </div>
 
             <div className="search-page-requirement-item">
-              <div
-                className={`search-page-requirement-icon ${
-                  validation.available ? "valid" : "invalid"
-                }`}
-              >
+              <div className={`search-page-requirement-icon ${validation.available ? "valid" : "invalid"}`}>
                 {validation.available ? "✓" : "✗"}
               </div>
               <span>City available in database</span>
             </div>
-
           </div>
         )}
 
@@ -209,6 +224,7 @@ const Search = () => {
           Search Weather
         </button>
       </section>
+      <LocalWeather />
     </div>
   );
 };

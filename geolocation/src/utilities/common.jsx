@@ -24,21 +24,23 @@ export const celsiusToFahrenheit = (c) => {
   return temp;
 };
 
-export const getCurrentTimeHHMMSS = () => {
-  const now = new Date(); // Create a new Date object representing the current date and time
+export const getCurrentTimeHHMM = () => {
+  const now = new Date();
 
-  // Get individual components: hours, minutes, and seconds
   let hours = now.getHours();
   let minutes = now.getMinutes();
-  let seconds = now.getSeconds();
+  const ampm = hours >= 12 ? "PM" : "AM";
 
-  // Pad single-digit numbers with a leading zero to ensure HH:MM:SS format
-  hours = hours < 10 ? '0' + hours : hours;
-  minutes = minutes < 10 ? '0' + minutes : minutes;
+  // convert 24h → 12h format
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
 
-  // Combine the components into the desired format
-  return `${hours}:${minutes}`;
-}
+  // zero-pad minutes
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+
+  return `${hours}:${minutes} ${ampm}`;
+};
+
 
 export const formatDate = (date) => {
   return new Date(date).toLocaleDateString('en-US', {
@@ -47,3 +49,24 @@ export const formatDate = (date) => {
     day: 'numeric',
   });
 };
+
+export const formatUnixToLocalHHMM = (unixTime, timezoneOffset = 0) => {
+  // Convert UNIX (seconds) → milliseconds
+  const utcMillis = unixTime * 1000;
+
+  // Apply OpenWeather offset (seconds → ms)
+  const localMillis = utcMillis + timezoneOffset * 1000;
+
+  // Get hours/minutes from this manually
+  const date = new Date(localMillis);
+  const hours = date.getUTCHours(); // use UTC hours so we don't apply local system offset
+  const minutes = date.getUTCMinutes();
+
+  // Format to 12-hour AM/PM
+  const ampm = hours >= 12 ? "PM" : "AM";
+  const displayHour = hours % 12 === 0 ? 12 : hours % 12;
+  const displayMinutes = minutes.toString().padStart(2, "0");
+
+  return `${displayHour}:${displayMinutes} ${ampm}`;
+};
+
