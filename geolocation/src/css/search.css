@@ -68,7 +68,7 @@
    }
 
    .search-page-card-accent {
-       background: #3da4f2;
+       background: #647FBC;
        border: 3px solid var(--search-page-pure-black);
        box-shadow: 6px 6px 0 var(--search-page-shadow);
        color: var(--search-page-off-white);
@@ -194,7 +194,7 @@
    .search-page-weather-icon {
        width: 100px;
        height: 100px;
-       background: var(--search-page-electric-blue);
+       background: #93c5fd;
        border: 3px solid var(--search-page-pure-black);
        box-shadow: 4px 4px 0 var(--search-page-shadow);
        display: flex;

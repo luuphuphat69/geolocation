@@ -317,12 +317,12 @@ const Schedule = ({ cityName, lat, long }) => {
           sortedSchedule.map((item, index) => {
             const statusInfo = getStatusInfo(item.status);
             return (
-<div
-  key={item.id}
-  data-id={item.id}
-  draggable
-  className={`schedule-item schedule-item--${item.status} flex items-center justify-between p-3 rounded-lg border`}
->
+              <div
+                key={item.id}
+                data-id={item.id}
+                draggable
+                className={`schedule-item schedule-item--${item.status} flex items-center justify-between p-3 rounded-lg border`}
+              >
 
 
                 <div className="flex items-center gap-3">
@@ -339,7 +339,7 @@ const Schedule = ({ cityName, lat, long }) => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2 justify-end">
+                <div className="flex flex-wrap gap-2 justify-between">
                   {/* Mark as Completed */}
                   <button
                     onClick={() => handleStatusChange(currentDay, index, 'completed')}
@@ -382,7 +382,6 @@ const Schedule = ({ cityName, lat, long }) => {
           })
         )}
       </div>
-
 
       {/* <!-- Add schedule form (initially hidden) --> */}
       {showForm && (

@@ -186,7 +186,7 @@ export const LocalWeather = ({ lat, lon }) => {
                     alt={day.weather[0].description}
                     width={80}
                     height={80}
-                    style={{ display: "block", margin: "0 auto", background: '#b8c1d9ff' }}
+                    style={{ display: "block", margin: "0 auto", background: '#93c5fd', borderRadius:'100%' }}
                   />
                 </div>
 

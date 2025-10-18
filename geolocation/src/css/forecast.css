@@ -1,62 +1,106 @@
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f5ff;
-            color: #333;
-        }
+/* Card Base */
+.forecast-card {
+  background: #fff;
+  border: 3px solid #111;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: 6px 6px 0 #111;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
 
-        .forecast-weather-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
+.forecast-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 10px 10px 0 #111;
+}
 
-        .card-header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(5px);
-            z-index: 10;
-            padding: 1.5rem 1.5rem 1rem;
-            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
-        }
+/* Header */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fefefe;
+  border-bottom: 3px solid #111;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
 
-        .card-content {
-            padding: 0 1.5rem 1.5rem;
-        }
+.card-header h2 {
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  color: #1d4ed8;
+}
 
-        /* 5-Day Forecast Specific CSS */
-        .forecast-day {
-            border-bottom: 1px solid #e5e7eb;
-            transition: background-color 0.2s ease;
-        }
+/* Unit Toggle */
+.unit-toggle {
+  font-weight: 600;
+}
 
-        .forecast-day:last-child {
-            border-bottom: none;
-        }
+.unit-toggle button {
+  border: none;
+  background: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  color: #555;
+  transition: color 0.2s, transform 0.2s;
+}
 
-        .forecast-day:hover {
-            background-color: #f8fafc;
-        }
+.unit-toggle button.active {
+  color: #111;
+  text-decoration: underline;
+}
 
-        .forecast-icon {
-            width: 50px;
-            height: 50px;
-            background-color: #93c5fd;
-            border-radius: 100%;
-        }
+.unit-toggle button:hover {
+  transform: scale(1.1);
+}
 
-        .temp-bar {
-            height: 4px;
-            border-radius: 2px;
-            background-color: #e5e7eb;
-            position: relative;
-        }
+.forecast-day:hover {
+  background-color: #f3f4f6;
+}
 
-        .temp-range {
-            position: absolute;
-            height: 100%;
-            background: linear-gradient(to right, #93c5fd, #3b82f6);
-            border-radius: 2px;
-        }
+/* Forecast Icon */
+.forecast-icon {
+  width: 64px;
+  height: 64px;
+  background: #93c5fd;
+  border: 2px solid #111;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 3px 3px 0 #111;
+  margin-bottom: 0.5rem;
+}
+
+.forecast-icon img {
+  width: 48px;
+  height: 48px;
+}
+
+/* Text */
+.forecast-day h3 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.forecast-day .text-sm {
+  color: #444;
+}
+
+/* Fade effect (optional aesthetic) */
+.fade-bottom {
+  height: 12px;
+  background: linear-gradient(to bottom, transparent, #f9fafc);
+}
+
+/* Responsiveness */
+@media (max-width: 640px) {
+  .forecast-card {
+    border-width: 2px;
+    box-shadow: 4px 4px 0 #111;
+  }
+  .forecast-day {
+    padding: 0.75rem;
+  }
+}
