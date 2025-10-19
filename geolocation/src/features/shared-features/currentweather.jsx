@@ -55,7 +55,7 @@ const CurrentWeather = ({ cityData }) => {
             </h2>
 
             {/* Temperature + Unit + Description + Date */}
-            <div className="border-2 border-black p-4 rounded-lg bg-white shadow-[3px_3px_0_0_#000]">
+            <div className="border-2 border-black p-4 rounded-lg bg-white shadow-[3px_3px_0_0_#000] temp-box">
                 <div className="flex flex-col">
                     {/* Top row: Temperature */}
                     <div className="flex items-center justify-start mb-4">
@@ -126,7 +126,7 @@ const CurrentWeather = ({ cityData }) => {
             </div>
 
             {/* Outfit Recommendation */}
-            <div className="mt-6 border-2 border-black bg-white p-4 rounded-lg shadow-[4px_4px_0_0_#000]">
+            <div className="mt-6 border-2 border-black bg-white p-4 rounded-lg shadow-[4px_4px_0_0_#000] recommend-outfit-box">
                 <h3 className="font-bold text-black mb-3">Outfit Recommendation</h3>
                 <div className="flex flex-row items-start" style={{ display: 'flex', justifyContent: 'flex-start' }}>
                     <div>

@@ -163,7 +163,7 @@ const AirPollution = ({ airPollution }) => {
                     </div>
                 </div>
 
-                <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                <div class="bg-yellow-50 p-4 rounded-lg shadow-md">
                     <h3 class="font-medium text-yellow-800 mb-2">Air Quality Recommendation</h3>
                     <div className="flex flex-row items-start" style={{ display: 'flex', justifyContent: 'flex-start' }}>
                         <div>

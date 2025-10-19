@@ -9,8 +9,12 @@
 }
 
 .forecast-card:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 10px 10px 0 #111;
+  transform: translate(-4px, -4px);
+  box-shadow: 10px 10px 0 var(--brutal-border);
+}
+
+.forecast-item {
+ width: 80px;
 }
 
 /* Header */

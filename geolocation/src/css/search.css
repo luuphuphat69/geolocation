@@ -11,7 +11,7 @@
 
    body {
        font-family: 'Inter', sans-serif;
-       background: linear-gradient(135deg, #87CEEB 0%, #4682B4 25%, #6495ED 50%, #1E90FF 75%, #00BFFF 100%);
+       background: linear-gradient(135deg, #87CEEB 0%, #6ab4f1 25%, #5f95f8 50%, #1E90FF 75%, #00BFFF 100%);
        background-size: 400% 400%;
        animation: gradientShift 15s ease infinite;
        color: var(--search-page-pure-black);

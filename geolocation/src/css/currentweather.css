@@ -10,8 +10,8 @@
 }
 
 .current-weather-card:hover {
-  transform: translate(-5px, -5px);
-  box-shadow: 12px 12px 0 #000;
+  transform: translate(-4px, -4px);
+  box-shadow: 10px 10px 0 var(--brutal-border);
 }
 
 /* HEADER */
@@ -27,10 +27,19 @@
   box-shadow: 4px 4px 0 #000;
 }
 
+.current-weather-card h2:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 #000;
+}
+
 /* TEMPERATURE */
 .text-6xl {
   color: #1e3a8a;
+}
 
+.temp-box:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 #000;
 }
 
 /* DESCRIPTION */
@@ -64,7 +73,7 @@ button:hover {
 }
 
 /* STATS BOXES */
-.current-weather-card .grid > div {
+.current-weather-card .grid>div {
   background: #fff;
   border: 3px solid #000;
   box-shadow: 4px 4px 0 #000;
@@ -72,7 +81,7 @@ button:hover {
   transition: transform 0.15s;
 }
 
-.current-weather-card .grid > div:hover {
+.current-weather-card .grid>div:hover {
   background: #93c5fd;
   transform: translate(-3px, -3px);
   box-shadow: 6px 6px 0 #000;
@@ -105,4 +114,10 @@ button:hover {
 
 .current-weather-card .outfit-box p {
   font-weight: 500;
+}
+
+.recommend-outfit-box:hover {
+  background: #fefce8;
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 #000;
 }

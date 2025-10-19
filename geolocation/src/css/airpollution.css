@@ -178,10 +178,16 @@
   
 /* --- RECOMMENDATION BOX --- */
 .air-pollution-card .bg-yellow-50 {
-  background: #fefce8 !important;
-  border: 3px solid var(--brutal-border) !important;
-  box-shadow: 4px 4px 0 var(--brutal-border);
+  background: #ffffff !important;
+  border: 3px solid var(--brutal-border);
+   box-shadow: 2px 2px 0 #000;;
   border-radius: 12px;
+}
+
+.air-pollution-card .bg-yellow-50:hover {
+  background: #fefce8 !important;
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 #000;
 }
 
 .air-pollution-card .bg-yellow-50 h3 {

@@ -11,8 +11,8 @@
 }
 
 .uv-index-card:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 9px 9px 0 #000;
+  transform: translate(-4px, -4px);
+  box-shadow: 10px 10px 0 var(--brutal-border);
 }
 
 /* --- Header --- */
@@ -50,13 +50,17 @@
   height: 100%;
   border-radius: 50%;
   border: 3px solid #000;
-  background: conic-gradient(
-    #3b82f6 0deg 72deg,      /* Low */
-    #22c55e 72deg 144deg,    /* Moderate */
-    #facc15 144deg 216deg,   /* High */
-    #f97316 216deg 288deg,   /* Very High */
-    #ef4444 288deg 360deg    /* Extreme */
-  );
+  background: conic-gradient(#3b82f6 0deg 72deg,
+      /* Low */
+      #22c55e 72deg 144deg,
+      /* Moderate */
+      #facc15 144deg 216deg,
+      /* High */
+      #f97316 216deg 288deg,
+      /* Very High */
+      #ef4444 288deg 360deg
+      /* Extreme */
+    );
   transform: rotate(-90deg);
   box-shadow: 4px 4px 0 #000;
 }
@@ -116,17 +120,36 @@
   margin-top: 0.25rem;
 }
 
-.uv-low { color: #3b82f6; }
-.uv-moderate { color: #22c55e; }
-.uv-high { color: #facc15; }
-.uv-very-high { color: #f97316; }
-.uv-extreme { color: #ef4444; }
+.uv-low {
+  color: #3b82f6;
+}
+
+.uv-moderate {
+  color: #22c55e;
+}
+
+.uv-high {
+  color: #facc15;
+}
+
+.uv-very-high {
+  color: #f97316;
+}
+
+.uv-extreme {
+  color: #ef4444;
+}
 
 /* --- Advice Box --- */
 .bg-yellow-50 {
   background-color: #fffbe6 !important;
   border: 3px solid #000 !important;
-  box-shadow: 4px 4px 0 #000;
+}
+
+.bg-yellow-50:hover {
+  background: #fefce8;
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 #000;
 }
 
 .bg-yellow-50 h3 {
@@ -167,8 +190,9 @@
   left: 0;
   width: 100%;
   height: 16px;
-  background: linear-gradient(to top, rgba(0,0,0,0.08), transparent);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.08), transparent);
 }
+
 /* --- Fix UV Advice Alignment --- */
 .uv-advice-list {
   display: flex;
@@ -188,6 +212,11 @@
   box-shadow: 3px 3px 0 #000;
 }
 
+.uv-advice-list li:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 #000;
+}
+
 .uv-advice-list li svg {
   flex-shrink: 0;
   margin-top: 0 !important;
@@ -200,4 +229,9 @@
   flex: 1;
   color: #111;
   font-weight: 500;
+}
+
+.uv-unit:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 2px 2px 0 #000;
 }

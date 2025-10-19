@@ -80,11 +80,11 @@ const UVIndex = ({ cityData }) => {
                 <div>
                     <h3 class="font-medium text-blue-800 mb-2">UV Index Scale</h3>
                     <div className="grid grid-cols-5 gap-1 mb-1">
-                        <div className="h-6 uv-bg-low rounded-l-md flex items-center justify-center text-xs text-white font-medium">Low</div>
-                        <div className="h-6 uv-bg-moderate flex items-center justify-center text-xs text-white font-medium">Moderate</div>
-                        <div className="h-6 uv-bg-high flex items-center justify-center text-xs text-white font-medium">High</div>
-                        <div className="h-6 uv-bg-very-high flex items-center justify-center text-xs text-white font-medium">Very High</div>
-                        <div className="h-6 uv-bg-extreme rounded-r-md flex items-center justify-center text-xs text-white font-medium">Extreme</div>
+                        <div className="uv-unit h-6 uv-bg-low rounded-l-md flex items-center justify-center text-xs text-white font-medium">Low</div>
+                        <div className="uv-unit h-6 uv-bg-moderate flex items-center justify-center text-xs text-white font-medium">Moderate</div>
+                        <div className="uv-unit h-6 uv-bg-high flex items-center justify-center text-xs text-white font-medium">High</div>
+                        <div className="uv-unit h-6 uv-bg-very-high flex items-center justify-center text-xs text-white font-medium">Very High</div>
+                        <div className="uv-unit h-6 uv-bg-extreme rounded-r-md flex items-center justify-center text-xs text-white font-medium">Extreme</div>
                     </div>
                     <div className="grid grid-cols-5 gap-1 text-xs text-gray-500 text-center">
                         <span>1–2</span>

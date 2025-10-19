@@ -69,6 +69,10 @@
     animation: cloud-drift 20s linear infinite;
 }
 
+.title:hover{
+  transform: translate(-4px, -4px);
+  box-shadow: 10px 10px 0 var(--brutal-border);
+}
 @keyframes rain-fall {
     0% { top: -20px; opacity: 1; }
     100% { top: 100vh; opacity: 0; }

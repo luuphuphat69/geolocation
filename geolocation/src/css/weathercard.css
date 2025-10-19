@@ -1,12 +1,3 @@
-/* Neo-Brutalist Weather Card */
-:root {
-  --neo-yellow: #ffd966;
-  --neo-blue: #9df9ef;
-  --neo-red: #ff7b7b;
-  --neo-green: #baffc9;
-  --neo-black: #000;
-}
-
 .weather-card {
   position: relative;
   background: #fff;
@@ -145,14 +136,15 @@
 
 /* Buttons (bell, eye) */
 .weather-card button {
-  border: 2px solid #000 !important;
-  box-shadow: 3px 3px 0 #000 !important;
-  background: #fff !important;
-  color: #000 !important;
+  border: 2px solid #000 ;
+  box-shadow: 3px 3px 0 #000 ;
+  background: #fff ;
+  color: #000 ;
   transition: transform 0.1s ease;
 }
 
 .weather-card button:hover {
+  background-color: #ffd966;
   transform: translate(-2px, -2px);
 }
 

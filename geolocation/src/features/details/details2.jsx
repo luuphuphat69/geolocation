@@ -125,7 +125,7 @@ const WeatherDetails = () => {
 
             <div className="min-h-screen p-4 md:p-6 relative z-10">
                 <div className="max-w-6xl mx-auto">
-                    <header className="mb-6 neo-header" style={{backgroundColor:'#ffefb3'}}>
+                    <header className="mb-6 neo-header title" style={{backgroundColor:'#ffefb3'}}>
                         <h1 className="text-4xl font-extrabold text-black-800">{cityName} Weather</h1>
                     </header>
 
