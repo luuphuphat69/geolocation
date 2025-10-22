@@ -31,7 +31,7 @@ const UVIndex = ({ cityData }) => {
     const uvAdvices = getUVIndexAdvice(cityData.current.uvi);
 
     return (
-        <div class="weather-card">
+        <div class="uv-index-card">
             <div class="card-header">
                 <h2 class="text-xl font-semibold text-blue-800 flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -65,7 +65,7 @@ const UVIndex = ({ cityData }) => {
 
                 <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mb-6">
                     <h3 className="font-medium text-yellow-800 mb-2">Protection Recommended</h3>
-                    <ul className="space-y-2">
+                    <ul className="uv-advice-list">
                         {uvAdvices.map((advice, index) => (
                             <li key={index} className="flex items-start">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-600 mt-0.5 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
@@ -79,18 +79,18 @@ const UVIndex = ({ cityData }) => {
 
                 <div>
                     <h3 class="font-medium text-blue-800 mb-2">UV Index Scale</h3>
-                    <div class="grid grid-cols-5 gap-1 mb-1">
-                        <div class="h-6 uv-bg-low rounded-l-md flex items-center justify-center text-xs text-white font-medium">Low</div>
-                        <div class="h-6 uv-bg-moderate flex items-center justify-center text-xs text-white font-medium">Moderate</div>
-                        <div class="h-6 uv-bg-high flex items-center justify-center text-xs text-white font-medium">High</div>
-                        <div class="h-6 uv-bg-very-high flex items-center justify-center text-xs text-white font-medium">Very High</div>
-                        <div class="h-6 uv-bg-extreme rounded-r-md flex items-center justify-center text-xs text-white font-medium">Extreme</div>
+                    <div className="grid grid-cols-5 gap-1 mb-1">
+                        <div className="uv-unit h-6 uv-bg-low rounded-l-md flex items-center justify-center text-xs text-white font-medium">Low</div>
+                        <div className="uv-unit h-6 uv-bg-moderate flex items-center justify-center text-xs text-white font-medium">Moderate</div>
+                        <div className="uv-unit h-6 uv-bg-high flex items-center justify-center text-xs text-white font-medium">High</div>
+                        <div className="uv-unit h-6 uv-bg-very-high flex items-center justify-center text-xs text-white font-medium">Very High</div>
+                        <div className="uv-unit h-6 uv-bg-extreme rounded-r-md flex items-center justify-center text-xs text-white font-medium">Extreme</div>
                     </div>
-                    <div class="flex justify-between text-xs text-gray-500">
-                        <span>1-2</span>
-                        <span>3-5</span>
-                        <span>6-7</span>
-                        <span>8-10</span>
+                    <div className="grid grid-cols-5 gap-1 text-xs text-gray-500 text-center">
+                        <span>1–2</span>
+                        <span>3–5</span>
+                        <span>6–7</span>
+                        <span>8–10</span>
                         <span>11+</span>
                     </div>
                 </div>

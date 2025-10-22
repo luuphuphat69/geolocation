@@ -12,24 +12,43 @@ const ScheduleDataList = {
 };
 
 const loadScheduleFromBrowser = (cityName, callback) => {
-  const request = indexedDB.open("schedule_db", 1);
+  const request = indexedDB.open("schedule_db", 2);
+
+  request.onupgradeneeded = (event) => {
+    const db = event.target.result;
+    if (!db.objectStoreNames.contains("schedule_os")) {
+      db.createObjectStore("schedule_os", { keyPath: "id" });
+    }
+  };
 
   request.onsuccess = (event) => {
     const db = event.target.result;
+
+    if (!db.objectStoreNames.contains("schedule_os")) {
+      const upgradeRequest = indexedDB.open("schedule_db", 2);
+      upgradeRequest.onupgradeneeded = (e) => {
+        e.target.result.createObjectStore("schedule_os", { keyPath: "id" });
+      };
+      upgradeRequest.onsuccess = () => db.close();
+      return;
+    }
+
     const tx = db.transaction("schedule_os", "readonly");
     const store = tx.objectStore("schedule_os");
-
     const getRequest = store.get(cityName);
 
     getRequest.onsuccess = () => {
       const result = getRequest.result;
       if (result && result.scheduleData) {
         callback(result.scheduleData);
+      } else {
+        callback(ScheduleDataList); // fallback to default
       }
     };
 
     getRequest.onerror = (event) => {
       console.error("Error retrieving schedule:", event.target.error);
+      callback(ScheduleDataList);
     };
 
     tx.oncomplete = () => db.close();
@@ -37,51 +56,69 @@ const loadScheduleFromBrowser = (cityName, callback) => {
 
   request.onerror = (event) => {
     console.error("Database open error:", event.target.error);
+    callback(ScheduleDataList);
   };
 };
 
-const saveScheduleOnBrowser = (scheduleData, cityName, lat, long) => {
-  const request = indexedDB.open("schedule_db", 1);
 
+const saveScheduleOnBrowser = (scheduleData, cityName, lat, long) => {
+  const request = indexedDB.open("schedule_db", 2);
+
+  // Ensure store exists
   request.onupgradeneeded = (event) => {
     const db = event.target.result;
-
     if (!db.objectStoreNames.contains("schedule_os")) {
-      const store = db.createObjectStore("schedule_os", {
-        keyPath: "id",
-      });
-
-      store.createIndex("schedule", "schedule", { unique: false });
+      db.createObjectStore("schedule_os", { keyPath: "id" });
     }
   };
 
   request.onsuccess = (event) => {
     const db = event.target.result;
+
+    // ✅ Double-check store existence
+    if (!db.objectStoreNames.contains("schedule_os")) {
+      console.warn("Object store not found, recreating DB...");
+      db.close();
+
+      // Force upgrade to create store
+      const reopen = indexedDB.open("schedule_db", 2);
+      reopen.onupgradeneeded = (e) => {
+        e.target.result.createObjectStore("schedule_os", { keyPath: "id" });
+      };
+      reopen.onsuccess = (e) => {
+        e.target.result.close();
+        // Retry save after creation
+        saveScheduleOnBrowser(scheduleData, cityName, lat, long);
+      };
+      return;
+    }
+
+    // ✅ Proceed normally
     const tx = db.transaction("schedule_os", "readwrite");
     const store = tx.objectStore("schedule_os");
 
     const record = {
       id: cityName,
-      scheduleData: scheduleData,
-      lat: lat,
-      long: long
+      scheduleData,
+      lat,
+      long,
     };
 
     const putRequest = store.put(record);
 
     putRequest.onsuccess = () => {
-      console.log("Schedule saved/updated in IndexedDB for city:", cityName);
+      console.log("✅ Schedule saved/updated for city:", cityName);
     };
 
     putRequest.onerror = (event) => {
-      console.error("Error saving schedule:", event.target.error);
+      console.error("❌ Error saving schedule:", event.target.error);
     };
 
     tx.oncomplete = () => db.close();
   };
 
   request.onerror = (event) => {
-    console.error("Database error:", event.target.error);
+    console.error("❌ Database error:", event.target.error);
   };
 };
 
@@ -106,7 +143,7 @@ const formatTime = (time) => {
   return `${hours}:${m} ${ampm}`;
 };
 
-const Schedule = ({ cityName, lat, long}) => {
+const Schedule = ({ cityName, lat, long }) => {
   const scheduleContainerRef = useRef(null);
 
   const getTodayKey = () => {
@@ -235,26 +272,28 @@ const Schedule = ({ cityName, lat, long}) => {
     <div className="weather-card__schedule p-2 border-t border-gray-100" id="schedule-container">
       <div className="flex justify-between items-center mb-3">
         <h4 className="font-medium text-gray-700">My Weekly Schedule</h4>
+      </div>
+      <div className="flex justify-center mb-3">
         <button
           id="add-schedule-btn"
-          className="text-sm bg-blue-500 text-white px-3 py-1 rounded-full hover:bg-blue-600 transition"
+          className="text-sm bg-blue-500 text-white px-3 py-1 rounded-full hover:bg-blue-600 transition flex items-center"
           onClick={() => {
-            setFormDay(currentDay); // <-- add this line
+            setFormDay(currentDay);
             setShowForm(true);
           }}
         >
           <i className="fas fa-plus mr-1"></i> Add
         </button>
-
       </div>
 
       {/* <!-- Day tabs --> */}
-      <div className="flex overflow-x-auto space-x-2 pb-2 mb-3">
+      <div className="day-tabs">
         {Object.keys(scheduleData).map((day) => (
           <button
             key={day}
             className={`weather-card__day-tab ${currentDay === day ? 'weather-card__day-tab--active' : ''}`}
             onClick={() => setCurrentDay(day)}
+            type="button"
           >
             {day.charAt(0).toUpperCase() + day.slice(1)}
           </button>
@@ -282,10 +321,11 @@ const Schedule = ({ cityName, lat, long}) => {
                 key={item.id}
                 data-id={item.id}
                 draggable
-                className={`schedule-item flex items-center justify-between p-3 rounded-lg border ${statusInfo.class}`}
+                className={`schedule-item schedule-item--${item.status} flex items-center justify-between p-3 rounded-lg border`}
               >
 
-                <div className="flex items-center gap-3" style={{maxWidth: "50%"}}>
+
+                <div className="flex items-center gap-3">
                   <i className={`fas ${statusInfo.icon} ${statusInfo.pulse ? 'animate-pulse' : ''}`} />
                   <div>
                     <div
@@ -299,7 +339,7 @@ const Schedule = ({ cityName, lat, long}) => {
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2 justify-between">
                   {/* Mark as Completed */}
                   <button
                     onClick={() => handleStatusChange(currentDay, index, 'completed')}
@@ -342,7 +382,6 @@ const Schedule = ({ cityName, lat, long}) => {
           })
         )}
       </div>
-
 
       {/* <!-- Add schedule form (initially hidden) --> */}
       {showForm && (

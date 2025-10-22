@@ -1,0 +1,45 @@
+/* src/css/neo-toast.css */
+.neo-toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  background: var(--search-page-pure-white);
+  border: 3px solid var(--search-page-pure-black);
+  box-shadow: 6px 6px 0 var(--search-page-pure-black);
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 10000;
+  transition: all 0.2s ease;
+  opacity: 1;
+  animation: neo-toast-in 0.25s ease-out;
+}
+
+.neo-toast__text {
+  color: var(--search-page-pure-black);
+}
+
+.neo-toast--success {
+  background: #b6f2b6;
+}
+
+.neo-toast--error {
+  background: #f2b6b6;
+}
+
+.neo-toast--info {
+  background: #f2f2b6;
+}
+
+@keyframes neo-toast-in {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

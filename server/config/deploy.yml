@@ -7,8 +7,8 @@ servers:
     - 161.248.4.185
     
 ssh:
-  user: root
-  port: 8686
+  user: Administrator
+  port: 3389
 
 proxy:
   ssl: true

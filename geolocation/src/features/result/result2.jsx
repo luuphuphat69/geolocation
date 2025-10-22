@@ -277,7 +277,7 @@ const Result2 = () => {
                     <tbody>
                         {filteredData.length === 0 ? (
                             <tr>
-                                <td colSpan={columns.length} className="no-results">
+                                <td colSpan={columns.length} className="no-results" style={{fontSize:"18px"}}>
                                     No matching records found
                                 </td>
                             </tr>
@@ -292,11 +292,11 @@ const Result2 = () => {
                                         />
                                     </td>
 
-                                    <td>{item.name}</td>
-                                    <td>{item.state_name}</td>
-                                    <td>{item.country_name}</td>
-                                    <td>{item.latitude}</td>
-                                    <td>{item.longitude}</td>
+                                    <td style={{fontSize:"18px"}}>{item.name}</td>
+                                    <td style={{fontSize:"18px"}}>{item.state_name}</td>
+                                    <td style={{fontSize:"18px"}}>{item.country_name}</td>
+                                    <td style={{fontSize:"18px"}}>{item.latitude}</td>
+                                    <td style={{fontSize:"18px"}}>{item.longitude}</td>
                                 </tr>
                             ))
                         )}

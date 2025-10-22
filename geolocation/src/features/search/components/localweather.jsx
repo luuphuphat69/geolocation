@@ -1,19 +1,10 @@
 import { useEffect, useState } from "react";
-import "../../../css/localweather.css";
-import WeatherCard2 from "../../weather-card/page/weathercard2";
+import "../../../css/search.css";
 import { getCurrentWeather, reverseGeocoding, getForecast } from "../../../utilities/api/api";
-import { kelvinToCelsius, getCurrentTimeHHMMSS, kelvinToFahrenheit, celsiusToFahrenheit, formatDate } from "../../../utilities/common";
+import { kelvinToCelsius, getCurrentTimeHHMM, kelvinToFahrenheit, celsiusToFahrenheit, formatDate, formatUnixToLocalHHMM} from "../../../utilities/common";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { useAppOptions } from "../../../AppOptionsContext";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from "@/components/ui/dialog"
 
 export const LocalWeather = ({ lat, lon }) => {
   const [weather, setWeather] = useState(null);
@@ -23,51 +14,58 @@ export const LocalWeather = ({ lat, lon }) => {
   const [condition, setCondition] = useState(null);
   const [localTime, setLocalTime] = useState("");
   const { isCelciusUnit, setIsCelciusUnit } = useAppOptions();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
-    const fetchWeather = async () => {
-      let latitude = lat;
-      let longitude = lon;
-
-      if (!latitude || !longitude) {
-        try {
-          const position = await new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject, {
-              enableHighAccuracy: true,
-              timeout: 10000,
-            });
-          });
-          latitude = position.coords.latitude;
-          longitude = position.coords.longitude;
-        } catch (err) {
-          console.error("Geolocation failed:", err);
-          setErrorMsg("Location access is required to show your local weather.");
-          return;
-        }
-      }
-
-      try {
-        const weatherData = await getCurrentWeather(latitude, longitude);
-        setWeather(weatherData.data);
-        setCondition(weatherData.data.current.weather[0].description);
-
-        const citydata = await reverseGeocoding(latitude, longitude);
-        setCity(citydata.data);
-
-        const forecastResponse = await getForecast(latitude, longitude)
-        const forecastData = await forecastResponse.data
-        setForecast(forecastData.list.filter((item, index) => index % 8 === 0))
-
-        setLocalTime(getCurrentTimeHHMMSS());
-      } catch (error) {
-        console.error("Failed to fetch weather:", error);
-        setErrorMsg("Unable to load weather right now.");
-      }
-    };
-
     fetchWeather();
   }, [lat, lon]);
+
+  const fetchWeather = async () => {
+    let latitude = lat;
+    let longitude = lon;
+
+    if (!latitude || !longitude) {
+      try {
+        const position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+          });
+        });
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+      } catch (err) {
+        console.error("Geolocation failed:", err);
+        setErrorMsg("Location access is required to show your local weather.");
+        return;
+      }
+    }
+
+    try {
+      setErrorMsg("");
+      setWeather(null);
+      setForecast(null);
+
+      const weatherData = await getCurrentWeather(latitude, longitude);
+      setWeather(weatherData.data);
+      setCondition(weatherData.data.current.weather[0].description);
+
+      const citydata = await reverseGeocoding(latitude, longitude);
+      setCity(citydata.data);
+
+      const forecastResponse = await getForecast(latitude, longitude);
+      const forecastData = forecastResponse.data;
+      setForecast(forecastData.list.filter((item, index) => index % 8 === 0));
+
+      setLocalTime(getCurrentTimeHHMM());
+    } catch (error) {
+      console.error("Failed to fetch weather:", error);
+      setErrorMsg("Unable to load weather right now.");
+    }
+  };
+
+  const handleRefresh = () => {
+    fetchWeather();
+  };
 
   // helpers
   const getMiniIcon = (condition = "") => {
@@ -77,31 +75,6 @@ export const LocalWeather = ({ lat, lon }) => {
     if (c.includes("sunny") || c.includes("clear")) return "☀️";
     return "⛅";
   };
-
-const pickTheme = (temp, condition = "", isCelcius = true) => {
-  // Normalize temperature thresholds to match selected unit
-  const thresholds = isCelcius
-    ? { hot: 31, warm: 22, mild: 13 } // °C
-    : { hot: 88, warm: 72, mild: 55 }; // °F
-
-  const c = condition.toLowerCase();
-
-  if (c.includes("rain") || c.includes("shower")) return "theme-rain";
-  if (c.includes("cloud")) return "theme-cloud";
-  if (c.includes("sunny") || c.includes("clear")) {
-    if (temp >= thresholds.hot) return "theme-hot";
-    if (temp >= thresholds.warm) return "theme-warm";
-    if (temp >= thresholds.mild) return "theme-mild";
-    return "theme-cold";
-  }
-
-  // fallback by temperature
-  if (temp >= thresholds.hot) return "theme-hot";
-  if (temp >= thresholds.warm) return "theme-warm";
-  if (temp >= thresholds.mild) return "theme-mild";
-  return "theme-cold";
-};
-
 
   if (errorMsg) {
     return (
@@ -121,113 +94,135 @@ const pickTheme = (temp, condition = "", isCelcius = true) => {
     );
   }
 
-  const handleLocalCardClick = () => {
-    setIsDialogOpen(!isDialogOpen)
-  }
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-  }
-
   const rawTempK = weather.current.temp;
   const displayTemp = isCelciusUnit
     ? kelvinToCelsius(rawTempK)
     : kelvinToFahrenheit(rawTempK);
-    
-  const theme = pickTheme(displayTemp, condition, isCelciusUnit);
+
+  const feelLikeTemp = weather.current.feels_like;
+  const displayFeelslike = isCelciusUnit ? kelvinToCelsius(feelLikeTemp) : kelvinToFahrenheit(feelLikeTemp);
   const icon = getMiniIcon(condition);
+  const sunrise = formatUnixToLocalHHMM(weather.current.sunrise, weather.timezone_offset);
+  const sunset = formatUnixToLocalHHMM(weather.current.sunset, weather.timezone_offset);
 
   return (
-    <div id="currentTempCard" className={`current-temp ${theme}`}>
-      <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 rounded-full bg-white/20 border border-white/40 items-center justify-center shrink-0" onClick={handleLocalCardClick}>
-          <span id="currentTempIcon" className="text-white text-lg">
-            {icon}
-          </span>
-        </div>
-        <div className="flex-1">
-          <div className="flex items-center justify-between gap-2">
-            <p
-              id="currentTempCity"
-              className="text-xs uppercase tracking-wider opacity-95"
-              onClick={handleLocalCardClick}
-            >
-              {city[0]?.name + " - " + city[0]?.state || "Your Location"}
-            </p>
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                id="unitToggleBtn"
-                className="inline-flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 border border-white/50 px-2.5 py-1 text-xs font-semibold transition"
-                title="Switch units"
-                onClick={() => setIsCelciusUnit(!isCelciusUnit)}
-              >
-                °{isCelciusUnit ? "C" : "F"}
-              </button>
-              <button
-                id="refreshTempBtn"
-                onClick={() => window.location.reload()}
-                className="inline-flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 border border-white/50 p-2 transition"
-                title="Refresh"
-              >
-                <i className="fa fa-refresh"></i>
-              </button>
-            </div>
+    <div className="search-page-weather-grid">
+      <div className="search-page-card">
+        <div className="search-page-flex search-page-items-center search-page-justify-between search-page-mb-2">
+          <div><span className="search-page-label-text">Current Location</span>
+            <h2 className="search-page-section-heading" id="currentCity">{city[0]?.name + " - " + city[0]?.state || "Your Location"}</h2>
           </div>
-          <div className="flex items-baseline gap-2 mt-1" onClick={handleLocalCardClick}>
-            <span
-              id="currentTempValue"
-              className="text-3xl font-extrabold"
-            >
-              {displayTemp}°{isCelciusUnit ? "C" : "F"}
-            </span>
-            <span
-              id="currentTempCondition"
-              className="text-sm opacity-95"
-            >
-              {condition}
-            </span>
-          </div>
-
-          <div className="flex gap-2 mt-3 overflow-x-auto" onClick={handleLocalCardClick}>
-            {forecast?.map((day, index) => {
-              const temp = isCelciusUnit
-                ? `${day.main.temp}°C`
-                : `${celsiusToFahrenheit(day.main.temp)}°F`;
-
-              return (
-                <div
-                  key={index}
-                  className="rounded-md border border-white/40 bg-white/15 px-2 py-1.5 text-center text-[12px] text-white min-w-[70px]"
-                >
-                  <div className="font-semibold opacity-95">{formatDate(day.dt_txt)}</div>
-                  <div className="mt-0.5">
-                    <span className="opacity-90">{temp}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <p
-            id="currentTempUpdated"
-            className="text-[11px] opacity-90 mt-1"
-          >
+          <div className="search-page-status-badge ml-4" id="lastUpdated">
             Last updated: {localTime}
-          </p>
+          </div>
+        </div>
+        <div className="search-page-flex search-page-items-center search-page-gap-2 search-page-mb-3">
+          <div className="search-page-weather-icon" id="currentIcon">
+            {icon}
+          </div>
+          <div>
+            <div className="search-page-temperature-display" id="currentTemp">
+              {displayTemp}°{isCelciusUnit ? "C" : "F"}
+            </div>
+            <p className="search-page-label-text" id="currentCondition">{condition}</p>
+          </div>
+        </div>
+        <div className="search-page-flex search-page-gap-2">
+          <button
+            className="search-page-secondary-btn"
+            id="refreshBtn"
+            onClick={() => {
+              setWeather(null);
+              setForecast(null);
+              handleRefresh();
+            }}
+          >
+            Refresh Data
+          </button>
+          <button className="search-page-secondary-btn" id="toggleUnit" onClick={() => setIsCelciusUnit(!isCelciusUnit)}> Switch to ° {isCelciusUnit ? "C" : "F"} </button>
         </div>
       </div>
-      {isDialogOpen ? <Dialog open={!!city} onOpenChange={handleCloseDialog}>
-        <DialogContent className="max-w-[550px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Weather for {city[0]?.name}</DialogTitle>
-          </DialogHeader>
-          {city[0]?.name && (
-            <WeatherCard2
-              city={city[0]?.name}
-              lat={lat}
-              long={lon}
-            />
-          )}
-        </DialogContent>
-      </Dialog> : null}
+      <div className="search-page-card-accent"><span className="search-page-label-text" style={{ color: "rgba(250,250,250,0.8)" }}>Weather Details</span>
+        <div className="search-page-mt-2">
+          <div className="search-page-mb-2"><span className="search-page-label-text" style={{ color: "rgba(250,250,250,0.8)" }}>Humidity</span>
+            <div style={{ fontSize: '2.5rem', fontWeight: 800 }} id="humidity">
+              {weather?.current.humidity}%
+            </div>
+          </div>
+          <div className="search-page-mb-2"><span className="search-page-label-text" style={{ color: "rgba(250,250,250,0.8)" }}>Wind Speed</span>
+            <div style={{ fontSize: '2.5rem', fontWeight: 800 }} id="windSpeed">
+              {weather?.current.wind_speed} mph
+            </div>
+          </div>
+          <div className="search-page-mb-2"><span className="search-page-label-text" style={{ color: "rgba(250,250,250,0.8)" }}>Visibility</span>
+            <div style={{ fontSize: '2.5rem', fontWeight: 800 }} id="visibility">
+              {weather?.current.visibility} m
+            </div>
+          </div>
+          <div><span className="search-page-label-text" style={{ color: "rgba(250,250,250,0.8)" }}>Feels like</span>
+            <div style={{ fontSize: '2.5rem', fontWeight: 800 }} id="visibility">
+              {displayFeelslike}°{isCelciusUnit ? "C" : "F"}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="">
+        <h3 className="search-page-section-heading search-page-mb-2">5-Day Forecast</h3>
+        <div className="search-page-forecast-grid" id="forecastContainer">
+          {forecast?.map((day, index) => {
+            const temp = isCelciusUnit
+              ? `${day.main.temp}°C`
+              : `${celsiusToFahrenheit(day.main.temp)}°F`;
+
+            return (
+              <div
+                key={index}
+                className="search-page-forecast-card"
+              >
+                <div className="search-page-label-text search-page-mb-1">{formatDate(day.dt_txt)}</div>
+                <div style={{ margin: "1rem 0" }}>
+                  <img
+                    src={`https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`}
+                    alt={day.weather[0].description}
+                    width={80}
+                    height={80}
+                    style={{ display: "block", margin: "0 auto", background: '#93c5fd', borderRadius:'100%' }}
+                  />
+                </div>
+
+                <div className="search-page-label-text search-page-mb-1">{day.weather[0].description}</div>
+                <div className="search-page-flex search-page-items-center search-page-justify-center">
+                  <span className="search-page-temp-high" >{temp}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="search-page-card-accent"><span className="search-page-label-text" style={{ color: "rgba(250,250,250,0.8)" }}>Weather Details</span>
+        <div className="search-page-mt-2">
+          <div className="search-page-mb-2"><span className="search-page-label-text" style={{ color: "rgba(250,250,250,0.8)" }}>UV Index</span>
+            <div style={{ fontSize: '2.5rem', fontWeight: 800 }} id="uvIndex">
+              {weather?.current.uvi}
+            </div>
+          </div>
+          <div className="search-page-mb-2"><span className="search-page-label-text" style={{ color: "rgba(250,250,250,0.8)" }}>Pressure</span>
+            <div style={{ fontSize: '2.5rem', fontWeight: 800 }} id="pressure">
+              {weather?.current.pressure} hPa
+            </div>
+          </div>
+          <div className="search-page-mb-2"><span className="search-page-label-text" style={{ color: "rgba(250,250,250,0.8)" }}>Sun rise</span>
+            <div style={{ fontSize: '2.5rem', fontWeight: 800 }} id="sunrise">
+              {sunrise}
+            </div>
+          </div>
+          <div className="search-page-mb-2"><span className="search-page-label-text" style={{ color: "rgba(250,250,250,0.8)" }}>Sun set</span>
+            <div style={{ fontSize: '2.5rem', fontWeight: 800 }} id="sunset">
+              {sunset}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
