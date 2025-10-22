@@ -91,6 +91,7 @@
 
 .weather-card__icon:hover {
   transform: scale(1.1);
+  background: #ffd966;
 }
 
 .weather-card__stat {
