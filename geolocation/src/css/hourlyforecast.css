@@ -1,4 +1,4 @@
- .weather-condition {
+.weather-condition {
      color: #4b5563;
      font-weight: 500;
  }
@@ -15,6 +15,10 @@
      background-color: #eff6ff;
      border-radius: 8px;
      padding: 12px;
+ }
+
+ .weather-card__stat:hover{
+    background-color: #fefce8;
  }
 
  .stat-label {
@@ -100,8 +104,16 @@
      margin: 4px 0;
  }
 
+ .forecast-icon:hover{
+      transform: translate(-4px, -4px);
+  box-shadow: 10px 10px 0 var(--brutal-border);
+ }
+
  .forecast-item--current .forecast-icon {
      color: white;
+ }
+ .forecast-item:hover{
+    background-color: #fefce8;
  }
 
  .forecast-item:not(.forecast-item--current) .forecast-icon {

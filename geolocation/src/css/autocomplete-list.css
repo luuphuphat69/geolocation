@@ -1,29 +1,59 @@
-.autocomplete-list {
-    position: absolute;
-    max-height: 200px;
-    width: 60%;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    overflow-y: auto;
-    z-index: 1000; /* Ensure it appears above other elements */
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
+  /* Search Page Suggestions Dropdown */
+  .search-page-suggestions-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 140px;
+      background: var(--search-page-off-white);
+      border: 3px solid var(--search-page-pure-black);
+      box-shadow: 6px 6px 0 var(--search-page-shadow);
+      z-index: 1000;
+      max-height: 300px;
+      overflow-y: auto;
+      display: none;
+  }
 
-.autocomplete-list li {
-    padding: 10px;
-    cursor: pointer;
-    border-bottom: 1px solid #ddd;
-    font-size: 16px;
-    transition: background-color 0.2s ease;
-}
+  .search-page-suggestions-dropdown.show {
+      display: block;
+  }
 
-.autocomplete-list li:hover {
-    background-color: #f0f0f0;
-}
+  .search-page-suggestion-item {
+      padding: 1rem 1.5rem;
+      cursor: pointer;
+      border-bottom: 2px solid var(--search-page-medium-gray);
+      font-weight: 600;
+      transition: all 0.1s ease;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+  }
 
-.autocomplete-list li:last-child {
-    border-bottom: none; /* Remove border on the last item */
-}
+  .search-page-suggestion-item:last-child {
+      border-bottom: none;
+  }
+
+  .search-page-suggestion-item:hover,
+  .search-page-suggestion-item.highlighted {
+      background: var(--search-page-electric-blue);
+      color: var(--search-page-off-white);
+      transform: translate(-2px, -2px);
+      box-shadow: 2px 2px 0 var(--search-page-shadow);
+  }
+
+  .search-page-suggestion-icon {
+      font-size: 1.5rem;
+      width: 30px;
+      text-align: center;
+  }
+
+  .search-page-suggestion-text {
+      flex: 1;
+  }
+
+  .search-page-suggestion-country {
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+  }

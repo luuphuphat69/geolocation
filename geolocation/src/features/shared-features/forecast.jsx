@@ -13,7 +13,7 @@ const Forecast = ({ forecast }) => {
   };
 
   return (
-    <div className="forecast-weather-card md:col-span-3">
+    <div className="forecast-card md:col-span-3">
       <div className="card-header flex justify-between items-center">
         <h2 className="text-xl font-semibold text-blue-800 flex items-center">
           <svg
@@ -33,7 +33,7 @@ const Forecast = ({ forecast }) => {
           </svg>
           5 Day Forecast
         </h2>
-        <div className="text-sm text-gray-500 unit-toggle" id="unit-toggle">
+        <div className="text-sm text-gray-500 unit-toggle ml-4" id="unit-toggle">
           <button
             id="celsius"
             className={isCelciusUnit ? 'active' : ''}
@@ -63,9 +63,6 @@ const Forecast = ({ forecast }) => {
               <div className="forecast-day p-4" key={index}>
                 <div className="flex justify-between items-center mb-2">
                   <h3 className="font-medium">{formatDate(day.dt_txt)}</h3>
-                  <span className="text-sm text-gray-500">
-                    {formatDate(day.dt_txt)}
-                  </span>
                 </div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="forecast-icon text-yellow-500">
@@ -74,9 +71,9 @@ const Forecast = ({ forecast }) => {
                       alt={day.weather[0].description}
                     />
                   </div>
-                  <div className="text-right">{temp}</div>
+                  <div className="ml-2 text-right">{temp}</div>
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-gray-600" style={{textAlign:'center'}}>
                   {day.weather[0].description}
                 </div>
               </div>

@@ -1,24 +1,105 @@
-  .air-quality-good {
-      background-color: #4ade80;
-  }
+/* --- CARD CONTAINER --- */
+.air-pollution-card {
+  background: #f0f9ff;
+  border: 4px solid #000;
+  border-radius: 18px;
+  box-shadow: 8px 8px 0 #000;
+  padding: 2rem;
+  max-width: 800px;
+  margin: 2rem auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-  .air-quality-moderate {
-      background-color: #facc15;
-  }
+.air-pollution-card:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 10px 10px 0 var(--brutal-border);
+}
 
-  .air-quality-unhealthy {
-      background-color: #f97316;
-  }
+/* --- HEADER --- */
+.air-pollution-card h2 {
+  font-size: 1.8rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  color: var(--brutal-text);
+  gap: 0.5rem;
+}
 
-  .air-quality-danger {
-      background-color: #ef4444;
-  }
+.air-pollution-card h2 svg {
+  color: var(--brutal-accent);
+}
 
-  .air-quality-hazardous {
-      background-color: #7e22ce;
-  }
+/* --- AQI CIRCLE --- */
+.air-pollution-card .w-16.h-16 {
+  border: 3px solid var(--brutal-border);
+  box-shadow: 4px 4px 0 var(--brutal-border);
+}
 
-  .tooltip {
+/* --- PROGRESS BAR --- */
+.bg-gray-100 {
+  background: #dbeafe !important; /* blue-tinted track */
+  border: 2px solid var(--brutal-border);
+}
+
+.bg-gray-100 .h-2 {
+  border-radius: 0;
+}
+
+/* --- AQI BOX GRID --- */
+.air-pollution-card .grid > div {
+  background: #ffffff;
+  border: 3px solid var(--brutal-border);
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 var(--brutal-border);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.air-pollution-card .grid > div:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 var(--brutal-border);
+  background: #e0f2fe; /* light blue highlight */
+}
+
+.air-pollution-card .grid .text-sm {
+  color: var(--brutal-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.air-pollution-card .grid .text-xl {
+  color: var(--brutal-text);
+  font-weight: 800;
+}
+
+/* --- AIR QUALITY COLORS (Neo-Brutal Flat Colors) --- */
+.air-quality-good {
+  background-color: #8be28b !important; /* fresh green */
+  color: #000;
+}
+
+.air-quality-moderate {
+  background-color: #f9d94c !important; /* yellow */
+  color: #000;
+}
+
+.air-quality-unhealthy {
+  background-color: #f78642 !important; /* orange */
+  color: #000;
+}
+
+.air-quality-danger {
+  background-color: #ef4444 !important; /* red */
+  color: #fff;
+}
+
+.air-quality-hazardous {
+  background-color: #7e22ce !important; /* purple */
+  color: #fff;
+}
+
+/* --- TOOLTIP --- */
+ .tooltip {
       position: relative;
       display: inline-block;
   }
@@ -94,3 +175,42 @@
           right: -100%;
       }
   }
+  
+/* --- RECOMMENDATION BOX --- */
+.air-pollution-card .bg-yellow-50 {
+  background: #ffffff !important;
+  border: 3px solid var(--brutal-border);
+   box-shadow: 2px 2px 0 #000;;
+  border-radius: 12px;
+}
+
+.air-pollution-card .bg-yellow-50:hover {
+  background: #fefce8 !important;
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 #000;
+}
+
+.air-pollution-card .bg-yellow-50 h3 {
+  color: var(--brutal-text);
+  font-weight: 800;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.air-pollution-card .bg-yellow-50 p {
+  color: var(--brutal-muted);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 640px) {
+  .air-pollution-card {
+    padding: 1.5rem;
+  }
+  .tooltip-content {
+    width: 90vw;
+    right: auto;
+    left: 0;
+  }
+}
