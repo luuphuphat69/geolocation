@@ -124,7 +124,7 @@ export const LocalWeather = ({ lat, lon }) => {
             <div className="search-page-temperature-display" id="currentTemp">
               {displayTemp}°{isCelciusUnit ? "C" : "F"}
             </div>
-            <p className="search-page-label-text" id="currentCondition">{condition}</p>
+            <p className="search-page-label-text ml-2" id="currentCondition">{condition}</p>
           </div>
         </div>
         <div className="search-page-flex search-page-gap-2">

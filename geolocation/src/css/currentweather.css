@@ -58,9 +58,9 @@ button.active {
   text-decoration: underline;
 }
 
-button:not(.active) {
+/* button:not(.active) {
   color: #9ca3af;
-}
+} */
 
 button:hover {
   color: #60a5fa;

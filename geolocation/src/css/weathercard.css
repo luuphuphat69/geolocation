@@ -149,6 +149,10 @@
   transform: translate(-2px, -2px);
 }
 
+.weather-card__stat:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 1px 1px 0 #000;
+}
 /* Toast (if you make your own) */
 .toast-neo {
   background: #fff;
