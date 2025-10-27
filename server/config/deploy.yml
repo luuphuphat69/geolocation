@@ -8,7 +8,7 @@ servers:
     
 ssh:
   user: root
-  port: 8686
+  port: 3389
 
 proxy:
   ssl: true
