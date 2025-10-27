@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: __dirname + '/.env' }); 
 const router = require('./router/router');
 const rateLimit = require('express-rate-limit');
-const { ipKeyGenerator } = require('express-rate-limit'); // import helper
+const { ipKeyGenerator } = require('express-rate-limit');
 const requestIp = require('request-ip');
 const app = express();
 

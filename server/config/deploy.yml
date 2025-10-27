@@ -7,7 +7,7 @@ servers:
     - 161.248.4.185
     
 ssh:
-  user: Administrator
+  user: root
   port: 3389
 
 proxy:
