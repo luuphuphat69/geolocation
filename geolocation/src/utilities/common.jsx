@@ -69,4 +69,3 @@ export const formatUnixToLocalHHMM = (unixTime, timezoneOffset = 0) => {
 
   return `${displayHour}:${displayMinutes} ${ampm}`;
 };
-

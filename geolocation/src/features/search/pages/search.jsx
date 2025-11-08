@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { gsap } from "gsap";
+import { SplitText } from "gsap/SplitText";
+gsap.registerPlugin(SplitText);
 import "../../../css/search.css";
 import { getLocation } from "../../../utilities/api/api";
 import { LocalWeather } from "../components/localweather";
 import SettingsComp from "../../settings/settings";
 const Search = () => {
+  const titleRef = useRef(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [validation, setValidation] = useState({
@@ -131,6 +135,34 @@ const Search = () => {
     );
   }, []);
 
+ useEffect(() => {
+    if (!titleRef.current) return;
+
+    // Split text into chars
+    const split = new SplitText(titleRef.current, { type: "chars,words,lines" });
+    let animation = null;
+
+    const handleMouseClick = () => {
+      if (animation) animation.revert();
+      animation = gsap.from(split.chars, {
+        x: 150,
+        opacity: 0,
+        duration: 0.7,
+        ease: "power4",
+        stagger: 0.04,
+      });
+    };
+
+    const title = titleRef.current;
+    title.addEventListener("click", handleMouseClick);
+
+    // Cleanup
+    return () => {
+      title.removeEventListener("click", handleMouseClick);
+      split.revert();
+    };
+  }, []);
+
   return (
     <div className="search-page-container">
       <SettingsComp/>
@@ -145,7 +177,7 @@ const Search = () => {
         <div className="floating-shape shape-8"></div>
       </div>
       <header className="search-page-mb-3">
-        <h1 className="search-page-main-title">Geolocation.space</h1>
+        <h1 ref={titleRef} className="search-page-main-title">Geolocation.space</h1>
         <p className="search-page-subtitle">Check weather data and forecasts</p>
       </header>
 

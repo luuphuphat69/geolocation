@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import "../../../css/search.css";
 import { getCurrentWeather, reverseGeocoding, getForecast } from "../../../utilities/api/api";
-import { kelvinToCelsius, getCurrentTimeHHMM, kelvinToFahrenheit, celsiusToFahrenheit, formatDate, formatUnixToLocalHHMM} from "../../../utilities/common";
+import { kelvinToCelsius, getCurrentTimeHHMM, kelvinToFahrenheit, celsiusToFahrenheit, formatDate, formatUnixToLocalHHMM } from "../../../utilities/common";
+import LottieAnimation from "../../../components/ui/lottieAnimation";
+import { getLottieForCondition } from '../../../utilities/lottieUtilities';
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { useAppOptions } from "../../../AppOptionsContext";
@@ -180,16 +182,13 @@ export const LocalWeather = ({ lat, lon }) => {
                 className="search-page-forecast-card"
               >
                 <div className="search-page-label-text search-page-mb-1">{formatDate(day.dt_txt)}</div>
-                <div style={{ margin: "1rem 0" }}>
-                  <img
-                    src={`https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`}
-                    alt={day.weather[0].description}
-                    width={80}
-                    height={80}
-                    style={{ display: "block", margin: "0 auto", background: '#93c5fd', borderRadius:'100%' }}
-                  />
+                <div className="search-page-flex search-page-items-center search-page-justify-center">
+                <LottieAnimation
+                  animationData={getLottieForCondition(day.weather[0].description)}
+                  width={200}
+                  height={200}
+                />
                 </div>
-
                 <div className="search-page-label-text search-page-mb-1">{day.weather[0].description}</div>
                 <div className="search-page-flex search-page-items-center search-page-justify-center">
                   <span className="search-page-temp-high" >{temp}</span>
